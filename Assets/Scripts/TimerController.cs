@@ -21,21 +21,19 @@ public class TimerController : MonoBehaviour
     /// </summary>
     private GameManager Brain;
 
+    public Text TimerText;
+
     // Use this for initialization
     void Start()
     {
-        GameObject gameManagerController = GameObject.FindGameObjectWithTag("GameManager");
+        Brain = GetComponent<GameManager>();
 
-        if (gameManagerController != null)
-        {
-            Brain = gameManagerController.GetComponent<GameManager>();
-        }
-        else
+        if (Brain == null)
         {
             Debug.Log("Can not find GameManager for " + gameObject.name + " of instance " + GetInstanceID());
         }
 
-        currTime = TimeLimit;
+        currTime = TimeLimit*60;
     }
 
     // Update is called once per frame
@@ -47,34 +45,51 @@ public class TimerController : MonoBehaviour
         {
             EndOfTimer();
         }
+
+        TimerText.text = ToString();
     }
 
     /// <summary>
-    /// Reduces the current timer appropriately based off the damage argument.
+    /// Delegate must take the two params and then produce a new float.
     /// </summary>
-    /// <param name="damage"> Damage recieved </param>
-    /// <returns></returns> 
-    public void ReduceTimer(float damage)
+    /// <param name="damage"></param>
+    public delegate float ChangeTime (float time);
+
+    public void UpdateTimer (ChangeTime timerEffect)
     {
-        currTime -= (damage);
+        currTime = timerEffect(currTime);
     }
+
+    ///// <summary>
+    ///// Reduces the current timer appropriately based off the damage argument.
+    ///// </summary>
+    ///// <param name="damage"> Damage recieved </param>
+    ///// <returns></returns> 
+    //public void ReduceTimer(float damage)
+    //{
+    //    currTime -= (damage);
+    //}
 
     /// <summary>
     /// When the timer ends, this method will be called and deal with the fallout
     /// </summary>
-    public void EndOfTimer()
+    private void EndOfTimer()
     {
         // TODO: Determine if it needs to be a coroutine. 
+       // ResetTimer();
+
         Brain.GameOver(); 
     }
 
-    /// <summary>
-    /// Resets the timer to its' original value. 
-    /// </summary>
-    public void ResetTimer()
-    {
-        currTime = TimeLimit;
-    }
+    ///// <summary>
+    ///// Resets the timer to its' original value. 
+    ///// </summary>
+    //public void ResetTimer()
+    //{
+    //    currTime = TimeLimit;
+    //}
+
+
 
     /// <summary>
     /// Display the current time
