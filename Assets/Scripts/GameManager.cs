@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     public void GameOver ()
     {
-        timer.UpdateTimer((time) => timer.TimeLimit);
+        
     }
 
     /// <summary>
@@ -58,6 +58,6 @@ public class GameManager : MonoBehaviour {
     /// <param name="damage"></param>
     public void ReportDamage(float damage)
     {
-        timer.UpdateTimer((time) => (time - damage));
+        timer.ReduceTimer(damage);
     }
 }

@@ -9,19 +9,36 @@ public class TimerController : MonoBehaviour
     /// <summary>
     /// Controls the total limit of time
     /// </summary>
-    public float TimeLimit;
+    [SerializeField]
+    private float TimeLimit;
 
     /// <summary>
     /// Represents the current time of this timerController
     /// </summary>
-    public float currTime { get; private set; }
+    private float currTime;
+
 
     /// <summary>
     /// Deals with the Brain
     /// </summary>
     private GameManager Brain;
 
-    public Text TimerText;
+    /// <summary>
+    /// 
+    /// </summary>
+    [SerializeField]
+    private Text TimerText;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [SerializeField]
+    private Image TimerBar;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private FillControl TimerFill;
 
     // Use this for initialization
     void Start()
@@ -33,7 +50,10 @@ public class TimerController : MonoBehaviour
             Debug.Log("Can not find GameManager for " + gameObject.name + " of instance " + GetInstanceID());
         }
 
-        currTime = TimeLimit*60;
+        TimeLimit = TimeLimit * 60;
+        currTime = TimeLimit;
+
+        TimerFill = new FillControl(TimerBar);
     }
 
     // Update is called once per frame
@@ -46,29 +66,28 @@ public class TimerController : MonoBehaviour
             EndOfTimer();
         }
 
+        TimerDisplay();
+    }
+
+    /// <summary>
+    /// Displays all the appropriate timer display items. 
+    /// </summary>
+    private void TimerDisplay()
+    {
+        TimerFill.ChangeBarFill(currTime/TimeLimit);
+
         TimerText.text = ToString();
     }
 
     /// <summary>
-    /// Delegate must take the two params and then produce a new float.
+    /// Reduces the current timer appropriately based off the damage argument.
     /// </summary>
-    /// <param name="damage"></param>
-    public delegate float ChangeTime (float time);
-
-    public void UpdateTimer (ChangeTime timerEffect)
+    /// <param name="damage"> Damage recieved </param>
+    /// <returns></returns> 
+    public void ReduceTimer(float damage)
     {
-        currTime = timerEffect(currTime);
+        currTime -= (damage);
     }
-
-    ///// <summary>
-    ///// Reduces the current timer appropriately based off the damage argument.
-    ///// </summary>
-    ///// <param name="damage"> Damage recieved </param>
-    ///// <returns></returns> 
-    //public void ReduceTimer(float damage)
-    //{
-    //    currTime -= (damage);
-    //}
 
     /// <summary>
     /// When the timer ends, this method will be called and deal with the fallout
@@ -76,20 +95,18 @@ public class TimerController : MonoBehaviour
     private void EndOfTimer()
     {
         // TODO: Determine if it needs to be a coroutine. 
-       // ResetTimer();
+       ResetTimer();
 
-        Brain.GameOver(); 
+       Brain.GameOver(); 
     }
 
-    ///// <summary>
-    ///// Resets the timer to its' original value. 
-    ///// </summary>
-    //public void ResetTimer()
-    //{
-    //    currTime = TimeLimit;
-    //}
-
-
+    /// <summary>
+    /// Resets the timer to its' original value. 
+    /// </summary>
+    private void ResetTimer()
+    {
+        currTime = TimeLimit;
+    }
 
     /// <summary>
     /// Display the current time
