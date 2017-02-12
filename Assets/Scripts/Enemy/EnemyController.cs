@@ -27,6 +27,8 @@ public class EnemyController : MonoBehaviour {
     private float speed = 1;
     [SerializeField]
     private float rovingPauseTime;
+    [SerializeField]
+    private string walkingAnimationName;
 
     private Vector3 startingPatrolPoint;
     private Vector3 endingPatrolPoint;
@@ -34,19 +36,24 @@ public class EnemyController : MonoBehaviour {
     private Vector3 minChasePoint;
     private Vector3 maxChasePoint;
 
+    private bool chasePlayer = false;
+    private Vector3 knownPlayerLoc;
+
     private float timer = 0;
     private bool outgoing = true;
 
+    private AnimationController2D _animator;
+
     // Use this for initialization
     void Start () {
+        _animator = gameObject.GetComponent<AnimationController2D>();
+
         startingPatrolPoint = this.transform.position;
         endingPatrolPoint = startingPatrolPoint + patrolDelta;
 
         minChasePoint = startingPatrolPoint - deltaNegChase;
         maxChasePoint = startingPatrolPoint + deltaPosChase;
-        //endingPatrolPoint.x += endingPatrolPoint.x + deltaPatrol;
-        //minChasePoint.x -= minChasePoint.x - deltaNegChase;
-        //maxChasePoint.x += maxChasePoint.x + deltaPosChase;
+        
 
     }
 	
@@ -65,14 +72,14 @@ public class EnemyController : MonoBehaviour {
         {
             if (outgoing)
             {
-                //_animator.setFacing("Left");
-                //_animator.setAnimation("Spooder_Walk");
+                _animator.setFacing("Right");
+                _animator.setAnimation(walkingAnimationName);
                 this.transform.position = Vector3.Lerp(startingPatrolPoint, endingPatrolPoint, timer);
             }
             else
             {
-                //_animator.setFacing("Right");
-                //_animator.setAnimation("Spooder_Walk");
+                _animator.setFacing("Left");
+                _animator.setAnimation(walkingAnimationName);
                 this.transform.position = Vector3.Lerp(endingPatrolPoint, startingPatrolPoint, timer);
             }
         }
@@ -90,5 +97,24 @@ public class EnemyController : MonoBehaviour {
         Gizmos.color = Color.blue;
         myPosition.y -= 0.1f;
         Gizmos.DrawLine(myPosition - deltaNegChase, myPosition + deltaPosChase);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="playerLocation"></param>
+    public void PlayerFound (Vector3 playerLocation)
+    {
+        chasePlayer = true;
+        knownPlayerLoc = playerLocation;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="playerLocation"></param>
+    public void PlayerLost()
+    {
+        chasePlayer = false;
     }
 }
