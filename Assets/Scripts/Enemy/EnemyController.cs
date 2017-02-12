@@ -1,7 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class EnemyController : MonoBehaviour {
 
@@ -9,37 +9,86 @@ public class EnemyController : MonoBehaviour {
     /// Represents the total distance an enemy can patrol
     /// </summary>
     [SerializeField]
-    private float deltaPatrol;
+    private Vector3 patrolDelta;
 
     /// <summary>
     /// Represents the total distance an enemy can chase a player in positive x direction
     /// </summary>
     [SerializeField]
-    private float deltaPosChase;
+    private Vector3 deltaPosChase;
 
     /// <summary>
     /// Represents the total distance an enemy can chase a player in negative y direction
     /// </summary>
     [SerializeField]
-    private float deltaNegChase;
+    private Vector3 deltaNegChase;
 
-    /// <summary>
-    /// Contains the original starting location and the max patrol location
-    /// </summary>
-    private Tuple<Transform, Transform> patrolPoints;
+    [SerializeField]
+    private float speed = 1;
+    [SerializeField]
+    private float rovingPauseTime;
 
-    /// <summary>
-    /// Contains the min and max patrol location
-    /// </summary>
-    private Tuple<Transform, Transform> chasePoints;
+    private Vector3 startingPatrolPoint;
+    private Vector3 endingPatrolPoint;
+
+    private Vector3 minChasePoint;
+    private Vector3 maxChasePoint;
+
+    private float timer = 0;
+    private bool outgoing = true;
 
     // Use this for initialization
     void Start () {
-		
-	}
+        startingPatrolPoint = this.transform.position;
+        endingPatrolPoint = startingPatrolPoint + patrolDelta;
+
+        minChasePoint = startingPatrolPoint - deltaNegChase;
+        maxChasePoint = startingPatrolPoint + deltaPosChase;
+        //endingPatrolPoint.x += endingPatrolPoint.x + deltaPatrol;
+        //minChasePoint.x -= minChasePoint.x - deltaNegChase;
+        //maxChasePoint.x += maxChasePoint.x + deltaPosChase;
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+
+        timer += Time.deltaTime * speed;
+
+        if (timer > rovingPauseTime + 1)
+        {
+            outgoing = !outgoing;
+            timer = 0;
+        }
+
+        else if (timer < 1)
+        {
+            if (outgoing)
+            {
+                //_animator.setFacing("Left");
+                //_animator.setAnimation("Spooder_Walk");
+                this.transform.position = Vector3.Lerp(startingPatrolPoint, endingPatrolPoint, timer);
+            }
+            else
+            {
+                //_animator.setFacing("Right");
+                //_animator.setAnimation("Spooder_Walk");
+                this.transform.position = Vector3.Lerp(endingPatrolPoint, startingPatrolPoint, timer);
+            }
+        }
+
+        //else _animator.setAnimation("Spooder_Idle");
+
+    }
+
+    void OnDrawGizmos()
+    {
+        Vector3 myPosition = this.transform.position;
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(myPosition, patrolDelta + myPosition);
+
+        Gizmos.color = Color.blue;
+        myPosition.y -= 0.1f;
+        Gizmos.DrawLine(myPosition - deltaNegChase, myPosition + deltaPosChase);
+    }
 }
