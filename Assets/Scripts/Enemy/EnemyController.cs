@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Prime31;
 
 public class EnemyController : MonoBehaviour {
 
@@ -24,11 +25,19 @@ public class EnemyController : MonoBehaviour {
     private Vector3 deltaNegChase;
 
     [SerializeField]
-    private float speed = 1;
+    private float walkSpeed = 1;
+    [SerializeField]
+    private float runSpeed = 1;
     [SerializeField]
     private float rovingPauseTime;
     [SerializeField]
-    private string walkingAnimationName;
+    private string anim_walk;
+    [SerializeField]
+    private string anim_idle;
+    [SerializeField]
+    private string anim_run;
+
+    private float gravity = -35.0f;
 
     private Vector3 startingPatrolPoint;
     private Vector3 endingPatrolPoint;
@@ -37,55 +46,86 @@ public class EnemyController : MonoBehaviour {
     private Vector3 maxChasePoint;
 
     private bool chasePlayer = false;
-    private Vector3 knownPlayerLoc;
+    //private Vector3 knownPlayerLoc;
 
     private float timer = 0;
     private bool outgoing = true;
+    private bool waiting = false;
 
     private AnimationController2D _animator;
+    private CharacterController2D _controller;
 
     // Use this for initialization
     void Start () {
         _animator = gameObject.GetComponent<AnimationController2D>();
+        _controller = gameObject.GetComponent<CharacterController2D>();
 
         startingPatrolPoint = this.transform.position;
         endingPatrolPoint = startingPatrolPoint + patrolDelta;
 
         minChasePoint = startingPatrolPoint - deltaNegChase;
         maxChasePoint = startingPatrolPoint + deltaPosChase;
-        
-
     }
 	
 	// Update is called once per frame
 	void Update () {
 
-        timer += Time.deltaTime * speed;
+        Vector3 velocity = _controller.velocity;
+        velocity.x = 0;
 
-        if (timer > rovingPauseTime + 1)
+        // If the enemy has reached the end of the patrol point
+        if (((!waiting) && (!chasePlayer) && (((this.transform.position.x > endingPatrolPoint.x) && outgoing) || ((this.transform.position.x < startingPatrolPoint.x) && !outgoing)))
+            || ((!waiting) && chasePlayer && (((this.transform.position.x > maxChasePoint.x) && outgoing) || ((this.transform.position.x < minChasePoint.x) && !outgoing))))
+            waiting = true;
+
+        // This code fires when the character is about to begin moving
+        if (timer > rovingPauseTime)
         {
             outgoing = !outgoing;
             timer = 0;
+            waiting = false;
         }
-
-        else if (timer < 1)
+        // This is when the enemy has reached the end of the patrol
+        else if (waiting)
+        {
+            _animator.setAnimation(anim_idle);
+            timer += Time.deltaTime * walkSpeed;
+        }
+        // Handle all variations of movement
+        if (!waiting)
         {
             if (outgoing)
             {
                 _animator.setFacing("Right");
-                _animator.setAnimation(walkingAnimationName);
-                this.transform.position = Vector3.Lerp(startingPatrolPoint, endingPatrolPoint, timer);
+                if (!chasePlayer)
+                {
+                    _animator.setAnimation(anim_walk);
+                    velocity.x = walkSpeed;
+                }
+                else
+                {
+                    _animator.setAnimation(anim_run);
+                    velocity.x = runSpeed;
+                }
             }
             else
             {
                 _animator.setFacing("Left");
-                _animator.setAnimation(walkingAnimationName);
-                this.transform.position = Vector3.Lerp(endingPatrolPoint, startingPatrolPoint, timer);
+                if (!chasePlayer)
+                {
+                    _animator.setAnimation(anim_walk);
+                    velocity.x = walkSpeed * -1;
+                }
+                else
+                {
+                    _animator.setAnimation(anim_run);
+                    velocity.x = runSpeed * -1;
+                }
             }
         }
 
-        //else _animator.setAnimation("Spooder_Idle");
-
+        if (!_controller.isGrounded) velocity.y += gravity * Time.deltaTime;
+        _controller.move(velocity * Time.deltaTime);
     }
 
     void OnDrawGizmos()
@@ -103,10 +143,9 @@ public class EnemyController : MonoBehaviour {
     /// 
     /// </summary>
     /// <param name="playerLocation"></param>
-    public void PlayerFound (Vector3 playerLocation)
+    public void PlayerFound ()
     {
         chasePlayer = true;
-        knownPlayerLoc = playerLocation;
     }
 
     /// <summary>

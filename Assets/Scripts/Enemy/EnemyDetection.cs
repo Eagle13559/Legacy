@@ -12,20 +12,35 @@ public class EnemyDetection : MonoBehaviour {
     /// <summary>
     /// Keeps track of the last location the player was 'seen'
     /// </summary>
-    private Vector3 playersLastLoc;
+    //private Vector3 playersLastLoc;
 
     private void Start()
     {
         enemy = GetComponentInParent<EnemyController>();
-        playersLastLoc = Vector3.zero;
-    } 
+        //playersLastLoc = Vector3.zero;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            enemy.PlayerFound();
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            enemy.PlayerLost();
+        }
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Player")
         {
-            playersLastLoc = collision.gameObject.transform.position;
-            enemy.PlayerFound(playersLastLoc);
+            enemy.PlayerFound();
         }
     }
 
@@ -33,8 +48,7 @@ public class EnemyDetection : MonoBehaviour {
     {
         if (collision.gameObject.tag == "Player")
         {
-            playersLastLoc = collision.gameObject.transform.position;
-            enemy.PlayerFound(playersLastLoc);
+            enemy.PlayerFound();
         }
     }
 

@@ -25,13 +25,13 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetAxis("Horizontal") < 0)
         {
             velocity.x = walkSpeed * -1;
-            _animator.setFacing("Right");
+            _animator.setFacing("Left");
             _animator.setAnimation("p_run");
         }
         else if (Input.GetAxis("Horizontal") > 0)
         {
             velocity.x = walkSpeed;
-            _animator.setFacing("Left");
+            _animator.setFacing("Right");
             _animator.setAnimation("p_run");
         }
         else
