@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Prime31;
+using UnityEngine.UI;
+using System;
 
 public class PlayerController : MonoBehaviour {
 
@@ -8,14 +10,34 @@ public class PlayerController : MonoBehaviour {
     public float gravity = -35f;
     public float jumpHeight = 2f;
     public float walkSpeed = 3f;
+
     private CharacterController2D _controller;
     private AnimationController2D _animator;
+
+    /// <summary>
+    /// Timer control
+    /// </summary>
+    [SerializeField]
+    private TimerController _timer;
+
+    /// <summary>
+    /// Manager of the game session
+    /// </summary>
+    [SerializeField]
+    private GameManager _gameManager;
+
+    /// <summary>
+    /// Damage to player's timer
+    /// </summary>
+    [SerializeField]
+    private float timerDamage;
 
     // Use this for initialization
     void Start () {
         _controller = gameObject.GetComponent<CharacterController2D>();
         _animator = gameObject.GetComponent<AnimationController2D>();
         gameCamera.GetComponent<CameraFollow2D>().startCameraFollow(this.gameObject);
+
     }
 	
 	// Update is called once per frame
@@ -46,4 +68,25 @@ public class PlayerController : MonoBehaviour {
         velocity.y += gravity * Time.deltaTime;
         _controller.move( velocity * Time.deltaTime );
 	}
+
+    /// <summary>
+    /// Player Dies
+    /// </summary>
+    public void Die()
+    {
+        _gameManager.GameOver();
+    }
+
+    /// <summary>
+    /// If player has collided with enemy attack, this event will fire off. 
+    /// </summary>
+    /// <param name="other"></param>
+    void OnTriggerEnter2D (Collider2D other)
+    {
+        if (other.tag == "Enemy")
+        {
+            _timer.ReduceTimer(timerDamage);
+        }
+    }
+
 }

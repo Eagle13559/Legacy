@@ -35,28 +35,5 @@ public class EnemyDetection : MonoBehaviour {
             enemy.PlayerLost();
         }
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-        {
-            enemy.PlayerFound();
-        }
-    }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-        {
-            enemy.PlayerFound();
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-        {
-            enemy.PlayerLost();
-        }
-    }
+    
 }

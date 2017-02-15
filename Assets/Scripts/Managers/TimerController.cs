@@ -13,17 +13,6 @@ public class TimerController : MonoBehaviour
     private float TimeLimit;
 
     /// <summary>
-    /// Represents the current time of this timerController
-    /// </summary>
-    private float currTime;
-
-
-    /// <summary>
-    /// Deals with the Brain
-    /// </summary>
-    private GameManager Brain;
-
-    /// <summary>
     /// 
     /// </summary>
     [SerializeField]
@@ -38,20 +27,28 @@ public class TimerController : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
+    [SerializeField]
+    private PlayerController player;
+
+    /// <summary>
+    /// Represents the current time of this timerController
+    /// </summary>
+    public float CurrTime
+    {
+        get; private set;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     private FillControl TimerFill;
 
     // Use this for initialization
     void Start()
     {
-        Brain = GetComponent<GameManager>();
-
-        if (Brain == null)
-        {
-            Debug.Log("Can not find GameManager for " + gameObject.name + " of instance " + GetInstanceID());
-        }
 
         TimeLimit = TimeLimit * 60;
-        currTime = TimeLimit;
+        CurrTime = TimeLimit;
 
         TimerFill = new FillControl(TimerBar);
     }
@@ -59,11 +56,11 @@ public class TimerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currTime -= Time.deltaTime;
+        CurrTime -= Time.deltaTime;
 
-        if (currTime < 0)
+        if (CurrTime < 0)
         {
-            EndOfTimer();
+            player.Die();
         }
 
         TimerDisplay();
@@ -74,7 +71,7 @@ public class TimerController : MonoBehaviour
     /// </summary>
     private void TimerDisplay()
     {
-        TimerFill.ChangeBarFill(currTime/TimeLimit);
+        TimerFill.ChangeBarFill(CurrTime/TimeLimit);
 
         TimerText.text = ToString();
     }
@@ -86,18 +83,7 @@ public class TimerController : MonoBehaviour
     /// <returns></returns> 
     public void ReduceTimer(float damage)
     {
-        currTime -= (damage);
-    }
-
-    /// <summary>
-    /// When the timer ends, this method will be called and deal with the fallout
-    /// </summary>
-    private void EndOfTimer()
-    {
-        // TODO: Determine if it needs to be a coroutine. 
-       ResetTimer();
-
-       Brain.GameOver(); 
+        CurrTime -= (damage);
     }
 
     /// <summary>
@@ -105,7 +91,7 @@ public class TimerController : MonoBehaviour
     /// </summary>
     private void ResetTimer()
     {
-        currTime = TimeLimit;
+        CurrTime = TimeLimit;
     }
 
     /// <summary>
@@ -113,8 +99,8 @@ public class TimerController : MonoBehaviour
     /// </summary>
     public override string ToString()
     {
-        double minutes = currTime / 60; //Divide the guiTime by sixty to get the minutes.
-        double seconds = currTime % 60;//Use the euclidean division for the seconds
+        double minutes = CurrTime / 60; //Divide the guiTime by sixty to get the minutes.
+        double seconds = CurrTime % 60;//Use the euclidean division for the seconds
 
         return string.Format("{0:00} : {1:00}", Math.Floor(minutes), Math.Floor(seconds));
     }

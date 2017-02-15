@@ -5,24 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
-    
-    /// <summary>
-    /// All the timer control properties:
-    ///     - Timer itself
-    ///     - Display of the time
-    /// </summary>
-    private TimerController timer;
-
-
     // Use this for initialization
     void Start ()
     {
-        timer = GetComponent<TimerController>();
 
-        if (timer == null)
-        {
-            Debug.Log("Can not find TimerController for " + gameObject.name + " of instance " + GetInstanceID());
-        }
     }
 	
 	// Update is called once per frame
@@ -49,15 +35,6 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     public void GameOver ()
     {
-        
-    }
-
-    /// <summary>
-    /// Takes damage and will perform necessary functions. 
-    /// </summary>
-    /// <param name="damage"></param>
-    public void ReportDamage(float damage)
-    {
-        timer.ReduceTimer(damage);
+        Debug.Log("Sorry");
     }
 }
