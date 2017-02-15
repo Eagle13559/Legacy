@@ -156,4 +156,12 @@ public class EnemyController : MonoBehaviour {
     {
         chasePlayer = false;
     }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "PlayerWeaponCollider")
+        {
+            Destroy(gameObject);
+        }
+    }
 }
