@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
+    [SerializeField]
+    private string resetLevel;
+
     // Use this for initialization
     void Start ()
     {
@@ -35,6 +38,6 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     public void GameOver ()
     {
-        Debug.Log("Sorry");
+        SceneManager.LoadScene(resetLevel);
     }
 }

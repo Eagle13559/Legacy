@@ -69,6 +69,7 @@ public class PlayerController : MonoBehaviour {
         }
         if ( Input.GetKeyDown("left ctrl") )
         {
+            _animator.setAnimation("");
             _attackColliderController.setEnabled(true);
         }
         velocity.y += gravity * Time.deltaTime;
@@ -92,6 +93,10 @@ public class PlayerController : MonoBehaviour {
         if (other.tag == "Enemy")
         {
             _timer.ReduceTimer(timerDamage);
+        }
+        else if (other.tag == "KillZ")
+        {
+            _gameManager.GameOver();
         }
     }
 
