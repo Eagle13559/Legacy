@@ -32,12 +32,14 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private float timerDamage;
 
+    [SerializeField]
+    private AttackColliderController _attackColliderController;
+
     // Use this for initialization
     void Start () {
         _controller = gameObject.GetComponent<CharacterController2D>();
         _animator = gameObject.GetComponent<AnimationController2D>();
         gameCamera.GetComponent<CameraFollow2D>().startCameraFollow(this.gameObject);
-
     }
 	
 	// Update is called once per frame
@@ -64,6 +66,10 @@ public class PlayerController : MonoBehaviour {
         {
             velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
             _animator.setAnimation("p_jump");
+        }
+        if ( Input.GetKeyDown("left ctrl") )
+        {
+            _attackColliderController.setEnabled(true);
         }
         velocity.y += gravity * Time.deltaTime;
         _controller.move( velocity * Time.deltaTime );
