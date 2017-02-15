@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 5028175a5e9050b42818e6f0c3ae09c9
+timeCreated: 1487141662
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Phantex
+  fontNames:
+  - Phantex
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
