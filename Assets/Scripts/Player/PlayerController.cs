@@ -12,8 +12,10 @@ public class PlayerController : MonoBehaviour {
     public float walkSpeed = 3f;
     public float dashSpeed = 5f;
     public float dashTime = 2f;
+    public float dashCooldownTime = 5f;
     private float _dashTimer = 0f;
     private bool _isDashing = false;
+    private bool _canDash = true;
 
     private CharacterController2D _controller;
     private AnimationController2D _animator;
@@ -64,8 +66,18 @@ public class PlayerController : MonoBehaviour {
 	void Update () {
         Vector3 velocity = _controller.velocity;
         velocity.x = 0;
+        if (!_canDash)
+        {
+            if (dashCooldownTime + dashTime < _dashTimer)
+            {
+                _canDash = true;
+                _dashTimer = 0;
+            }
+            else
+                _dashTimer += Time.deltaTime;
+        }
         // Dashing overrides all other movements
-        if (Input.GetKeyDown("k") || _isDashing)
+        if ((Input.GetKeyDown("k") && _canDash) || _isDashing)
         {
             velocity.y = 0;
             if (!_isDashing)
@@ -81,7 +93,7 @@ public class PlayerController : MonoBehaviour {
             if (_dashTimer > dashTime)
             {
                 _isDashing = false;
-                _dashTimer = 0;
+                _canDash = false;
             }
         }
         // Only perform other checks if not dashing

@@ -146,6 +146,7 @@ public class EnemyController : MonoBehaviour {
     public void PlayerFound ()
     {
         chasePlayer = true;
+        waiting = false;
     }
 
     /// <summary>
