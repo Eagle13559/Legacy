@@ -58,7 +58,7 @@ public class TimerController : MonoBehaviour
     {
         CurrTime -= Time.deltaTime;
 
-        if (CurrTime < 0 & player.)
+        if (CurrTime < 0 )
         {
             player.Die();
         }
