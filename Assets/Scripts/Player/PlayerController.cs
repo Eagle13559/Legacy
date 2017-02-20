@@ -39,6 +39,12 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private float timerDamage;
 
+    /// <summary>
+    /// Controls the total amount of currency this player has access to. 
+    /// </summary>
+    [SerializeField]
+    private CurrencyController BankAccount;
+
     [SerializeField]
     private AttackColliderController _attackColliderController;
 
@@ -162,6 +168,21 @@ public class PlayerController : MonoBehaviour {
         {
             _gameManager.GameOver();
         }
+        else if (other.tag == "Coin")
+        {
+            BankAccount.AddToBank(CurrencyController.CurrencyTypes.Coin);
+            Destroy(other.gameObject);
+        }
+        else if (other.tag == "Jewel")
+        {
+            BankAccount.AddToBank(CurrencyController.CurrencyTypes.Jewel);
+            Destroy(other.gameObject);
+        }
+    }
+
+    private void DisplayCurrency()
+    {
+
     }
 
 }
