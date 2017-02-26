@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: b0a027d864db4b74eae8f0b1cda9d327
+timeCreated: 1488006565
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Ghouls
+  fontNames:
+  - Ghouls
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
