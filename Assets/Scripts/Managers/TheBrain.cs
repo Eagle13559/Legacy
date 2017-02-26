@@ -4,8 +4,16 @@ using UnityEngine;
 
 public class TheBrain : MonoBehaviour
 {
+    private GameObject _brainSingleton = null;
     void Start ()
     {
+        if (_brainSingleton == null)
+            _brainSingleton = this.gameObject;
+        else
+        {
+            if (_brainSingleton != this.gameObject)
+                Destroy(this.gameObject);
+        }
         DontDestroyOnLoad(transform.gameObject);
     }
 
