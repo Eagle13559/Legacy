@@ -3,6 +3,8 @@ using System.Collections;
 using Prime31;
 using UnityEngine.UI;
 using System;
+using UnityEngine.SceneManagement;
+using System.Text.RegularExpressions;
 
 public class PlayerController : MonoBehaviour {
 
@@ -45,11 +47,15 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private CurrencyController BankAccount;
 
+    /// <summary>
+    /// Contains all the pertinent information needed for each relevant object 
+    /// controlled by this object. 
+    /// </summary>
+    private TheBrain brain;
+
     [SerializeField]
     private AttackColliderController _attackColliderController;
 
-    [SerializeField]
-    private string _runAnimation;
     [SerializeField]
     private string _walkAnimation;
     [SerializeField]
@@ -63,9 +69,29 @@ public class PlayerController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        try
+        {
+            // TODO: Discover a more efficient way to find the below game object
+            brain = GameObject.Find("TheBrain").GetComponent<TheBrain>();
+        }
+        catch
+        {
+            Debug.Log("The Brain was not found for this object");
+            brain = new TheBrain();
+            brain.Time = float.PositiveInfinity;
+            brain.PlayersMoney = 0;
+        }
+       
+        
         _controller = gameObject.GetComponent<CharacterController2D>();
         _animator = gameObject.GetComponent<AnimationController2D>();
         gameCamera.GetComponent<CameraFollow2D>().startCameraFollow(this.gameObject);
+
+        if (! Regex.IsMatch(   SceneManager.GetActiveScene().name, "Shop") )
+        {
+            _timer.StartTimer(brain.Time);
+        }
+        BankAccount.AddToBank( brain.PlayersMoney );
     }
 	
 	// Update is called once per frame
@@ -86,6 +112,7 @@ public class PlayerController : MonoBehaviour {
         if ((Input.GetKeyDown("k") && _canDash) || _isDashing)
         {
             velocity.y = 0;
+            _animator.setAnimation(_dashAnimation);
             if (!_isDashing)
             {
                 _isDashing = true;
@@ -100,6 +127,7 @@ public class PlayerController : MonoBehaviour {
             {
                 _isDashing = false;
                 _canDash = false;
+                _animator.setAnimation(_idleAnimation);
             }
         }
         // Only perform other checks if not dashing
@@ -109,14 +137,14 @@ public class PlayerController : MonoBehaviour {
             {
                 velocity.x = walkSpeed * -1;
                 _animator.setFacing("Left");
-                _animator.setAnimation(_runAnimation);
+                _animator.setAnimation(_walkAnimation);
                 _isFacingRight = false;
             }
             else if (Input.GetAxis("Horizontal") > 0)
             {
                 velocity.x = walkSpeed;
                 _animator.setFacing("Right");
-                _animator.setAnimation(_runAnimation);
+                _animator.setAnimation(_walkAnimation);
                 _isFacingRight = true;
             }
             else
@@ -180,9 +208,13 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    private void DisplayCurrency()
+    /// <summary>
+    /// When this game object is destroyed, we need to record the players time and total money
+    /// </summary>
+    void OnDestroy ()
     {
-
+        brain.Time = _timer.CurrTime;
+        brain.PlayersMoney = BankAccount.BankAccount;
     }
 
 }

@@ -9,7 +9,6 @@ public class TimerController : MonoBehaviour
     /// <summary>
     /// Controls the total limit of time
     /// </summary>
-    [SerializeField]
     private float TimeLimit;
 
     /// <summary>
@@ -33,38 +32,52 @@ public class TimerController : MonoBehaviour
     /// <summary>
     /// Represents the current time of this timerController
     /// </summary>
-    public float CurrTime
-    {
-        get; private set;
-    }
+    public float CurrTime;
 
     /// <summary>
     /// 
     /// </summary>
     private FillControl TimerFill;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    void Start () { 
     // Use this for initialization
-    void Start()
-    {
-
-        TimeLimit = TimeLimit * 60;
-        CurrTime = TimeLimit;
-
-        TimerFill = new FillControl(TimerBar);
+    
+        
     }
 
     // Update is called once per frame
-    void Update()
+    private IEnumerator UpdateTimer()
     {
-        CurrTime -= Time.deltaTime;
-
-        if (CurrTime < 0 )
+        while (true)
         {
-            player.Die();
-        }
+            ReduceTimer(Time.deltaTime);
 
-        TimerDisplay();
+            if (CurrTime <= 0)
+            {
+                player.Die();
+            }
+
+            TimerDisplay();
+
+            yield return new WaitForEndOfFrame();
+        }
+        
     }
+
+
+    public void StartTimer (float TotalTime)
+    {
+        TimeLimit = TotalTime * 60;
+        CurrTime = TimeLimit;
+
+        TimerFill = new FillControl(TimerBar);
+
+        StartCoroutine(UpdateTimer());
+    }
+
 
     /// <summary>
     /// Displays all the appropriate timer display items. 
@@ -83,7 +96,14 @@ public class TimerController : MonoBehaviour
     /// <returns></returns> 
     public void ReduceTimer(float damage)
     {
-        CurrTime -= (damage);
+        if (CurrTime - damage > 0)
+        {
+            CurrTime -= (damage);
+        }
+        else
+        {
+            CurrTime = 0;
+        }
     }
 
     /// <summary>

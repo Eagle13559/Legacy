@@ -5,18 +5,31 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
+    private TheBrain brain;
+
+    private int currLevelID;
+    
     [SerializeField]
     private string resetLevel;
+
+    [SerializeField]
+    private bool DebugMode;
 
     // Use this for initialization
     void Start()
     {
+        try
+        {
+            // TODO: Discover a more efficient way to find the below game object
+            brain = GameObject.Find("TheBrain").GetComponent<TheBrain>();
+        }
+        catch
+        {
+            Debug.Log("The Brain was not found for this object");
+        }
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        currLevelID = SceneManager.GetActiveScene().buildIndex;
+        //brain.nextSceneIndex = SceneManager.GetSceneByName(resetLevel).buildIndex;
 
     }
 
@@ -34,16 +47,25 @@ public class GameManager : MonoBehaviour {
 
     public void NextLevel()
     {
-        int currentLevel = Application.loadedLevel;
-        Application.LoadLevel(++currentLevel);
+        SceneManager.LoadScene(resetLevel);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    public void FlipDebugMode ()
+    {
+        DebugMode = !DebugMode;
+    }
 
     /// <summary>
     /// Handles a game over event. 
     /// </summary>
     public void GameOver ()
     {
-        SceneManager.LoadScene(resetLevel);
+        if (!DebugMode)
+        {
+            SceneManager.LoadScene(resetLevel);
+        }
     }
 }

@@ -78,6 +78,11 @@ public class CurrencyController : MonoBehaviour {
         }
     }
 
+    public bool AddToBank (long amount)
+    {
+        return TryToAddToBank(amount);
+    }
+
 
     private bool TryToAddToBank (long amount)
     {
