@@ -31,11 +31,15 @@ public class EnemyController : MonoBehaviour {
     [SerializeField]
     private float rovingPauseTime;
     [SerializeField]
+    private float turnTime;
+    [SerializeField]
     private string anim_walk;
     [SerializeField]
     private string anim_idle;
     [SerializeField]
     private string anim_run;
+    [SerializeField]
+    private string anim_turn;
 
     private float gravity = -35.0f;
 
@@ -51,6 +55,7 @@ public class EnemyController : MonoBehaviour {
     private float timer = 0;
     private bool outgoing = true;
     private bool waiting = false;
+    //private bool turning = false;
 
     private AnimationController2D _animator;
     private CharacterController2D _controller;
@@ -65,6 +70,8 @@ public class EnemyController : MonoBehaviour {
 
         minChasePoint = startingPatrolPoint - deltaNegChase;
         maxChasePoint = startingPatrolPoint + deltaPosChase;
+
+        turnTime += rovingPauseTime;
     }
 	
 	// Update is called once per frame
@@ -78,18 +85,23 @@ public class EnemyController : MonoBehaviour {
             || ((!waiting) && chasePlayer && (((this.transform.position.x > maxChasePoint.x) && outgoing) || ((this.transform.position.x < minChasePoint.x) && !outgoing))))
             waiting = true;
 
-        // This code fires when the character is about to begin moving
-        if (timer > rovingPauseTime)
+        if (timer > turnTime)
         {
             outgoing = !outgoing;
-            timer = 0;
             waiting = false;
+            timer = 0;
+        }
+        // This code fires when the character is about to begin moving
+        else if (timer > rovingPauseTime)
+        {
+            _animator.setAnimation(anim_turn);
+            timer += Time.deltaTime;
         }
         // This is when the enemy has reached the end of the patrol
         else if (waiting)
         {
             _animator.setAnimation(anim_idle);
-            timer += Time.deltaTime * walkSpeed;
+            timer += Time.deltaTime;
         }
         // Handle all variations of movement
         if (!waiting)
