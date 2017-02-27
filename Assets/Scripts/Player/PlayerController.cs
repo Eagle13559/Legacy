@@ -15,9 +15,12 @@ public class PlayerController : MonoBehaviour {
     public float dashSpeed = 5f;
     public float dashTime = 2f;
     public float dashCooldownTime = 5f;
+    public float attackAnimationTimer = 2f;
     private float _dashTimer = 0f;
+    private float _attackTimer = 0f;
     private bool _isDashing = false;
     private bool _canDash = true;
+    private bool _isAttacking = false;
 
     private CharacterController2D _controller;
     private AnimationController2D _animator;
@@ -96,6 +99,11 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        // The order of importance of player actions is as follows:
+        //  1. Dashing (will interupt all other actions and override them)
+        //  2. Attacking (can attack anytime other than when dashing)
+        //  3. Jumping/Falling
+        //  4. Walking
         Vector3 velocity = _controller.velocity;
         velocity.x = 0;
         if (!_canDash)
@@ -130,26 +138,36 @@ public class PlayerController : MonoBehaviour {
                 _animator.setAnimation(_idleAnimation);
             }
         }
-        // Only perform other checks if not dashing
+        // Attacking is next important
+        else if (_isAttacking)
+        {
+            _attackTimer += Time.deltaTime;
+            if (_attackTimer > attackAnimationTimer)
+            {
+                _isAttacking = false;
+                _attackTimer = 0;
+            }
+        }
+        // Only perform other checks if not dashing or attacking
         else
         {
             if (Input.GetAxis("Horizontal") < 0)
             {
                 velocity.x = walkSpeed * -1;
                 _animator.setFacing("Left");
-                _animator.setAnimation(_walkAnimation);
+                if (_controller.isGrounded) _animator.setAnimation(_walkAnimation);
                 _isFacingRight = false;
             }
             else if (Input.GetAxis("Horizontal") > 0)
             {
                 velocity.x = walkSpeed;
                 _animator.setFacing("Right");
-                _animator.setAnimation(_walkAnimation);
+                if (_controller.isGrounded) _animator.setAnimation(_walkAnimation);
                 _isFacingRight = true;
             }
             else
             {
-                _animator.setAnimation(_idleAnimation);
+                if (_controller.isGrounded) _animator.setAnimation(_idleAnimation);
             }
             if (Input.GetAxis("Jump") > 0 && _controller.isGrounded)
             {
@@ -162,6 +180,7 @@ public class PlayerController : MonoBehaviour {
                 {
                     _animator.setAnimation(_attackAnimation);
                     _attackColliderController.setEnabled(true);
+                    _isAttacking = true;
                 }
                 else
                 {
