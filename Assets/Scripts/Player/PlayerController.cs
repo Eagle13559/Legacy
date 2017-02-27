@@ -82,7 +82,7 @@ public class PlayerController : MonoBehaviour {
             Debug.Log("The Brain was not found for this object");
             brain = new TheBrain();
             brain.Time = float.PositiveInfinity;
-            brain.PlayersMoney = 0;
+            brain.PlayersMoney = 100;
         }
        
         
@@ -224,6 +224,35 @@ public class PlayerController : MonoBehaviour {
         {
             BankAccount.AddToBank(CurrencyController.CurrencyTypes.Jewel);
             Destroy(other.gameObject);
+        }
+        else if (other.tag == "Item")
+        {
+            ItemManager item = other.GetComponent<ItemManager>();
+            long cashAmount;
+            if (BankAccount.TryToRemoveFromBank(item.CurrCost, out cashAmount) && item.TryToPurchase(cashAmount))
+            {
+                AddToPlayerInventory(item);
+            }
+           
+        }
+    }
+
+    /// <summary>
+    /// Will add the correct number of items to players ability inventory. 
+    /// </summary>
+    /// <param name="item"></param>
+    private void AddToPlayerInventory(ItemManager item)
+    {
+        switch(item.ItemTag)
+        {
+            case (TheBrain.ItemTypes.Dash):
+                Debug.Log("Added Dash Ability");
+                break;
+            case (TheBrain.ItemTypes.Bomb):
+                Debug.Log("Added Bomb Ability");
+                break;
+            default:
+                break;
         }
     }
 

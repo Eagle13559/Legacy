@@ -78,12 +78,18 @@ public class CurrencyController : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Will take the amount given and try to add that value to the current earnings of this Bank Account.
+    /// If unsuccessful, the Bank Account will not change. 
+    /// </summary>
+    /// <param name="amount"></param>
+    /// <returns> Whether the adding transaction was successful. </returns>
     public bool AddToBank (long amount)
     {
         return TryToAddToBank(amount);
     }
 
-
+  
     private bool TryToAddToBank (long amount)
     {
         if (CurrEarnings + amount < long.MaxValue)
@@ -97,23 +103,36 @@ public class CurrencyController : MonoBehaviour {
     }
 
     /// <summary>
+    /// Tries to remove the asking amount from the bank and will return whether this transaction was successful. 
+    /// </summary>
+    /// <param name="askingAmount"></param>
+    /// <param name="givenAmount"></param>
+    /// <returns></returns>
+    public bool TryToRemoveFromBank(long askingAmount, out long givenAmount)
+    {
+        givenAmount = RemoveFromBank(askingAmount);
+
+        if (givenAmount > 0)
+            return true;
+        return false;
+    }
+
+    /// <summary>
     /// Trys to remove the desired amount from the bank and then returns the amount removed. 
     /// The current earnings of this instance can not go into debt. 
     /// </summary>
     /// <param name="amount"></param>
     /// <returns></returns>
-    public long RemoveFromBank (long amount)
+    private long RemoveFromBank (long amount)
     {
-        if (CurrEarnings - amount > 0)
+        if (CurrEarnings - amount >= 0)
         {
             CurrEarnings -= amount;
             return amount;
         }
-        else
-        {
-            CurrEarnings = 0;
-            return 0;
-        }
+
+        return 0;
+
         
     }
 }

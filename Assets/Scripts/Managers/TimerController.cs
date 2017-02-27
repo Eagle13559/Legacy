@@ -42,10 +42,8 @@ public class TimerController : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    void Start () { 
-    // Use this for initialization
-    
-        
+    void Start () {
+        // Use this for initialization
     }
 
     // Update is called once per frame
@@ -84,7 +82,10 @@ public class TimerController : MonoBehaviour
     /// </summary>
     private void TimerDisplay()
     {
-        TimerFill.ChangeBarFill(CurrTime/TimeLimit);
+        if (!float.IsPositiveInfinity(TimeLimit))
+            TimerFill.ChangeBarFill(CurrTime / TimeLimit);
+        else
+            TimerFill.ChangeBarFill(1);
 
         TimerText.text = ToString();
     }

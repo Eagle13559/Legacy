@@ -31,4 +31,9 @@ public class TheBrain : MonoBehaviour
     /// Keeps track of the index that will be loaded on the next load level call
     /// </summary>
     public int nextSceneIndex;
+
+    /// <summary>
+    /// Type of Items available to the player
+    /// </summary>
+    public enum ItemTypes { Dash, Bomb, None }
 }
