@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour {
 
     public void NextLevel()
     {
-        SceneManager.LoadScene(resetLevel);
+        SceneManager.LoadScene(currLevelID + 1);
     }
 
     /// <summary>
