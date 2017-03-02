@@ -18,10 +18,13 @@ public class PlayerController : MonoBehaviour {
     public float attackAnimationTimer = 2f;
     private float _dashTimer = 0f;
     private float _attackTimer = 0f;
+    private float _landingTimer = 0f;
+    private float _landTime = 0.2f;
     private bool _isDashing = false;
     private bool _canDash = true;
     private bool _isAttacking = false;
-    private bool _wasLanded = false;
+    private bool _wasLanded = true;
+    private bool _isLanding = false;
 
     private CharacterController2D _controller;
     private AnimationController2D _animator;
@@ -109,8 +112,13 @@ public class PlayerController : MonoBehaviour {
         //  4. Walking
         Vector3 velocity = _controller.velocity;
         velocity.x = 0;
+        if (!_controller.isGrounded) _wasLanded = false;
         if (!_wasLanded && _controller.isGrounded)
+        {
             _animator.setAnimation(_landAnimation);
+            _wasLanded = true;
+            _isLanding = true;
+        }
         if (!_canDash)
         {
             if (dashCooldownTime + dashTime < _dashTimer)
@@ -172,7 +180,20 @@ public class PlayerController : MonoBehaviour {
             }
             else
             {
-                if (_controller.isGrounded) _animator.setAnimation(_idleAnimation);
+                if (_controller.isGrounded)
+                {
+                    if (!_isLanding) _animator.setAnimation(_idleAnimation);
+                    else
+                    {
+                        _animator.setAnimation(_landAnimation);
+                        _landingTimer += Time.deltaTime;
+                        if (_landingTimer > _landTime)
+                        {
+                            _landingTimer = 0;
+                            _isLanding = false;
+                        }
+                    }
+                }
             }
             if (Input.GetAxis("Jump") > 0 && _controller.isGrounded)
             {
