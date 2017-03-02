@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour {
     private bool _isDashing = false;
     private bool _canDash = true;
     private bool _isAttacking = false;
+    private bool _wasLanded = false;
 
     private CharacterController2D _controller;
     private AnimationController2D _animator;
@@ -69,6 +70,8 @@ public class PlayerController : MonoBehaviour {
     private string _dashAnimation;
     [SerializeField]
     private string _attackAnimation;
+    [SerializeField]
+    private string _landAnimation;
 
     // Use this for initialization
     void Start () {
@@ -106,6 +109,8 @@ public class PlayerController : MonoBehaviour {
         //  4. Walking
         Vector3 velocity = _controller.velocity;
         velocity.x = 0;
+        if (!_wasLanded && _controller.isGrounded)
+            _animator.setAnimation(_landAnimation);
         if (!_canDash)
         {
             if (dashCooldownTime + dashTime < _dashTimer)
