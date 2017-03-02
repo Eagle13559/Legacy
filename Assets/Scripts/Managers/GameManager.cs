@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     private bool DebugMode;
 
+    private int numOfKeyEnemies;
+
     // Use this for initialization
     void Start()
     {
@@ -67,5 +69,15 @@ public class GameManager : MonoBehaviour {
         {
             SceneManager.LoadScene(resetLevel);
         }
+    }
+
+    public void AddKeyEnemy ()
+    {
+        numOfKeyEnemies++;
+    }
+
+    public void RemoveKeyEnemy ()
+    {
+        numOfKeyEnemies--;
     }
 }
