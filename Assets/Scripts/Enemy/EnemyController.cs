@@ -172,7 +172,7 @@ public class EnemyController : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "PlayerWeaponCollider")
+        if (other.tag == "PlayerWeapon")
         {
             Destroy(gameObject);
         }
