@@ -39,6 +39,8 @@ public class TimerController : MonoBehaviour
     /// </summary>
     private FillControl TimerFill;
 
+    private bool paused;
+
     /// <summary>
     /// 
     /// </summary>
@@ -51,13 +53,13 @@ public class TimerController : MonoBehaviour
     {
         while (true)
         {
-            ReduceTimer(Time.deltaTime);
+           ReduceTimer(Time.deltaTime);
 
-            if (CurrTime <= 0)
-            {
-                player.Die();
-            }
-
+           if (CurrTime <= 0)
+           {
+              player.Die();
+           }
+           
             TimerDisplay();
 
             yield return new WaitForEndOfFrame();
@@ -113,6 +115,22 @@ public class TimerController : MonoBehaviour
     private void ResetTimer()
     {
         CurrTime = TimeLimit;
+    }
+
+    /// <summary>
+    /// Will pause the current timer until it is restarted. 
+    /// </summary>
+    private void PauseTimer()
+    {
+        paused = true;
+    }
+
+    /// <summary>
+    /// Will unpause the current timer.
+    /// </summary>
+    private void UnPauseTimer ()
+    {
+        paused = false;
     }
 
     /// <summary>
