@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class GameManager : MonoBehaviour {
 
@@ -11,6 +12,9 @@ public class GameManager : MonoBehaviour {
     
     [SerializeField]
     private string resetLevel;
+
+    [SerializeField]
+    private string nextLevel;
 
     [SerializeField]
     private bool DebugMode;
@@ -49,7 +53,7 @@ public class GameManager : MonoBehaviour {
 
     public void NextLevel()
     {
-        SceneManager.LoadScene(currLevelID + 1);
+        SceneManager.LoadScene(nextLevel);
     }
 
     /// <summary>
@@ -71,6 +75,11 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public int GetNumOfKeyEnemiesAlive()
+    {
+        return numOfKeyEnemies;
+    }
+
     public void AddKeyEnemy ()
     {
         numOfKeyEnemies++;
@@ -79,5 +88,13 @@ public class GameManager : MonoBehaviour {
     public void RemoveKeyEnemy ()
     {
         numOfKeyEnemies--;
+    }
+
+    /// <summary>
+    /// Handles a LevelFinished Event
+    /// </summary>
+    public void LevelFinished()
+    {
+        NextLevel();
     }
 }

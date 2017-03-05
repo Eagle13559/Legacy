@@ -30,24 +30,31 @@ public class CrowEnemyController : MonoBehaviour {
 
     private AnimationController2D _animator;
 
+    private Collider2D _collider;
+
 	// Use this for initialization
 	void Start () {
         _levelManager.AddKeyEnemy();
         _animator = GetComponent<AnimationController2D>();
+        _collider = GetComponent<Collider2D>();
 	}
 
     // runs every frame
     void Update()
     {
-        if (isIdle && _idleTime > _timer - Time.deltaTime)
+        if (isIdle && _invisibleTime < _timer - Time.deltaTime)
         {
             _timer = 0;
             _animator.setAnimation(_idleAnimation);
+            isIdle = false;
+            _collider.enabled = true;
         }
-        else if (!isIdle && _invisibleTime > _timer - Time.deltaTime)
+        else if (!isIdle && _idleTime < _timer - Time.deltaTime)
         {
             _timer = 0;
             _animator.setAnimation(_invinsibleAnimation);
+            isIdle = true;
+            _collider.enabled = false;
         }
 
         _timer += Time.deltaTime;

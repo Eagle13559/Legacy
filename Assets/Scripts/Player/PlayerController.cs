@@ -75,6 +75,9 @@ public class PlayerController : MonoBehaviour {
     private string _attackAnimation;
     [SerializeField]
     private string _landAnimation;
+    [SerializeField]
+    private string _victoryAnimation;
+
 
     // Use this for initialization
     void Start () {
@@ -101,123 +104,134 @@ public class PlayerController : MonoBehaviour {
             _timer.StartTimer(brain.Time);
         }
         BankAccount.AddToBank( brain.PlayersMoney );
+
     }
-	
-	// Update is called once per frame
-	void Update () {
-        // The order of importance of player actions is as follows:
-        //  1. Dashing (will interupt all other actions and override them)
-        //  2. Attacking (can attack anytime other than when dashing)
-        //  3. Jumping/Falling
-        //  4. Walking
-        Vector3 velocity = _controller.velocity;
-        velocity.x = 0;
-        if (!_controller.isGrounded) _wasLanded = false;
-        if (!_wasLanded && _controller.isGrounded)
+
+    // Update is called once per frame
+    void Update()
+    {
+        // Check to see if player has eliminated all key enemies.
+        if (_gameManager.GetNumOfKeyEnemiesAlive() <= 0)
         {
-            _animator.setAnimation(_landAnimation);
-            _wasLanded = true;
-            _isLanding = true;
+            _animator.setAnimation(_victoryAnimation);
+            _gameManager.LevelFinished();
         }
-        if (!_canDash)
-        {
-            if (dashCooldownTime + dashTime < _dashTimer)
-            {
-                _canDash = true;
-                _dashTimer = 0;
-            }
-            else
-                _dashTimer += Time.deltaTime;
-        }
-        // Dashing overrides all other movements
-        if ((Input.GetKeyDown("k") && _canDash) || _isDashing)
-        {
-            velocity.y = 0;
-            _animator.setAnimation(_dashAnimation);
-            if (!_isDashing)
-            {
-                _isDashing = true;
-                _attackColliderController.setEnabled(true);
-            }
-            if (_isFacingRight)
-                velocity.x = dashSpeed;
-            else
-                velocity.x = dashSpeed * -1;
-            _dashTimer += Time.deltaTime;
-            if (_dashTimer > dashTime)
-            {
-                _isDashing = false;
-                _canDash = false;
-                _animator.setAnimation(_idleAnimation);
-            }
-        }
-        // Attacking is next important
-        else if (_isAttacking)
-        {
-            _attackTimer += Time.deltaTime;
-            if (_attackTimer > attackAnimationTimer)
-            {
-                _isAttacking = false;
-                _attackTimer = 0;
-            }
-        }
-        // Only perform other checks if not dashing or attacking
         else
         {
-            if (Input.GetAxis("Horizontal") < 0)
+            // The order of importance of player actions is as follows:
+            //  1. Dashing (will interupt all other actions and override them)
+            //  2. Attacking (can attack anytime other than when dashing)
+            //  3. Jumping/Falling
+            //  4. Walking
+            Vector3 velocity = _controller.velocity;
+            velocity.x = 0;
+            if (!_controller.isGrounded) _wasLanded = false;
+            if (!_wasLanded && _controller.isGrounded)
             {
-                velocity.x = walkSpeed * -1;
-                _animator.setFacing("Left");
-                if (_controller.isGrounded) _animator.setAnimation(_walkAnimation);
-                _isFacingRight = false;
+                _animator.setAnimation(_landAnimation);
+                _wasLanded = true;
+                _isLanding = true;
             }
-            else if (Input.GetAxis("Horizontal") > 0)
+            if (!_canDash)
             {
-                velocity.x = walkSpeed;
-                _animator.setFacing("Right");
-                if (_controller.isGrounded) _animator.setAnimation(_walkAnimation);
-                _isFacingRight = true;
-            }
-            else
-            {
-                if (_controller.isGrounded)
+                if (dashCooldownTime + dashTime < _dashTimer)
                 {
-                    if (!_isLanding) _animator.setAnimation(_idleAnimation);
-                    else
-                    {
-                        _animator.setAnimation(_landAnimation);
-                        _landingTimer += Time.deltaTime;
-                        if (_landingTimer > _landTime)
-                        {
-                            _landingTimer = 0;
-                            _isLanding = false;
-                        }
-                    }
+                    _canDash = true;
+                    _dashTimer = 0;
+                }
+                else
+                    _dashTimer += Time.deltaTime;
+            }
+            // Dashing overrides all other movements
+            if ((Input.GetKeyDown("k") && _canDash) || _isDashing)
+            {
+                velocity.y = 0;
+                _animator.setAnimation(_dashAnimation);
+                if (!_isDashing)
+                {
+                    _isDashing = true;
+                    _attackColliderController.setEnabled(true);
+                }
+                if (_isFacingRight)
+                    velocity.x = dashSpeed;
+                else
+                    velocity.x = dashSpeed * -1;
+                _dashTimer += Time.deltaTime;
+                if (_dashTimer > dashTime)
+                {
+                    _isDashing = false;
+                    _canDash = false;
+                    _animator.setAnimation(_idleAnimation);
                 }
             }
-            if (Input.GetAxis("Jump") > 0 && _controller.isGrounded)
+            // Attacking is next important
+            else if (_isAttacking)
             {
-                velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
-                _animator.setAnimation(_jumpAnimation);
-            }
-            if (Input.GetKeyDown("j"))
-            {
-                if (_controller.isGrounded)
+                _attackTimer += Time.deltaTime;
+                if (_attackTimer > attackAnimationTimer)
                 {
-                    _animator.setAnimation(_attackAnimation);
-                    _attackColliderController.setEnabled(true);
-                    _isAttacking = true;
+                    _isAttacking = false;
+                    _attackTimer = 0;
+                }
+            }
+            // Only perform other checks if not dashing or attacking
+            else
+            {
+                if (Input.GetAxis("Horizontal") < 0)
+                {
+                    velocity.x = walkSpeed * -1;
+                    _animator.setFacing("Left");
+                    if (_controller.isGrounded) _animator.setAnimation(_walkAnimation);
+                    _isFacingRight = false;
+                }
+                else if (Input.GetAxis("Horizontal") > 0)
+                {
+                    velocity.x = walkSpeed;
+                    _animator.setFacing("Right");
+                    if (_controller.isGrounded) _animator.setAnimation(_walkAnimation);
+                    _isFacingRight = true;
                 }
                 else
                 {
-                    // perform jump attack
-                    // stop falling?
+                    if (_controller.isGrounded)
+                    {
+                        if (!_isLanding) _animator.setAnimation(_idleAnimation);
+                        else
+                        {
+                            _animator.setAnimation(_landAnimation);
+                            _landingTimer += Time.deltaTime;
+                            if (_landingTimer > _landTime)
+                            {
+                                _landingTimer = 0;
+                                _isLanding = false;
+                            }
+                        }
+                    }
                 }
+                if (Input.GetAxis("Jump") > 0 && _controller.isGrounded)
+                {
+                    velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
+                    _animator.setAnimation(_jumpAnimation);
+                }
+                if (Input.GetKeyDown("j"))
+                {
+                    if (_controller.isGrounded)
+                    {
+                        _animator.setAnimation(_attackAnimation);
+                        _attackColliderController.setEnabled(true);
+                        _isAttacking = true;
+                    }
+                    else
+                    {
+                        // perform jump attack
+                        // stop falling?
+                    }
+                }
+                velocity.y += gravity * Time.deltaTime;
             }
-            velocity.y += gravity * Time.deltaTime;
+            _controller.move(velocity * Time.deltaTime);
         }
-        _controller.move( velocity * Time.deltaTime );
-	}
+    }
 
     /// <summary>
     /// Player Dies
