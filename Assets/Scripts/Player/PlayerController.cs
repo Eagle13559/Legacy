@@ -12,19 +12,28 @@ public class PlayerController : MonoBehaviour {
     public float gravity = -35f;
     public float jumpHeight = 2f;
     public float walkSpeed = 3f;
-    public float dashSpeed = 5f;
-    public float dashTime = 2f;
+    private float dashSpeed = 12.5f;
+    private float dashTime = 0.35f;
     public float dashCooldownTime = 5f;
-    public float attackAnimationTimer = 2f;
+    private float attackAnimationTimer = 0.4f;
     private float _dashTimer = 0f;
     private float _attackTimer = 0f;
     private float _landingTimer = 0f;
     private float _landTime = 0.2f;
-    private bool _isDashing = false;
+    // State variables
+    // NOTE: enum?
+    private enum playerState
+    {
+        DASHING,
+        ATTACKING,
+        AIRATTACKING,
+        LANDING,
+        FREE
+    }
+    playerState _currentState;
     private bool _canDash = true;
-    private bool _isAttacking = false;
     private bool _wasLanded = true;
-    private bool _isLanding = false;
+    private float _prevY;
 
     private CharacterController2D _controller;
     private AnimationController2D _animator;
@@ -77,10 +86,15 @@ public class PlayerController : MonoBehaviour {
     private string _landAnimation;
     [SerializeField]
     private string _victoryAnimation;
+    [SerializeField]
+    private string _fallAnimation;
+    [SerializeField]
+    private string _attackAirAnimation;
 
 
     // Use this for initialization
     void Start () {
+        _currentState = playerState.FREE;
         try
         {
             // TODO: Discover a more efficient way to find the below game object
@@ -104,7 +118,7 @@ public class PlayerController : MonoBehaviour {
             _timer.StartTimer(brain.Time);
         }
         BankAccount.AddToBank( brain.PlayersMoney );
-
+        _prevY = gameObject.transform.position.y;
     }
 
     // Update is called once per frame
@@ -123,17 +137,30 @@ public class PlayerController : MonoBehaviour {
             //  2. Attacking (can attack anytime other than when dashing)
             //  3. Jumping/Falling
             //  4. Walking
+            //  Falling is checked first, then dashing, then attacking, then other
             Vector3 velocity = _controller.velocity;
             velocity.x = 0;
-            if (!_controller.isGrounded) _wasLanded = false;
+            // If the player has left the ground...
+            if (!_controller.isGrounded)
+            {
+                _wasLanded = false;
+                // ...or is falling.
+                // Checking the y is important- if a player is on the rising 
+                //  arc of their jump they shouldn't be falling. Also if the player
+                //  is aerial attacking do not switch the animation
+                if (_prevY > gameObject.transform.position.y && !(_currentState == playerState.AIRATTACKING))
+                    _animator.setAnimation(_fallAnimation);
+            }
+            // ...and just landed.
             if (!_wasLanded && _controller.isGrounded)
             {
-                _animator.setAnimation(_landAnimation);
                 _wasLanded = true;
-                _isLanding = true;
+                _currentState = playerState.LANDING;
             }
+            // If the player can't dash, incrememnt their cooldown timer.
             if (!_canDash)
             {
+                // If they've done their time, allow the ability again
                 if (dashCooldownTime + dashTime < _dashTimer)
                 {
                     _canDash = true;
@@ -143,40 +170,50 @@ public class PlayerController : MonoBehaviour {
                     _dashTimer += Time.deltaTime;
             }
             // Dashing overrides all other movements
-            if ((Input.GetKeyDown("k") && _canDash) || _isDashing)
+            if ((Input.GetKeyDown("k") && _canDash) || (_currentState == playerState.DASHING))
             {
+                // Player doesn't fall
                 velocity.y = 0;
                 _animator.setAnimation(_dashAnimation);
-                if (!_isDashing)
+                // If the player has just begun dashing,
+                //  allow them to attack.
+                if (_currentState != playerState.DASHING)
                 {
-                    _isDashing = true;
+                    _currentState = playerState.DASHING;
                     _attackColliderController.setEnabled(true);
                 }
+                // Move in the direction they are facing
                 if (_isFacingRight)
                     velocity.x = dashSpeed;
                 else
                     velocity.x = dashSpeed * -1;
+                // Increment the timer for how long they can dash for.
                 _dashTimer += Time.deltaTime;
+                // Check to see if they are finished dashing.
                 if (_dashTimer > dashTime)
                 {
-                    _isDashing = false;
+                    _currentState = playerState.FREE;
                     _canDash = false;
                     _animator.setAnimation(_idleAnimation);
                 }
             }
-            // Attacking is next important
-            else if (_isAttacking)
-            {
-                _attackTimer += Time.deltaTime;
-                if (_attackTimer > attackAnimationTimer)
-                {
-                    _isAttacking = false;
-                    _attackTimer = 0;
-                }
-            }
+
             // Only perform other checks if not dashing or attacking
             else
             {
+                if (_currentState == playerState.ATTACKING || _currentState == playerState.AIRATTACKING)
+                {
+                    // attackAnimationTimer is how long they are in an attack state
+                    _attackTimer += Time.deltaTime;
+                    // Check to see if they are finished
+                    if (_attackTimer > attackAnimationTimer)
+                    {
+                        _currentState = playerState.FREE;
+                        _attackTimer = 0;
+                    }
+                    if (_currentState == playerState.ATTACKING) return;
+                }
+                // If walking left
                 if (Input.GetAxis("Horizontal") < 0)
                 {
                     velocity.x = walkSpeed * -1;
@@ -184,6 +221,7 @@ public class PlayerController : MonoBehaviour {
                     if (_controller.isGrounded) _animator.setAnimation(_walkAnimation);
                     _isFacingRight = false;
                 }
+                // If walking right
                 else if (Input.GetAxis("Horizontal") > 0)
                 {
                     velocity.x = walkSpeed;
@@ -193,9 +231,14 @@ public class PlayerController : MonoBehaviour {
                 }
                 else
                 {
+                    // If the player is on the ground, they either just landed
+                    //  or are in an idle state
                     if (_controller.isGrounded)
                     {
-                        if (!_isLanding) _animator.setAnimation(_idleAnimation);
+                        // Idling
+                        if (_currentState != playerState.LANDING)
+                            _animator.setAnimation(_idleAnimation);
+                        // Landing
                         else
                         {
                             _animator.setAnimation(_landAnimation);
@@ -203,32 +246,41 @@ public class PlayerController : MonoBehaviour {
                             if (_landingTimer > _landTime)
                             {
                                 _landingTimer = 0;
-                                _isLanding = false;
+                                _currentState = playerState.FREE;
                             }
                         }
                     }
                 }
+                // If the player tries to jump, only allow it if they are grounded.
                 if (Input.GetAxis("Jump") > 0 && _controller.isGrounded)
                 {
                     velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
                     _animator.setAnimation(_jumpAnimation);
                 }
+                // The player has initiated an attack...
                 if (Input.GetKeyDown("j"))
                 {
+                    // ...perform a ground attack.
                     if (_controller.isGrounded)
                     {
                         _animator.setAnimation(_attackAnimation);
-                        _attackColliderController.setEnabled(true);
-                        _isAttacking = true;
+                        _currentState = playerState.ATTACKING;
                     }
+                    // ...perform an aerial attack
                     else
                     {
-                        // perform jump attack
-                        // stop falling?
+                        _animator.setAnimation(_attackAirAnimation);
+                        _currentState = playerState.AIRATTACKING;
                     }
+                    _attackColliderController.setEnabled(true);
+                    
                 }
+                // Fall!
                 velocity.y += gravity * Time.deltaTime;
             }
+            // Save the y, so on the next frame we can check if the player is falling.
+            _prevY = gameObject.transform.position.y;
+            // Perform the move.
             _controller.move(velocity * Time.deltaTime);
         }
     }

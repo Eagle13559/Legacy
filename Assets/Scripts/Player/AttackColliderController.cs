@@ -5,8 +5,7 @@ using UnityEngine;
 public class AttackColliderController : MonoBehaviour {
 
     private float timer = 0;
-    [SerializeField]
-    private float timeActive = 1;
+    private float timeActive = 0.4f;
     private CapsuleCollider2D _collider;
 
     // Use this for initialization

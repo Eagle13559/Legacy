@@ -30,14 +30,14 @@ public class EnemyController : MonoBehaviour {
     private float runSpeed = 1;
     [SerializeField]
     private float rovingPauseTime;
-    [SerializeField]
-    private float turnTime;
+    private float turnTime = 1f;
+    private float deathTime = 1f;
     [SerializeField]
     private string anim_walk;
     [SerializeField]
     private string anim_idle;
     [SerializeField]
-    private string anim_run;
+    private string anim_death;
     [SerializeField]
     private string anim_turn;
 
@@ -116,7 +116,7 @@ public class EnemyController : MonoBehaviour {
                 }
                 else
                 {
-                    _animator.setAnimation(anim_run);
+                    //_animator.setAnimation(anim_run);
                     velocity.x = runSpeed;
                 }
             }
@@ -130,7 +130,7 @@ public class EnemyController : MonoBehaviour {
                 }
                 else
                 {
-                    _animator.setAnimation(anim_run);
+                    //_animator.setAnimation(anim_run);
                     velocity.x = runSpeed * -1;
                 }
             }
