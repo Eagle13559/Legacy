@@ -36,7 +36,6 @@ public class GameManager : MonoBehaviour {
 
         currLevelID = SceneManager.GetActiveScene().buildIndex;
         //brain.nextSceneIndex = SceneManager.GetSceneByName(resetLevel).buildIndex;
-
     }
 
     /// <summary>
@@ -73,6 +72,7 @@ public class GameManager : MonoBehaviour {
         {
             SceneManager.LoadScene(resetLevel);
         }
+        brain.resetTime();
     }
 
     public int GetNumOfKeyEnemiesAlive()

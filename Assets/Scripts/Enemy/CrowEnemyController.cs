@@ -11,6 +11,9 @@ public class CrowEnemyController : MonoBehaviour {
     private GameManager _levelManager;
 
     [SerializeField]
+    private GameObject _crowHead;
+
+    [SerializeField]
     private string _deathAnimation;
     [SerializeField]
     private string _idleAnimation;
@@ -72,5 +75,6 @@ public class CrowEnemyController : MonoBehaviour {
     void OnDestroy()
     {
         _levelManager.RemoveKeyEnemy();
+        _crowHead.SetActive(true);
     }
 }
