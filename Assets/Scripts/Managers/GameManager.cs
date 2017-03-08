@@ -17,7 +17,15 @@ public class GameManager : MonoBehaviour {
     private string nextLevel;
 
     [SerializeField]
+    private string MainMenuTag;
+
+    [SerializeField]
     private bool DebugMode;
+
+    [SerializeField]
+    private GameObject pauseMenu;
+
+    private bool paused = false;
 
     private int numOfKeyEnemies;
 
@@ -35,7 +43,30 @@ public class GameManager : MonoBehaviour {
         }
 
         currLevelID = SceneManager.GetActiveScene().buildIndex;
+        if (pauseMenu != null)
+            pauseMenu.SetActive(false);
         //brain.nextSceneIndex = SceneManager.GetSceneByName(resetLevel).buildIndex;
+    }
+
+    void Update()
+    {
+        if (pauseMenu != null && (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Joystick1Button9)))
+        {
+            pauseControl(!paused);
+        }
+    }
+
+    /// <summary>
+    /// Determine if key was pressed to intiate pause control and will set the state of pause menu to give value if key was pressed. 
+    /// </summary>
+    /// <param name="state"></param>
+    private void pauseControl(bool state)
+    {
+        pauseMenu.SetActive(state);
+        if (state)
+            PauseGame();
+        else
+            UnPauseGame();
     }
 
     /// <summary>
@@ -100,11 +131,25 @@ public class GameManager : MonoBehaviour {
 
     public void PauseGame ()
     {
+        paused = true;
         Time.timeScale = 0;
     }
 
     public void UnPauseGame()
     {
+        paused = false;
         Time.timeScale = 1;
+    }
+
+    public void GoToMain()
+    {
+        UnPauseGame();
+        SceneManager.LoadScene(MainMenuTag);    
+    }
+
+    public void KillGame()
+    {
+        // TODO: Do we need to wait for any threads, coroutines or processes to finish. 
+        Application.Quit();
     }
 }
