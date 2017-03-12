@@ -17,7 +17,7 @@ Platform assembly: C:\Users\Justina\Documents\GitHub\Legacy\Legacy_Data\Managed\
 Loading C:\Users\Justina\Documents\GitHub\Legacy\Legacy_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: C:\Users\Justina\Documents\GitHub\Legacy\Legacy_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
 Loading C:\Users\Justina\Documents\GitHub\Legacy\Legacy_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
-- Completed reload, in  0.077 seconds
+- Completed reload, in  0.039 seconds
 Platform assembly: C:\Users\Justina\Documents\GitHub\Legacy\Legacy_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\Justina\Documents\GitHub\Legacy\Legacy_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
@@ -25,6 +25,6 @@ desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 XInput1_3.dll not found. Trying XInput9_1_0.dll instead...
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 5.932644 ms
+UnloadTime: 2.387359 ms
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: 2d44 -> priority: 1 
+  Thread -> id: 301c -> priority: 1 

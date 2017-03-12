@@ -72,24 +72,20 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private AttackColliderController _attackColliderController;
 
-    [SerializeField]
-    private string _walkAnimation;
-    [SerializeField]
-    private string _jumpAnimation;
-    [SerializeField]
-    private string _idleAnimation;
-    [SerializeField]
-    private string _dashAnimation;
-    [SerializeField]
-    private string _attackAnimation;
-    [SerializeField]
-    private string _landAnimation;
+    private string _walkAnimation = "ShibaWalk";
+    private string _jumpAnimation = "ShibaJump";
+    private string _idleAnimation = "ShibaIdle";
+    private string _dashAnimation = "ShibaDash";
+    private string _attackAnimation = "ShibaAttackG";
+    private string _landAnimation = "ShibaLand";
     [SerializeField]
     private string _victoryAnimation;
+    private string _fallAnimation = "ShibaFall";
+    private string _attackAirAnimation = "ShibaAttackA";
+
+    public GameObject _Bomb;
     [SerializeField]
-    private string _fallAnimation;
-    [SerializeField]
-    private string _attackAirAnimation;
+    private float _bombThrust;
 
 
     // Use this for initialization
@@ -274,6 +270,11 @@ public class PlayerController : MonoBehaviour {
                     }
                     _attackColliderController.setEnabled(true);
                     
+                }
+                if (Input.GetKeyDown("l"))
+                {
+                    GameObject bomb = Instantiate(_Bomb, transform.position, Quaternion.identity) as GameObject;
+                    bomb.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(transform.forward * _bombThrust);//.AddForce(transform.forward * _bombThrust);
                 }
                 // Fall!
                 velocity.y += gravity * Time.deltaTime;
