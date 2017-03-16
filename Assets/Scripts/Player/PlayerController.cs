@@ -87,6 +87,8 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private float _bombThrust;
 
+    private bool shopping = false;
+
 
     // Use this for initialization
     void Start () {
@@ -113,6 +115,11 @@ public class PlayerController : MonoBehaviour {
         {
             _timer.StartTimer(brain.Time);
         }
+        else
+        {
+            shopping = true;
+        }
+
         BankAccount.AddToBank( brain.PlayersMoney );
         _prevY = gameObject.transform.position.y;
     }
@@ -121,7 +128,7 @@ public class PlayerController : MonoBehaviour {
     void Update()
     {
         // Check to see if player has eliminated all key enemies.
-        if (_gameManager.GetNumOfKeyEnemiesAlive() <= 0)
+        if (!shopping && _gameManager.GetNumOfKeyEnemiesAlive() <= 0)
         {
             _animator.setAnimation(_victoryAnimation);
             _gameManager.LevelFinished();
@@ -354,8 +361,15 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     void OnDestroy ()
     {
-        brain.Time = _timer.CurrTime;
-        brain.PlayersMoney = BankAccount.BankAccount;
+        if (brain.SingletonCreated)
+        {
+            brain.Time = _timer.CurrTime;
+            brain.PlayersMoney = BankAccount.BankAccount;
+        }
+        else
+        {
+            Destroy(brain.gameObject);
+        }
     }
 
 }

@@ -6,6 +6,14 @@ using UnityEngine;
 public class TheBrain : MonoBehaviour
 {
     private GameObject _brainSingleton = null;
+    public bool SingletonCreated
+    {
+        get
+        {
+            return _brainSingleton == null;
+        }
+    }
+
     void Start ()
     {
         if (_brainSingleton == null)
