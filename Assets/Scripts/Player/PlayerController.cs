@@ -122,6 +122,7 @@ public class PlayerController : MonoBehaviour {
 
         BankAccount.AddToBank( brain.PlayersMoney );
         _prevY = gameObject.transform.position.y;
+
     }
 
     // Update is called once per frame
@@ -143,6 +144,8 @@ public class PlayerController : MonoBehaviour {
             //  Falling is checked first, then dashing, then attacking, then other
             Vector3 velocity = _controller.velocity;
             velocity.x = 0;
+            // Keeps track of the amount of bombs the player has at this frame
+            int BombTotal = brain.playerItemCounts[TheBrain.ItemTypes.Bomb];
             // If the player has left the ground...
             if (!_controller.isGrounded)
             {
@@ -278,10 +281,13 @@ public class PlayerController : MonoBehaviour {
                     _attackColliderController.setEnabled(true);
                     
                 }
-                if (Input.GetKeyDown("l"))
+                if (Input.GetKeyDown("l") && BombTotal > 0)
                 {
                     GameObject bomb = Instantiate(_Bomb, transform.position, Quaternion.identity) as GameObject;
                     bomb.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(transform.forward * _bombThrust);//.AddForce(transform.forward * _bombThrust);
+                    brain.playerItemCounts[TheBrain.ItemTypes.Bomb] = BombTotal > 1 ? BombTotal - 1 : 0;
+                    Debug.Log("Removed Bomb Ability : " + brain.playerItemCounts[TheBrain.ItemTypes.Bomb]);
+
                 }
                 // Fall!
                 velocity.y += gravity * Time.deltaTime;
@@ -335,6 +341,11 @@ public class PlayerController : MonoBehaviour {
             }
            
         }
+        else if (other.tag == "Gate")
+        {
+            _gameManager.NextLevel();
+        }
+
     }
 
     /// <summary>
@@ -343,13 +354,14 @@ public class PlayerController : MonoBehaviour {
     /// <param name="item"></param>
     private void AddToPlayerInventory(ItemManager item)
     {
-        switch(item.ItemTag)
+        int BombTotal = brain.playerItemCounts[TheBrain.ItemTypes.Bomb];
+        switch (item.ItemTag)
         {
             case (TheBrain.ItemTypes.Dash):
                 Debug.Log("Added Dash Ability");
                 break;
             case (TheBrain.ItemTypes.Bomb):
-                Debug.Log("Added Bomb Ability");
+                Debug.Log("Added Bomb Ability : " + ++brain.playerItemCounts[TheBrain.ItemTypes.Bomb]);
                 break;
             default:
                 break;

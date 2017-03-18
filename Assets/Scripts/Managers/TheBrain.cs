@@ -27,6 +27,11 @@ public class TheBrain : MonoBehaviour
         TotalTime = Time;
 
         DontDestroyOnLoad(transform.gameObject);
+
+        foreach (ItemTypes item in Enum.GetValues(typeof(ItemTypes)))
+        {
+            playerItemCounts.Add(item, 0);
+        }
     }
 
     /// <summary>
@@ -55,4 +60,9 @@ public class TheBrain : MonoBehaviour
     /// Type of Items available to the player
     /// </summary>
     public enum ItemTypes { Dash, Bomb, None }
+
+    /// <summary>
+    /// Keeps track of players item cache
+    /// </summary>
+    public Dictionary<ItemTypes, int> playerItemCounts = new Dictionary<ItemTypes, int>();
 }
