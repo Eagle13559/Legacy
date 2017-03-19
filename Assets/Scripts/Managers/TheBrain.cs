@@ -14,6 +14,13 @@ public class TheBrain : MonoBehaviour
         }
     }
 
+    public TheBrain()
+    {
+        Time = float.PositiveInfinity;
+        PlayersMoney = 100;
+        InitalizePlayerItemCount();
+    }
+
     void Start ()
     {
         if (_brainSingleton == null)
@@ -28,6 +35,11 @@ public class TheBrain : MonoBehaviour
 
         DontDestroyOnLoad(transform.gameObject);
 
+        InitalizePlayerItemCount();
+    }
+
+    public void InitalizePlayerItemCount ()
+    {
         foreach (ItemTypes item in Enum.GetValues(typeof(ItemTypes)))
         {
             playerItemCounts.Add(item, 0);
