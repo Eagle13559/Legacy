@@ -72,6 +72,7 @@ public class EnemyController : MonoBehaviour {
         maxChasePoint = startingPatrolPoint + deltaPosChase;
 
         turnTime += rovingPauseTime;
+
     }
 	
 	// Update is called once per frame
@@ -177,4 +178,13 @@ public class EnemyController : MonoBehaviour {
             Destroy(gameObject);
         }
     }
+
+    ////void OnCollisionEnter2D(Collision2D coll)
+    //{
+    //    if (coll.gameObject.tag == "PlayerWeapon")
+    //    {
+    //        Debug.Log("collision has been detected");
+    //        Destroy(gameObject);
+    //    }
+    //}
 }

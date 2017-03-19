@@ -93,18 +93,19 @@ public class PlayerController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         _currentState = playerState.FREE;
-        try
+        // TODO: Discover a more efficient way to find the below game object
+        // I made it worse, but this was to ensure enstantiation of the brain on startup.
+        //  I don't think there will be horrible performance issues. -JW
+        if (GameObject.Find("TheBrain") != null)
         {
-            // TODO: Discover a more efficient way to find the below game object
             brain = GameObject.Find("TheBrain").GetComponent<TheBrain>();
         }
-        catch
+        else
         {
             Debug.Log("The Brain was not found for this object");
             brain = new TheBrain();
         }
-       
-        
+
         _controller = gameObject.GetComponent<CharacterController2D>();
         _animator = gameObject.GetComponent<AnimationController2D>();
         gameCamera.GetComponent<CameraFollow2D>().startCameraFollow(this.gameObject);
@@ -279,12 +280,12 @@ public class PlayerController : MonoBehaviour {
                     _attackColliderController.setEnabled(true);
                     
                 }
-                if (Input.GetKeyDown("l") && BombTotal > 0)
+                if (Input.GetKeyDown("l"))// && BombTotal > 0)
                 {
                     GameObject bomb = Instantiate(_Bomb, transform.position, Quaternion.identity) as GameObject;
-                    bomb.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(transform.forward * _bombThrust);//.AddForce(transform.forward * _bombThrust);
-                    brain.playerItemCounts[TheBrain.ItemTypes.Bomb] = BombTotal > 1 ? BombTotal - 1 : 0;
-                    Debug.Log("Removed Bomb Ability : " + brain.playerItemCounts[TheBrain.ItemTypes.Bomb]);
+                    //bomb.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(transform.forward * _bombThrust);//.AddForce(transform.forward * _bombThrust);
+                    //brain.playerItemCounts[TheBrain.ItemTypes.Bomb] = BombTotal > 1 ? BombTotal - 1 : 0;
+                    //Debug.Log("Removed Bomb Ability : " + brain.playerItemCounts[TheBrain.ItemTypes.Bomb]);
 
                 }
                 // Fall!
