@@ -1,15 +1,9 @@
 fileFormatVersion: 2
-guid: 2de49f4e906cad54c8b6ad38c0919dae
-timeCreated: 1489351004
+guid: 96ecc1863d31611468498340a60a3567
+timeCreated: 1489555598
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: ShopkeeperIdle_0
-    21300002: ShopkeeperIdle_1
-    21300004: ShopkeeperIdle_2
-    21300006: ShopkeeperIdle_3
-    21300008: ShopkeeperIdle_4
-    21300010: ShopkeeperIdle_5
+  fileIDToRecycleName: {}
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -40,7 +34,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -98,85 +92,7 @@ TextureImporter:
     overridden: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: ShopkeeperIdle_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 77
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: ShopkeeperIdle_1
-      rect:
-        serializedVersion: 2
-        x: 77
-        y: 0
-        width: 77
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: ShopkeeperIdle_2
-      rect:
-        serializedVersion: 2
-        x: 154
-        y: 0
-        width: 77
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: ShopkeeperIdle_3
-      rect:
-        serializedVersion: 2
-        x: 231
-        y: 0
-        width: 77
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: ShopkeeperIdle_4
-      rect:
-        serializedVersion: 2
-        x: 308
-        y: 0
-        width: 77
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: ShopkeeperIdle_5
-      rect:
-        serializedVersion: 2
-        x: 385
-        y: 0
-        width: 77
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
+    sprites: []
     outline: []
   spritePackingTag: 
   userData: 
