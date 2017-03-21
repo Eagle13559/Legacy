@@ -75,6 +75,6 @@ public class CrowEnemyController : MonoBehaviour {
     void OnDestroy()
     {
         _levelManager.RemoveKeyEnemy();
-        _crowHead.SetActive(true);
+        Instantiate(_crowHead, transform.position, Quaternion.identity);
     }
 }

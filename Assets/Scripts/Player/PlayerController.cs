@@ -347,6 +347,12 @@ public class PlayerController : MonoBehaviour {
 
     }
 
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll.gameObject.tag == "Ragdoll")
+            Debug.Log("Head Hit");
+    }
+
     /// <summary>
     /// Will add the correct number of items to players ability inventory. 
     /// </summary>
