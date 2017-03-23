@@ -67,14 +67,9 @@ public class CrowEnemyController : MonoBehaviour {
     {
         if (other.tag == "PlayerWeapon")
         {
+            _levelManager.RemoveKeyEnemy();
+            Instantiate(_crowHead, transform.position, Quaternion.identity);
             Destroy(this.gameObject);
         }
-    }
-
-    // When object is destroyed, makes sure to update manager about destruction of this key enemy
-    void OnDestroy()
-    {
-        _levelManager.RemoveKeyEnemy();
-        Instantiate(_crowHead, transform.position, Quaternion.identity);
     }
 }
