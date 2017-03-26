@@ -16,13 +16,19 @@ public class BombController : MonoBehaviour {
     private CircleCollider2D _blastingZone;
     // The timer for the object's states
     private float _boomTimer = 0f;
+    private float _animationTimer;
     // The bomb "shell"
     private GameObject parent;
 
-	// Use this for initialization
-	void Start () {
+    private AnimationController2D _animator;
+    private bool explosionTriggered = false;
+
+    // Use this for initialization
+    void Start () {
         _blastingZone = gameObject.GetComponent(typeof(CircleCollider2D)) as CircleCollider2D;
         parent = transform.parent.gameObject;
+        _animator = parent.GetComponent<AnimationController2D>();
+        _animationTimer = _bombTime + 1.5f;
     }
 	
 	// Update is called once per frame
@@ -30,11 +36,22 @@ public class BombController : MonoBehaviour {
         _boomTimer += Time.deltaTime;
         if (_boomTimer >= _bombTime)
         {
-            _blastingZone.radius += 0.2f;
-            if (_blastingZone.radius >= _explosionRadius)
+            _animator.setAnimation("BombExplode");
+            if (_blastingZone.radius < _explosionRadius)
+                _blastingZone.radius += 0.05f;
+            if (_boomTimer >= _animationTimer)
             {
                 Destroy(parent);
                 Destroy(gameObject);
+            }
+            if (explosionTriggered == false)
+            {
+                // Why do this? If the bomb is falling while it explodes,
+                //  we don't want it to keep falling. This will have it freeze 
+                //  wherever it exploded.
+                Rigidbody2D parentPhysics = parent.GetComponent<Rigidbody2D>();
+                parentPhysics.bodyType = RigidbodyType2D.Static;
+                explosionTriggered = true;
             }
         }
 	}
@@ -43,6 +60,7 @@ public class BombController : MonoBehaviour {
         if (other.tag == "Enemy")
         {
             Destroy(other.gameObject);
+            _boomTimer = _bombTime;
         }
     }
 }
