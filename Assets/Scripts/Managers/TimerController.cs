@@ -46,6 +46,7 @@ public class TimerController : MonoBehaviour
     /// </summary>
     void Start () {
         // Use this for initialization
+
     }
 
     // Update is called once per frame

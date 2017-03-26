@@ -12,6 +12,12 @@ public class ItemManager : MonoBehaviour {
     private int StartingInventory;
 
     /// <summary>
+    /// 
+    /// </summary>
+    [SerializeField]
+    private TextBoxManager infoBox;
+
+    /// <summary>
     /// What the current inventory of this item is. 
     /// </summary>
     public int CurrInventory
@@ -48,6 +54,14 @@ public class ItemManager : MonoBehaviour {
     void Update () {
 		
 	}
+
+    /// <summary>
+    /// Shows the player info for the item they are trying to get. 
+    /// </summary>
+    public void GetInfo ()
+    {
+        infoBox.EnableTextBox();
+    }
 
     /// <summary>
     /// If the given the correct amount 
