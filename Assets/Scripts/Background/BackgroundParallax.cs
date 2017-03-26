@@ -16,11 +16,10 @@ public class BackgroundParallax : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        _camera = GameObject.Find("MainCamera");
     }
 	
 	// Update is called once per frame
 	void Update () {
-        gameObject.transform.position.Set(_camera.transform.position.x, _camera.transform.position.y, gameObject.transform.position.z);
+        //gameObject.transform.position.Set(_camera.transform.position.x, _camera.transform.position.y, gameObject.transform.position.z);
     }
 }
