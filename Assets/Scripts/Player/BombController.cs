@@ -23,6 +23,7 @@ public class BombController : MonoBehaviour {
     private AnimationController2D _animator;
     private bool explosionTriggered = false;
     private PlayerController _player;
+    private bool _finishedExploding = false;
 
     // Use this for initialization
     void Start () {
@@ -31,7 +32,6 @@ public class BombController : MonoBehaviour {
         _animator = parent.GetComponent<AnimationController2D>();
         _animationTimer = _bombTime + 1.5f;
         _player = GameObject.Find("Player").GetComponent(typeof(PlayerController)) as PlayerController;
-        //_player = gameObject.GetComponent(typeof(PlayerController)) as PlayerController;
     }
 	
 	// Update is called once per frame
@@ -41,7 +41,14 @@ public class BombController : MonoBehaviour {
         {
             _animator.setAnimation("BombExplode");
             if (_blastingZone.radius < _explosionRadius)
+            {
                 _blastingZone.radius += 0.05f;
+            }
+            else if (!_finishedExploding)
+            {
+                GetComponent<CircleCollider2D>().enabled = false;
+                _finishedExploding = true;
+            }
             if (_boomTimer >= _animationTimer)
             {
                 Destroy(parent);
@@ -54,6 +61,8 @@ public class BombController : MonoBehaviour {
                 //  we don't want it to keep falling. This will have it freeze 
                 //  wherever it exploded.
                 Rigidbody2D parentPhysics = parent.GetComponent<Rigidbody2D>();
+                CircleCollider2D parentCollider = parent.GetComponent<CircleCollider2D>();
+                parentCollider.enabled = false;
                 parentPhysics.bodyType = RigidbodyType2D.Static;
                 explosionTriggered = true;
             }
@@ -65,6 +74,12 @@ public class BombController : MonoBehaviour {
         {
             Destroy(other.gameObject);
             _boomTimer = _bombTime;
+        }
+        if (other.tag == "PlayerWeapon")
+        {
+            Vector3 direction = gameObject.transform.position - other.transform.position;
+            direction.Normalize();
+            parent.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction.x, direction.y) * 1000);
         }
     }
 }
