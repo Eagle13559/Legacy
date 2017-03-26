@@ -86,6 +86,7 @@ public class PlayerController : MonoBehaviour {
     public GameObject _Bomb;
     [SerializeField]
     private float _bombThrust;
+    public int _bombsPlaced = 0;
 
     private bool shopping = false;
 
@@ -280,9 +281,10 @@ public class PlayerController : MonoBehaviour {
                     _attackColliderController.setEnabled(true);
                     
                 }
-                if (Input.GetKeyDown("l"))// && BombTotal > 0)
+                if (Input.GetKeyDown("l") && _bombsPlaced < 2)// && BombTotal > 0)
                 {
                     GameObject bomb = Instantiate(_Bomb, transform.position, Quaternion.identity) as GameObject;
+                    _bombsPlaced++;
                     //bomb.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(transform.forward * _bombThrust);//.AddForce(transform.forward * _bombThrust);
                     //brain.playerItemCounts[TheBrain.ItemTypes.Bomb] = BombTotal > 1 ? BombTotal - 1 : 0;
                     //Debug.Log("Removed Bomb Ability : " + brain.playerItemCounts[TheBrain.ItemTypes.Bomb]);

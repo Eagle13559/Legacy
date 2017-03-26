@@ -22,6 +22,7 @@ public class BombController : MonoBehaviour {
 
     private AnimationController2D _animator;
     private bool explosionTriggered = false;
+    private PlayerController _player;
 
     // Use this for initialization
     void Start () {
@@ -29,6 +30,8 @@ public class BombController : MonoBehaviour {
         parent = transform.parent.gameObject;
         _animator = parent.GetComponent<AnimationController2D>();
         _animationTimer = _bombTime + 1.5f;
+        _player = GameObject.Find("Player").GetComponent(typeof(PlayerController)) as PlayerController;
+        //_player = gameObject.GetComponent(typeof(PlayerController)) as PlayerController;
     }
 	
 	// Update is called once per frame
@@ -43,6 +46,7 @@ public class BombController : MonoBehaviour {
             {
                 Destroy(parent);
                 Destroy(gameObject);
+                _player._bombsPlaced--;
             }
             if (explosionTriggered == false)
             {
