@@ -44,8 +44,8 @@ public class TimerController : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    void Start () {
-        // Use this for initialization
+    void Start()
+    {
 
     }
 
@@ -69,7 +69,7 @@ public class TimerController : MonoBehaviour
     }
 
 
-    public void StartTimer (float TotalTime)
+    public void StartTimer (float TotalTime, Sprite incesnseSprite)
     {
         TimeLimit = TotalTime * 60;
         CurrTime = TimeLimit;

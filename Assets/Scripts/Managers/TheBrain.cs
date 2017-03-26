@@ -19,6 +19,7 @@ public class TheBrain : MonoBehaviour
         Time = float.PositiveInfinity;
         PlayersMoney = 100;
         InitalizePlayerItemCount();
+        currIncense = IncenseTypes.Base;
     }
 
     void Start ()
@@ -42,7 +43,7 @@ public class TheBrain : MonoBehaviour
     {
         foreach (ItemTypes item in Enum.GetValues(typeof(ItemTypes)))
         {
-            playerItemCounts.Add(item, 0);
+            playerItemCounts[item] = 0;
         }
     }
 
@@ -74,7 +75,19 @@ public class TheBrain : MonoBehaviour
     public enum ItemTypes { Dash, Bomb, None }
 
     /// <summary>
+    /// 
+    /// </summary>
+    public enum IncenseTypes { Base, SlowByHalf, SlowByThird, SlowByFourth };
+
+    public IncenseTypes currIncense;
+
+    /// <summary>
     /// Keeps track of players item cache
     /// </summary>
     public Dictionary<ItemTypes, int> playerItemCounts = new Dictionary<ItemTypes, int>();
+
+    /// <summary>
+    /// Contains all the incense images to use in UI.
+    /// </summary>
+    public Sprite[] IncenseSprites = new Sprite[4];
 }

@@ -113,7 +113,7 @@ public class PlayerController : MonoBehaviour {
 
         if (! Regex.IsMatch(   SceneManager.GetActiveScene().name, "Shop") )
         {
-            _timer.StartTimer(brain.Time);
+            _timer.StartTimer(brain.Time, brain.IncenseSprites[(int) brain.currIncense]);
         }
         else
         {

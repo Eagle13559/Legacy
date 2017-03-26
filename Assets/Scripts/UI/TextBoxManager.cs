@@ -43,16 +43,14 @@ public class TextBoxManager : MonoBehaviour {
 
         timer = new Timer();
         timer.Interval = bubbleActiveInterval;
-        timer.AutoReset = false;
-        timer.Elapsed += ((object o, ElapsedEventArgs e) => { cancelTyping = true; timer.Stop(); });
+        timer.AutoReset = true;
+        timer.Elapsed += ((object o, ElapsedEventArgs e) => { if (currentLine < textLines.Length) { cancelTyping = true; timer.Stop(); } });
 
         DisableTextBox();
     }
 
     void Update()
     {
-        //theText.text = textLines[currentLine];
-
         if(!isActive)
         {
             return;
@@ -90,7 +88,11 @@ public class TextBoxManager : MonoBehaviour {
         }
     }
 
-
+    /// <summary>
+    /// Writes a line of text to the text box
+    /// </summary>
+    /// <param name="lineofText"></param>
+    /// <returns></returns>
     private IEnumerator TextScroll (string lineofText)
     {
         int letter = 0;
@@ -109,7 +111,9 @@ public class TextBoxManager : MonoBehaviour {
     
     }
 
-
+    /// <summary>
+    /// Turns the text box and starts timer of when it will turn off. 
+    /// </summary>
     public void EnableTextBox()
     {
         if (!textBox.activeSelf)
@@ -120,6 +124,9 @@ public class TextBoxManager : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Turns off the text box and stops the timer. 
+    /// </summary>
     public void DisableTextBox()
     {
         textBox.SetActive(false);

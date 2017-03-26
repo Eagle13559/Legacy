@@ -18,6 +18,7 @@ public class RagdollContoller : MonoBehaviour {
         if (coll.gameObject.tag == "Player")
         {
             Vector3 forceVelocity = coll.GetComponent<CharacterController2D>().velocity;
+            forceVelocity.Normalize();
             GetComponent<Rigidbody2D>().AddForce(new Vector2(forceVelocity.x, forceVelocity.y) * 200);
         }
 
