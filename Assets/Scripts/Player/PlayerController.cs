@@ -336,6 +336,7 @@ public class PlayerController : MonoBehaviour {
         {
             ItemManager item = other.GetComponent<ItemManager>();
             long cashAmount;
+            item.GetInfo();
             if (BankAccount.TryToRemoveFromBank(item.CurrCost, out cashAmount) && item.TryToPurchase(cashAmount))
             {
                 AddToPlayerInventory(item);

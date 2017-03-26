@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Timers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +23,9 @@ public class TextBoxManager : MonoBehaviour {
 
     public bool isActive;
 
+    private Timer timer;
+    [SerializeField]
+    private int bubbleActiveInterval;
 
     // Use this for initialization
     void Start()
@@ -36,6 +40,13 @@ public class TextBoxManager : MonoBehaviour {
         {
             endAtLine = textLines.Length - 1;
         }
+
+        timer = new Timer();
+        timer.Interval = bubbleActiveInterval;
+        timer.AutoReset = false;
+        timer.Elapsed += ((object o, ElapsedEventArgs e) => { cancelTyping = true; timer.Stop(); });
+
+        DisableTextBox();
     }
 
     void Update()
@@ -58,9 +69,10 @@ public class TextBoxManager : MonoBehaviour {
                     DisableTextBox();
                 
                 }
-                else
+                else if (currentLine < textLines.Length)
                 {
                     StartCoroutine(TextScroll(textLines[currentLine]));
+                    timer.Start();
                 }
             }
             else if (isTyping && !cancelTyping)
@@ -71,8 +83,9 @@ public class TextBoxManager : MonoBehaviour {
             
         }
 
-        if(currentLine > endAtLine)
+        if(currentLine > endAtLine || cancelTyping)
         {
+            currentLine = 0;
             DisableTextBox();
         }
     }
@@ -99,13 +112,17 @@ public class TextBoxManager : MonoBehaviour {
 
     public void EnableTextBox()
     {
-        textBox.SetActive(true);
-        StartCoroutine(TextScroll(textLines[currentLine]));
-
+        if (!textBox.activeSelf)
+        {
+            textBox.SetActive(true);
+            StartCoroutine(TextScroll(textLines[currentLine]));
+            timer.Start();
+        }
     }
 
     public void DisableTextBox()
     {
         textBox.SetActive(false);
+        timer.Stop();
     }
 }
