@@ -9,17 +9,22 @@ public class BackgroundParallax : MonoBehaviour {
     [SerializeField]
     private GameObject _backLayer;
 
-    private float _deltaFore;
-    private float _deltaBack;
+    private float _deltaFore = 0.1f;
+    private float _deltaBack = 0.05f;
 
-    private GameObject _camera;
+    private Vector3 _prevLocation;
 
 	// Use this for initialization
 	void Start () {
+        _prevLocation = gameObject.transform.position;
     }
 	
 	// Update is called once per frame
 	void Update () {
-        //gameObject.transform.position.Set(_camera.transform.position.x, _camera.transform.position.y, gameObject.transform.position.z);
+        Vector3 currentPos = gameObject.transform.position;
+        Vector3 diff = _prevLocation - currentPos;
+        _foreLayer.transform.position += (diff * _deltaFore);
+        _backLayer.transform.position += (diff * _deltaBack);
+        _prevLocation = currentPos;
     }
 }
