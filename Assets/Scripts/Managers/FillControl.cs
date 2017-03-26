@@ -23,6 +23,7 @@ public class FillControl : MonoBehaviour {
     public FillControl (Image BarImage)
     {
         UIImage = BarImage;
+        UIImage.fillAmount = 1;
     }
 
     /// <summary>
