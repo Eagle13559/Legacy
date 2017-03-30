@@ -33,6 +33,11 @@ public class CurrencyController : MonoBehaviour {
     private long CurrEarnings;
 
     /// <summary>
+    /// Keeps Track of the total withdrawal amount when removal from bank is called. 
+    /// </summary>
+    private long TotalWithdrawalAmount;
+
+    /// <summary>
     /// Gets the current total amount of money in this account. 
     /// </summary>
     public long BankAccount { get { return CurrEarnings; } }
@@ -105,15 +110,27 @@ public class CurrencyController : MonoBehaviour {
     /// <summary>
     /// Tries to remove the asking amount from the bank and will return whether this transaction was successful. 
     /// </summary>
-    /// <param name="askingAmount"></param>
-    /// <param name="givenAmount"></param>
+    /// <param name="askingAmount"> Amount item to remove is worth </param>
+    /// <param name="givenAmount"> the amount left after removing the asking amount </param>
+    /// <param name="removal"> Whether to remove the asking amount from the bank or not at the call of function </param>
     /// <returns></returns>
-    public bool TryToRemoveFromBank(long askingAmount, out long givenAmount)
+    public bool TryToRemoveFromBank(long askingAmount, bool removal, out long givenAmount)
     {
-        givenAmount = RemoveFromBank(askingAmount);
+        if (removal)
+        {
+            givenAmount = RemoveFromBank(TotalWithdrawalAmount);
+        }
+        else
+        {
+            givenAmount = CurrEarnings - askingAmount;
+        }
 
         if (givenAmount > 0)
+        {
+            TotalWithdrawalAmount += askingAmount;
             return true;
+        }
+            
         return false;
     }
 

@@ -43,7 +43,7 @@ public class TextBoxManager : MonoBehaviour {
 
         timer = new Timer();
         timer.Interval = bubbleActiveInterval;
-        timer.AutoReset = true;
+        timer.AutoReset = false;
         timer.Elapsed += ((object o, ElapsedEventArgs e) => { if (currentLine < textLines.Length) { cancelTyping = true; timer.Stop(); } });
 
         DisableTextBox();
@@ -51,12 +51,7 @@ public class TextBoxManager : MonoBehaviour {
 
     void Update()
     {
-        if(!isActive)
-        {
-            return;
-        }
-
-        if(Input.GetKeyDown(KeyCode.Return))
+        if(Input.GetKeyDown(KeyCode.Return) && !cancelTyping)
         {
             if(!isTyping)
             {
@@ -73,17 +68,15 @@ public class TextBoxManager : MonoBehaviour {
                     timer.Start();
                 }
             }
-            else if (isTyping && !cancelTyping)
+            else
             {
                 cancelTyping = true;
             }
-
-            
         }
 
         if(currentLine > endAtLine || cancelTyping)
         {
-            currentLine = 0;
+            //currentLine = 0;
             DisableTextBox();
         }
     }
@@ -129,7 +122,11 @@ public class TextBoxManager : MonoBehaviour {
     /// </summary>
     public void DisableTextBox()
     {
+
         textBox.SetActive(false);
+        isTyping = false;
+        cancelTyping = true;
+        currentLine = 0;
         timer.Stop();
     }
 }

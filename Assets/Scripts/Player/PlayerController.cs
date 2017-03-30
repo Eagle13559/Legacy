@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour {
     public int _bombsPlaced = 0;
 
     private bool shopping = false;
-
+    public ShoppingCart cart { get; private set; }
 
     // Use this for initialization
     void Start () {
@@ -118,11 +118,13 @@ public class PlayerController : MonoBehaviour {
         else
         {
             shopping = true;
+            cart = new ShoppingCart();
         }
 
         BankAccount.AddToBank( brain.PlayersMoney );
         _prevY = gameObject.transform.position.y;
 
+        
     }
 
     // Update is called once per frame
@@ -337,9 +339,9 @@ public class PlayerController : MonoBehaviour {
             ItemManager item = other.GetComponent<ItemManager>();
             long cashAmount;
             item.GetInfo();
-            if (BankAccount.TryToRemoveFromBank(item.CurrCost, out cashAmount) && item.TryToPurchase(cashAmount))
+            if (BankAccount.TryToRemoveFromBank(item.CurrCost, false, out cashAmount) && item.TryToPurchase(cashAmount))
             {
-                AddToPlayerInventory(item);
+                cart.addItemToCart(item.ItemTag);
             }
            
         }
@@ -390,6 +392,26 @@ public class PlayerController : MonoBehaviour {
         {
             Destroy(brain.gameObject);
         }
+    }
+
+    /// <summary>
+    /// Removes all items from the cart, the appropriate amount of cash, and adds the total amount of possible items to the brain
+    /// for the players cache. 
+    /// </summary>
+    public void RemoveAllFromCart()
+    {
+        long givenAmount;
+        BankAccount.TryToRemoveFromBank(0, true, out givenAmount);
+
+        foreach (ItemContainer item in cart.GetNumOfItems())
+        {
+            if (item.numOfItems > 0)
+            {
+                brain.playerItemCounts[item.itemType] += item.numOfItems;
+            }   
+        }
+
+        cart.ClearCart();
     }
 
 }
