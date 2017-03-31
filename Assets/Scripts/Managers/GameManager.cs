@@ -3,13 +3,17 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
+using UnityEngine.Audio;
 
 public class GameManager : MonoBehaviour {
 
     private TheBrain brain;
 
     private int currLevelID;
-    
+
+    public AudioMixerSnapshot ispaused;
+    public AudioMixerSnapshot unpaused;
+
     [SerializeField]
     private string resetLevel;
 
@@ -133,12 +137,28 @@ public class GameManager : MonoBehaviour {
     {
         paused = true;
         Time.timeScale = 0;
+        Lowpass();
+
     }
 
     public void UnPauseGame()
     {
         paused = false;
         Time.timeScale = 1;
+        Lowpass();
+    }
+
+    void Lowpass()
+    {
+        if (Time.timeScale == 0)
+        {
+            ispaused.TransitionTo(.01f);
+        }
+
+        else
+        {
+            unpaused.TransitionTo(.01f);
+        }
     }
 
     public void GoToMain()
