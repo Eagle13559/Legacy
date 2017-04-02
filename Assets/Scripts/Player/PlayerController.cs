@@ -60,8 +60,7 @@ public class PlayerController : MonoBehaviour {
     /// <summary>
     /// Controls the total amount of currency this player has access to. 
     /// </summary>
-    [SerializeField]
-    private CurrencyController BankAccount;
+    public CurrencyController BankAccount;
 
     /// <summary>
     /// Contains all the pertinent information needed for each relevant object 
@@ -88,8 +87,7 @@ public class PlayerController : MonoBehaviour {
     private float _bombThrust;
     public int _bombsPlaced = 0;
 
-    private bool shopping = false;
-    public ShoppingCart cart { get; private set; }
+    private bool shopping;
 
     // Use this for initialization
     void Start () {
@@ -118,7 +116,7 @@ public class PlayerController : MonoBehaviour {
         else
         {
             shopping = true;
-            cart = new ShoppingCart();
+            //cart = new ShoppingCart();
         }
 
         BankAccount.AddToBank( brain.PlayersMoney );
@@ -283,7 +281,7 @@ public class PlayerController : MonoBehaviour {
                     _attackColliderController.setEnabled(true);
                     
                 }
-                if (Input.GetKeyDown("l") && _bombsPlaced < 2)// && BombTotal > 0)
+                if (Input.GetKeyDown("l") && _bombsPlaced < 2 && (BombTotal > 0 || shopping))
                 {
                     GameObject bomb = Instantiate(_Bomb, transform.position, Quaternion.identity) as GameObject;
                     _bombsPlaced++;
@@ -334,20 +332,6 @@ public class PlayerController : MonoBehaviour {
             BankAccount.AddToBank(CurrencyController.CurrencyTypes.Jewel);
             Destroy(other.gameObject);
         }
-        else if (other.tag == "Item")
-        {
-            ItemManager item = other.GetComponent<ItemManager>();
-            long cashAmount;
-            //item.GetInfo();
-
-            
-            
-            if (BankAccount.TryToRemoveFromBank(item.CurrCost, false, out cashAmount) && item.TryToPurchase(cashAmount))
-            {
-                cart.addItemToCart(item.ItemTag);
-            }
-           
-        }
         else if (other.tag == "Gate")
         {
             _gameManager.NextLevel();
@@ -397,29 +381,34 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    /// <summary>
-    /// Removes all items from the cart, the appropriate amount of cash, and adds the total amount of possible items to the brain
-    /// for the players cache. 
-    /// </summary>
-    public void RemoveAllFromCart()
-    {
-        long givenAmount;
-        BankAccount.TryToRemoveFromBank(0, true, out givenAmount);
+    //public void AddToCart(ItemManager item)
+    //{
+    //    Debug.Log("Hello");
+    //    long cashAmount;
+    //    if (BankAccount.TryToRemoveFromBank(item.CurrCost, false, out cashAmount) && item.TryToPurchase(cashAmount))
+    //    {
+    //        cart.addItemToCart(item.ItemTag);
+    //    }
+    //}
 
-        foreach (ItemContainer item in cart.GetNumOfItems())
-        {
-            if (item.numOfItems > 0)
-            {
-                brain.playerItemCounts[item.itemType] += item.numOfItems;
-            }   
-        }
+    ///// <summary>
+    ///// Removes all items from the cart, the appropriate amount of cash, and adds the total amount of possible items to the brain
+    ///// for the players cache. 
+    ///// </summary>
+    //public void RemoveAllFromCart()
+    //{
+    //    long givenAmount;
+    //    BankAccount.TryToRemoveFromBank(0, true, out givenAmount);
 
-        cart.ClearCart();
-    }
+    //    foreach (ItemContainer item in cart.GetNumOfItems())
+    //    {
+    //        if (item.numOfItems > 0)
+    //        {
+    //            brain.playerItemCounts[item.itemType] += item.numOfItems;
+    //        }   
+    //    }
 
-    public void ClickHandler(TheBrain.ItemTypes type)
-    {
-        Debug.Log("Hello");
-    }
+    //    cart.ClearCart();
+    //}
 
 }

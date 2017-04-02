@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ShopkeeperController : MonoBehaviour {
 
@@ -19,8 +20,21 @@ public class ShopkeeperController : MonoBehaviour {
     private float timer = 0;
     private float purchaseAnimuLimit =  0.1f;
 
-	// Use this for initialization
-	void Start () {
+    [SerializeField]
+    private Text BombCount;
+    // The text that is already in BombCount. 
+    private string BombCountPretext;
+    private bool shopping = false;
+    public ShoppingCart cart { get; private set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [SerializeField]
+    private TextBoxManager infoBox;
+
+    // Use this for initialization
+    void Start () {
         if (GameObject.Find("TheBrain") != null)
         {
             brain = GameObject.Find("TheBrain").GetComponent<TheBrain>();
@@ -31,7 +45,10 @@ public class ShopkeeperController : MonoBehaviour {
             brain = new TheBrain();
         }
 
+        player = GameObject.Find("Player").GetComponent<PlayerController>();
         _animator = GetComponent<AnimationController2D>();
+        cart = new ShoppingCart();
+        BombCountPretext = BombCount.text;
     }
 	
 	// Update is called once per frame
@@ -40,7 +57,7 @@ public class ShopkeeperController : MonoBehaviour {
         {
             if (Input.GetKeyDown(KeyCode.Y))
             {
-                player.RemoveAllFromCart();
+                RemoveAllFromCart();
                 _animator.setAnimation(_purchase);
                 purchaseAnimation = true;
                 playerPurchasing = false;
@@ -56,17 +73,16 @@ public class ShopkeeperController : MonoBehaviour {
         {
             timer += Time.deltaTime;
         }
+
+        BombCount.text = BombCountPretext + cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb);
 	}
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Player")
         {
-            playerPurchasing = true;
-            if (player == null)
-            {
-                player = collision.gameObject.GetComponent<PlayerController>();
-            }       
+            infoBox.EnableTextBox();
+            playerPurchasing = true; 
         }
     }
 
@@ -75,7 +91,39 @@ public class ShopkeeperController : MonoBehaviour {
     {
         if (collision.tag == "Player")
         {
+            infoBox.DisableTextBox();
             playerPurchasing = false;
         }
     }
+
+    public void AddToCart(ItemManager item)
+    {
+        Debug.Log("Hello");
+        long cashAmount;
+        if (player.BankAccount.TryToRemoveFromBank(item.CurrCost, false, out cashAmount) && item.TryToPurchase(cashAmount))
+        {
+            cart.addItemToCart(item.ItemTag);
+        }
+    }
+
+    /// <summary>
+    /// Removes all items from the cart, the appropriate amount of cash, and adds the total amount of possible items to the brain
+    /// for the players cache. 
+    /// </summary>
+    public void RemoveAllFromCart()
+    {
+        long givenAmount;
+        player.BankAccount.TryToRemoveFromBank(0, true, out givenAmount);
+
+        foreach (ItemContainer item in cart.GetNumOfItems())
+        {
+            if (item.numOfItems > 0)
+            {
+                brain.playerItemCounts[item.itemType] += item.numOfItems;
+            }
+        }
+
+        cart.ClearCart();
+    }
+
 }

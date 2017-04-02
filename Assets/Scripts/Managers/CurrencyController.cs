@@ -61,7 +61,7 @@ public class CurrencyController : MonoBehaviour {
     /// </summary>
     private void DisplayCurrency ()
     {
-        Display.text = PreText + " " + CurrEarnings;
+        Display.text = ""  + CurrEarnings;
     }
     
     /// <summary>
@@ -119,10 +119,11 @@ public class CurrencyController : MonoBehaviour {
         if (removal)
         {
             givenAmount = RemoveFromBank(TotalWithdrawalAmount);
+            TotalWithdrawalAmount = 0;
         }
         else
         {
-            givenAmount = CurrEarnings - askingAmount;
+            givenAmount = askingAmount;
         }
 
         if (givenAmount > 0)

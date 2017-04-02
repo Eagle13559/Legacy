@@ -49,4 +49,9 @@ public class ShoppingCart : MonoBehaviour {
             cart[item] = 0;
         }
     }
+
+    public long GetNumOfSpecificItem (TheBrain.ItemTypes type)
+    {
+        return cart[type];
+    }
 }

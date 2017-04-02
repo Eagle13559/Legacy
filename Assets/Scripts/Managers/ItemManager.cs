@@ -44,9 +44,6 @@ public class ItemManager : MonoBehaviour {
     /// </summary>
     public TheBrain.ItemTypes ItemTag;
 
-    public delegate void ItemPurchase(TheBrain.ItemTypes tag);
-    public static event ItemPurchase OnClick; 
-
     // Use this for initialization
     void Start () {
         CurrInventory = StartingInventory;
@@ -90,10 +87,5 @@ public class ItemManager : MonoBehaviour {
     void OnTriggerExit2D(Collider2D collision)
     {
         infoBox.DisableTextBox();
-    }
-
-    public void PurchasingItem()
-    {
-        OnClick(this.ItemTag);
     }
 }
