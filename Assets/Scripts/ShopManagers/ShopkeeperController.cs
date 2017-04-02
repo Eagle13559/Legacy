@@ -96,9 +96,12 @@ public class ShopkeeperController : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Adds the given item to this instances shopping cart temporarily. 
+    /// </summary>
+    /// <param name="item"></param>
     public void AddToCart(ItemManager item)
     {
-        Debug.Log("Hello");
         long cashAmount;
         if (player.BankAccount.TryToRemoveFromBank(item.CurrCost, false, out cashAmount) && item.TryToPurchase(cashAmount))
         {

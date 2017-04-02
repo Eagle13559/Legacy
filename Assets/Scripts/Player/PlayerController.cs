@@ -281,7 +281,7 @@ public class PlayerController : MonoBehaviour {
                     _attackColliderController.setEnabled(true);
                     
                 }
-                if (Input.GetKeyDown("l") && _bombsPlaced < 2 && (BombTotal > 0 || shopping))
+                if (Input.GetKeyDown("l") && _bombsPlaced < 2 )//&& (BombTotal > 0 || shopping))
                 {
                     GameObject bomb = Instantiate(_Bomb, transform.position, Quaternion.identity) as GameObject;
                     _bombsPlaced++;
