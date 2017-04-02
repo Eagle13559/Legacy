@@ -23,7 +23,7 @@ public class TextBoxManager : MonoBehaviour {
 
     public bool isActive;
 
-    private Timer timer;
+   // private Timer timer;
     [SerializeField]
     private int bubbleActiveInterval;
 
@@ -41,10 +41,10 @@ public class TextBoxManager : MonoBehaviour {
             endAtLine = textLines.Length - 1;
         }
 
-        timer = new Timer();
-        timer.Interval = bubbleActiveInterval;
-        timer.AutoReset = false;
-        timer.Elapsed += ((object o, ElapsedEventArgs e) => { if (currentLine < textLines.Length) { cancelTyping = true; timer.Stop(); } });
+        //timer = new //timer();
+        //timer.Interval = bubbleActiveInterval;
+        //timer.AutoReset = false;
+        //timer.Elapsed += ((object o, ElapsedEventArgs e) => { if (currentLine < textLines.Length) { cancelTyping = true; //timer.Stop(); } });
 
         DisableTextBox();
     }
@@ -65,7 +65,7 @@ public class TextBoxManager : MonoBehaviour {
                 else if (currentLine < textLines.Length)
                 {
                     StartCoroutine(TextScroll(textLines[currentLine]));
-                    timer.Start();
+                    //timer.Start();
                 }
             }
             else
@@ -100,12 +100,12 @@ public class TextBoxManager : MonoBehaviour {
         }
         theText.text = lineofText;
         isTyping = false;
-        cancelTyping = false;
+        //cancelTyping = true;
     
     }
 
     /// <summary>
-    /// Turns the text box and starts timer of when it will turn off. 
+    /// Turns the text box and starts //timer of when it will turn off. 
     /// </summary>
     public void EnableTextBox()
     {
@@ -113,12 +113,12 @@ public class TextBoxManager : MonoBehaviour {
         {
             textBox.SetActive(true);
             StartCoroutine(TextScroll(textLines[currentLine]));
-            timer.Start();
+            //timer.Start();
         }
     }
 
     /// <summary>
-    /// Turns off the text box and stops the timer. 
+    /// Turns off the text box and stops the //timer. 
     /// </summary>
     public void DisableTextBox()
     {
@@ -127,6 +127,8 @@ public class TextBoxManager : MonoBehaviour {
         isTyping = false;
         cancelTyping = true;
         currentLine = 0;
-        timer.Stop();
+        //timer.Stop();
     }
+
+  
 }

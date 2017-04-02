@@ -338,7 +338,10 @@ public class PlayerController : MonoBehaviour {
         {
             ItemManager item = other.GetComponent<ItemManager>();
             long cashAmount;
-            item.GetInfo();
+            //item.GetInfo();
+
+            
+            
             if (BankAccount.TryToRemoveFromBank(item.CurrCost, false, out cashAmount) && item.TryToPurchase(cashAmount))
             {
                 cart.addItemToCart(item.ItemTag);
@@ -412,6 +415,11 @@ public class PlayerController : MonoBehaviour {
         }
 
         cart.ClearCart();
+    }
+
+    public void ClickHandler(TheBrain.ItemTypes type)
+    {
+        Debug.Log("Hello");
     }
 
 }
