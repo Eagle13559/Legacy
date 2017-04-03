@@ -79,6 +79,21 @@ public class BombController : MonoBehaviour {
         {
             Vector3 direction = gameObject.transform.position - other.transform.position;
             direction.Normalize();
+            // Enforce the bomb goes in the direction the player is facing
+            if (_player._isFacingRight)
+            {
+                if (direction.x < 0)
+                {
+                    direction *= -1;
+                }
+            }
+            else
+            {
+                if (direction.x > 0)
+                {
+                    direction *= -1;
+                }
+            }
             parent.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction.x, direction.y) * 1000);
         }
     }

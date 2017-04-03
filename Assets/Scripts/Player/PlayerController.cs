@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour {
 
     private CharacterController2D _controller;
     private AnimationController2D _animator;
-    private bool _isFacingRight = true;
+    public bool _isFacingRight = true;
 
     /// <summary>
     /// Timer control
@@ -83,9 +83,10 @@ public class PlayerController : MonoBehaviour {
     private string _attackAirAnimation = "ShibaAttackA";
 
     public GameObject _Bomb;
-    [SerializeField]
-    private float _bombThrust;
     public int _bombsPlaced = 0;
+    private float _bombCooldownTimer = 0f;
+    private float _bombCooldownWaitTime = 0.5f;
+    private bool _canPlaceBomb = true;
 
     private bool shopping;
 
@@ -147,6 +148,14 @@ public class PlayerController : MonoBehaviour {
             velocity.x = 0;
             // Keeps track of the amount of bombs the player has at this frame
             int BombTotal = brain.playerItemCounts[TheBrain.ItemTypes.Bomb];
+            if (!_canPlaceBomb)
+            {
+                _bombCooldownTimer += Time.deltaTime;
+                if (_bombCooldownTimer >= _bombCooldownWaitTime)
+                {
+                    _canPlaceBomb = true;
+                }
+            }
             // If the player has left the ground...
             if (!_controller.isGrounded)
             {
@@ -284,11 +293,15 @@ public class PlayerController : MonoBehaviour {
                 }
                 if (Input.GetKeyDown("l") && _bombsPlaced < 2 )//&& (BombTotal > 0 || shopping))
                 {
-                    GameObject bomb = Instantiate(_Bomb, transform.position, Quaternion.identity) as GameObject;
-                    _bombsPlaced++;
-                    //bomb.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(transform.forward * _bombThrust);//.AddForce(transform.forward * _bombThrust);
-                    //brain.playerItemCounts[TheBrain.ItemTypes.Bomb] = BombTotal > 1 ? BombTotal - 1 : 0;
-                    //Debug.Log("Removed Bomb Ability : " + brain.playerItemCounts[TheBrain.ItemTypes.Bomb]);
+                    if (_canPlaceBomb)
+                    {
+                        _canPlaceBomb = false;
+                        GameObject bomb = Instantiate(_Bomb, transform.position, Quaternion.identity) as GameObject;
+                        _bombsPlaced++;
+                        //bomb.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(transform.forward * _bombThrust);//.AddForce(transform.forward * _bombThrust);
+                        //brain.playerItemCounts[TheBrain.ItemTypes.Bomb] = BombTotal > 1 ? BombTotal - 1 : 0;
+                        //Debug.Log("Removed Bomb Ability : " + brain.playerItemCounts[TheBrain.ItemTypes.Bomb]);
+                    }
 
                 }
                 // Fall!
