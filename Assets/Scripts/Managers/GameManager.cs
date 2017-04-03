@@ -36,14 +36,14 @@ public class GameManager : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        try
+        if (GameObject.Find("TheBrain") != null)
         {
-            // TODO: Discover a more efficient way to find the below game object
             brain = GameObject.Find("TheBrain").GetComponent<TheBrain>();
         }
-        catch
+        else
         {
             Debug.Log("The Brain was not found for this object");
+            brain = new TheBrain();
         }
 
         currLevelID = SceneManager.GetActiveScene().buildIndex;

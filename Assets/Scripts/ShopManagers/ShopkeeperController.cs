@@ -3,38 +3,52 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShopkeeperController : MonoBehaviour {
+public class ShopkeeperController : MonoBehaviour
+{
 
     private AnimationController2D _animator;
     private string _idle = "ShopKeeperIdle";
     private string _purchase = "ShopkeeperPurchase";
 
+    /// <summary>
+    /// Shopkeeper is either in two states, purchasing or not. 
+    /// </summary>
     private bool playerPurchasing = false;
-
     private bool purchaseAnimation = false;
 
     private PlayerController player;
 
     private TheBrain brain;
 
+    /// <summary>
+    /// Controls the switch from one animation to another. 
+    /// </summary>
     private float timer = 0;
-    private float purchaseAnimuLimit =  0.1f;
+    private float purchaseAnimuLimit = 1;
 
+    /// <summary>
+    /// Reference to the text field to show bomb count
+    /// </summary>
     [SerializeField]
     private Text BombCount;
+
     // The text that is already in BombCount. 
     private string BombCountPretext;
-    private bool shopping = false;
+
+    /// <summary>
+    /// Keeps track of the items that the player wishes to purchase. 
+    /// </summary>
     public ShoppingCart cart { get; private set; }
 
     /// <summary>
-    /// 
+    /// The info shown to player for this object. 
     /// </summary>
     [SerializeField]
     private TextBoxManager infoBox;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         if (GameObject.Find("TheBrain") != null)
         {
             brain = GameObject.Find("TheBrain").GetComponent<TheBrain>();
@@ -46,43 +60,47 @@ public class ShopkeeperController : MonoBehaviour {
         }
 
         player = GameObject.Find("Player").GetComponent<PlayerController>();
+
         _animator = GetComponent<AnimationController2D>();
         cart = new ShoppingCart();
         BombCountPretext = BombCount.text;
     }
-	
-	// Update is called once per frame
-	void Update () {
-		if (playerPurchasing)
+
+    // Update is called once per frame
+    void Update()
+    {
+        // Play purchase animation
+        if (playerPurchasing)
         {
-            if (Input.GetKeyDown(KeyCode.Y))
-            {
-                RemoveAllFromCart();
-                _animator.setAnimation(_purchase);
-                purchaseAnimation = true;
-                playerPurchasing = false;
-            }
+            RemoveAllFromCart();
+            _animator.setAnimation(_purchase);
+            purchaseAnimation = true;
+            playerPurchasing = false;
         }
+        // Play idle animation
         else if (!purchaseAnimation || timer > purchaseAnimuLimit)
         {
+            
             _animator.setAnimation(_idle);
             purchaseAnimation = false;
+            playerPurchasing = false;
             timer = 0;
         }
+        // increase timer for switch.
         else
         {
             timer += Time.deltaTime;
+            print(timer);
         }
 
         BombCount.text = BombCountPretext + cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb);
-	}
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Player")
         {
             infoBox.EnableTextBox();
-            playerPurchasing = true; 
         }
     }
 
@@ -93,6 +111,7 @@ public class ShopkeeperController : MonoBehaviour {
         {
             infoBox.DisableTextBox();
             playerPurchasing = false;
+            _animator.setAnimation(_idle);
         }
     }
 
@@ -103,7 +122,10 @@ public class ShopkeeperController : MonoBehaviour {
     public void AddToCart(ItemManager item)
     {
         long cashAmount;
-        if (player.BankAccount.TryToRemoveFromBank(item.CurrCost, false, out cashAmount) && item.TryToPurchase(cashAmount))
+        // Checks if player can remove the required amount to purchase item, and if the item is in stock.
+        // and then will add the item to the cart if both conditions are satisfied. 
+        if (player.BankAccount.TryToRemoveFromBank(item.CurrCost, false, out cashAmount) 
+                && item.TryToPurchase(cashAmount))
         {
             cart.addItemToCart(item.ItemTag);
         }
@@ -116,8 +138,12 @@ public class ShopkeeperController : MonoBehaviour {
     public void RemoveAllFromCart()
     {
         long givenAmount;
+        playerPurchasing = true;
+
+        // Remove money from bank
         player.BankAccount.TryToRemoveFromBank(0, true, out givenAmount);
 
+        // Add items to permanent inventory of brain to be used in next level
         foreach (ItemContainer item in cart.GetNumOfItems())
         {
             if (item.numOfItems > 0)
@@ -126,6 +152,7 @@ public class ShopkeeperController : MonoBehaviour {
             }
         }
 
+        // clear the contents of the cart containing items to purchase. 
         cart.ClearCart();
     }
 

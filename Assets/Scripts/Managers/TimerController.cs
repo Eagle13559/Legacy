@@ -44,9 +44,12 @@ public class TimerController : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    void Start()
+    public void Intialize(float TotalTime, Sprite incense)
     {
+        TimeLimit = TotalTime * 60;
+        CurrTime = TimeLimit;
 
+        TimerFill = new FillControl(TimerBar);
     }
 
     // Update is called once per frame
@@ -69,13 +72,8 @@ public class TimerController : MonoBehaviour
     }
 
 
-    public void StartTimer (float TotalTime, Sprite incesnseSprite)
+    public void StartTimer ()
     {
-        TimeLimit = TotalTime * 60;
-        CurrTime = TimeLimit;
-
-        TimerFill = new FillControl(TimerBar);
-
         StartCoroutine(UpdateTimer());
     }
 

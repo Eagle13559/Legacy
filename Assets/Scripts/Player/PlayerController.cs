@@ -109,14 +109,15 @@ public class PlayerController : MonoBehaviour {
         _animator = gameObject.GetComponent<AnimationController2D>();
         gameCamera.GetComponent<CameraFollow2D>().startCameraFollow(this.gameObject);
 
+        _timer.Intialize(brain.Time, brain.IncenseSprites[(int)brain.currIncense]);
+
         if (! Regex.IsMatch(   SceneManager.GetActiveScene().name, "Shop") )
         {
-            _timer.StartTimer(brain.Time, brain.IncenseSprites[(int) brain.currIncense]);
+            _timer.StartTimer();
         }
         else
         {
             shopping = true;
-            //cart = new ShoppingCart();
         }
 
         BankAccount.AddToBank( brain.PlayersMoney );
@@ -372,43 +373,16 @@ public class PlayerController : MonoBehaviour {
     {
         if (brain.SingletonCreated)
         {
-            brain.Time = _timer.CurrTime;
+            brain.Time = _timer.CurrTime / 60;
             brain.PlayersMoney = BankAccount.BankAccount;
+            print("players money saved");
         }
-        else
-        {
-            Destroy(brain.gameObject);
-        }
+        //else
+        //{
+        //    Destroy(brain.gameObject);
+        //    print("brain destroyed");
+        //}
     }
 
-    //public void AddToCart(ItemManager item)
-    //{
-    //    Debug.Log("Hello");
-    //    long cashAmount;
-    //    if (BankAccount.TryToRemoveFromBank(item.CurrCost, false, out cashAmount) && item.TryToPurchase(cashAmount))
-    //    {
-    //        cart.addItemToCart(item.ItemTag);
-    //    }
-    //}
-
-    ///// <summary>
-    ///// Removes all items from the cart, the appropriate amount of cash, and adds the total amount of possible items to the brain
-    ///// for the players cache. 
-    ///// </summary>
-    //public void RemoveAllFromCart()
-    //{
-    //    long givenAmount;
-    //    BankAccount.TryToRemoveFromBank(0, true, out givenAmount);
-
-    //    foreach (ItemContainer item in cart.GetNumOfItems())
-    //    {
-    //        if (item.numOfItems > 0)
-    //        {
-    //            brain.playerItemCounts[item.itemType] += item.numOfItems;
-    //        }   
-    //    }
-
-    //    cart.ClearCart();
-    //}
 
 }

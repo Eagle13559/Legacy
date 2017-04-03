@@ -7,7 +7,6 @@ public class CrowEnemyController : MonoBehaviour {
     /// <summary>
     /// Controls the state of the game level
     /// </summary>
-    [SerializeField]
     private GameManager _levelManager;
 
     [SerializeField]
@@ -37,6 +36,8 @@ public class CrowEnemyController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        _levelManager = GameObject.Find("GameManagers").GetComponent<GameManager>();
+
         _levelManager.AddKeyEnemy();
         _animator = GetComponent<AnimationController2D>();
         _collider = GetComponent<Collider2D>();

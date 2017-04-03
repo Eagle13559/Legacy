@@ -10,7 +10,7 @@ public class TheBrain : MonoBehaviour
     {
         get
         {
-            return _brainSingleton == null;
+            return _brainSingleton != null && _brainSingleton == this.gameObject;
         }
     }
 
@@ -90,4 +90,5 @@ public class TheBrain : MonoBehaviour
     /// Contains all the incense images to use in UI.
     /// </summary>
     public Sprite[] IncenseSprites = new Sprite[4];
+
 }
