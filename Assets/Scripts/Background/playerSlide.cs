@@ -11,10 +11,14 @@ public class playerSlide : MonoBehaviour {
 	void Start () {
         _edge = GetComponent<EdgeCollider2D>();
         Vector2 orientation = _edge.points[1]-_edge.points[0];
+        //orientation = new Vector3(orientation.x, 0, 0);
         orientation.Normalize();
-        _upVector = new Vector3(-1*orientation.y,orientation.x,0);
-        _upVector *= 0.1f;
-	}
+        _upVector = new Vector3(orientation.x, orientation.y, 0);
+        //_upVector = new Vector3(-1*orientation.y,orientation.x,0);
+        _upVector *= 0.17f;
+        _upVector.x *= 2f;
+        //_upVector.x += 0.1f;
+    }
 	
 	// Update is called once per frame
 	void Update () {
