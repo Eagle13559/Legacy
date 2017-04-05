@@ -291,7 +291,7 @@ public class PlayerController : MonoBehaviour {
                     _attackColliderController.setEnabled(true);
                     
                 }
-                if (Input.GetKeyDown("l") && _bombsPlaced < 2 )//&& (BombTotal > 0 || shopping))
+                if (Input.GetKeyDown("l") && _bombsPlaced < 2 && (BombTotal > 0 || shopping))
                 {
                     if (_canPlaceBomb)
                     {
@@ -299,7 +299,11 @@ public class PlayerController : MonoBehaviour {
                         GameObject bomb = Instantiate(_Bomb, transform.position, Quaternion.identity) as GameObject;
                         _bombsPlaced++;
                         bomb.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(transform.forward);//.AddForce(transform.forward * _bombThrust);
-                        brain.playerItemCounts[TheBrain.ItemTypes.Bomb] = BombTotal > 1 ? BombTotal - 1 : 0;
+                        if (!shopping)
+                        {
+                            brain.playerItemCounts[TheBrain.ItemTypes.Bomb] = BombTotal > 1 ? BombTotal - 1 : 0;
+                        }
+
                         //Debug.Log("Removed Bomb Ability : " + brain.playerItemCounts[TheBrain.ItemTypes.Bomb]);
                     }
 
@@ -353,11 +357,6 @@ public class PlayerController : MonoBehaviour {
 
     }
 
-    void OnCollisionEnter2D(Collision2D coll)
-    {
-        if (coll.gameObject.tag == "Ragdoll")
-            Debug.Log("Head Hit");
-    }
 
     /// <summary>
     /// Will add the correct number of items to players ability inventory. 

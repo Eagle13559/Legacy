@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ItemManager : MonoBehaviour {
 
@@ -16,6 +17,9 @@ public class ItemManager : MonoBehaviour {
     /// </summary>
     [SerializeField]
     private TextBoxManager infoBox;
+
+    [SerializeField]
+    private Text Total;
 
     /// <summary>
     /// What the current inventory of this item is. 
@@ -52,7 +56,7 @@ public class ItemManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-		
+        Total.text = CurrInventory.ToString();
 	}
 
     /// <summary>

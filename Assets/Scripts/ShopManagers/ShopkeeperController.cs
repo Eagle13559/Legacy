@@ -90,7 +90,6 @@ public class ShopkeeperController : MonoBehaviour
         else
         {
             timer += Time.deltaTime;
-            print(timer);
         }
 
         BombCount.text = BombCountPretext + cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb);
