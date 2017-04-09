@@ -438,6 +438,28 @@ public class PlayerController : MonoBehaviour {
     }
 
     /// <summary>
+    /// Shows the current time
+    /// </summary>
+    public void ShowTimer()
+    {
+        _timer.TimerDisplay();
+    }
+
+    /// <summary>
+    /// Converts the given time to currency for the player
+    /// </summary>
+    /// <param name="amount"></param>
+    public void ConvertTimeToCurrency()
+    {
+        long amount = BankAccount.ValueOfCurrency(CurrencyController.CurrencyTypes.Time);
+        if (_timer.CurrTime - amount > 0)
+        {
+            _timer.ReduceTimer(amount);
+            BankAccount.AddToBank(CurrencyController.CurrencyTypes.Time);
+        }
+    }
+
+    /// <summary>
     /// When this game object is destroyed, we need to record the players time and total money
     /// </summary>
     void OnDestroy ()

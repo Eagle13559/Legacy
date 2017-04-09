@@ -63,6 +63,21 @@ public class CurrencyController : MonoBehaviour {
     {
         Display.text = ""  + CurrEarnings;
     }
+
+    public long ValueOfCurrency (CurrencyTypes currency)
+    {
+        switch (currency)
+        {
+            case (CurrencyTypes.Coin):
+                return ValueOfCoin;
+            case (CurrencyTypes.Jewel):
+                return ValueOfJewel;
+            case (CurrencyTypes.Time):
+                return ValueOfTime;
+            default:
+                return 0;
+        }
+    }
     
     /// <summary>
     /// Adds the given amount to the total amount of earnings. Has a max value of a long type. 

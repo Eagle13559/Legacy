@@ -93,6 +93,7 @@ public class ShopkeeperController : MonoBehaviour
         }
 
         BombCount.text = BombCountPretext + cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb);
+        player.ShowTimer();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -171,5 +172,7 @@ public class ShopkeeperController : MonoBehaviour
         // clear the contents of the cart containing items to purchase. 
         cart.ClearCart();
     }
+
+    
 
 }

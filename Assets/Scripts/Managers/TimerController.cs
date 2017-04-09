@@ -86,7 +86,7 @@ public class TimerController : MonoBehaviour
     /// <summary>
     /// Displays all the appropriate timer display items. 
     /// </summary>
-    private void TimerDisplay()
+    public void TimerDisplay()
     {
         if (!float.IsPositiveInfinity(TimeLimit))
             TimerFill.ChangeBarFill(CurrTime / TimeLimit);
