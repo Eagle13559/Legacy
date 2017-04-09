@@ -55,15 +55,15 @@ public class ItemManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        TheBrain tempBrain;
+        GameObject tempBrain;
 
         if (ItemTag != TheBrain.ItemTypes.None)
         {
              CurrInventory = StartingInventory;
         }
-        else if ((tempBrain = GameObject.Find("TheBrain").GetComponent<TheBrain>()) != null )
+        else if ((tempBrain = GameObject.Find("TheBrain")) != null )
         {
-            CurrInventory = tempBrain.playerIncenseCounts[IncenseTag] == 0 ? 1 : 0;
+            CurrInventory = tempBrain.GetComponent<TheBrain>().playerIncenseCounts[IncenseTag] == 0 ? 1 : 0;
         }
         else
         {
