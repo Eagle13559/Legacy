@@ -369,9 +369,11 @@ public class PlayerController : MonoBehaviour {
                 BoxCollider2D otherCollider = other.gameObject.GetComponent<BoxCollider2D>();
                 Vector3 otherPos = other.gameObject.transform.position;
                 // We want to base it off of foot level difference
-                otherPos.y += (otherCollider.size.y / 2f) - otherCollider.offset.y;
+                //otherPos.y += otherCollider.offset.y;
+                //otherPos.y -= (otherCollider.size.y / 2f);
                 Vector3 myPos = gameObject.transform.position;
-                myPos.y += (_playerCollider.size.y / 2f) - _playerCollider.offset.y;
+                //myPos.y += _playerCollider.offset.y;
+                //myPos.y -= (_playerCollider.size.y / 2f);
                 Debug.Log("My position y: " + myPos.y + ", other pos.y: " + otherPos.y);
                 _damageFallbackDirection = otherPos - myPos;
                 _damageFallbackDirection.z = 0;
