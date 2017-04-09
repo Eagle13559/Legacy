@@ -116,7 +116,15 @@ public class PlayerController : MonoBehaviour {
         _animator = gameObject.GetComponent<AnimationController2D>();
         gameCamera.GetComponent<CameraFollow2D>().startCameraFollow(this.gameObject);
 
-        _timer.Intialize(brain.Time, brain.IncenseSprites[(int)brain.currIncense]);
+        if (brain.currIncense != TheBrain.IncenseTypes.None)
+        {
+            _timer.Intialize(brain.Time, brain.IncenseSprites[(int)brain.currIncense]);
+        }
+        else
+        {
+            _timer.Intialize(brain.Time, brain.IncenseSprites[0]);
+        }
+       
 
         if (! Regex.IsMatch(   SceneManager.GetActiveScene().name, "Shop") )
         {
@@ -136,6 +144,12 @@ public class PlayerController : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            brain.SetNextAvailableIncense();
+            _timer.ChangeTimerBarSprite(brain.IncenseSprites[(int)brain.currIncense]);
+        }
+
         // Check to see if player has eliminated all key enemies.
         if (!shopping && _gameManager.GetNumOfKeyEnemiesAlive() <= 0)
         {

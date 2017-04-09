@@ -5,15 +5,23 @@ using UnityEngine;
 
 public class ShoppingCart : MonoBehaviour {
 
-    public Dictionary<TheBrain.ItemTypes, int> cart { get; private set;  }
+    public Dictionary<TheBrain.ItemTypes, int> itemCart { get; private set;  }
 
-	public ShoppingCart ()
+   public Dictionary<TheBrain.IncenseTypes, int> incenseCart { get; private set; }
+
+    public ShoppingCart ()
     {
-        cart = new Dictionary<TheBrain.ItemTypes, int>();
+        itemCart = new Dictionary<TheBrain.ItemTypes, int>();
+        incenseCart = new Dictionary<TheBrain.IncenseTypes, int>();
 
         foreach (TheBrain.ItemTypes item in Enum.GetValues(typeof(TheBrain.ItemTypes)))
         {
-            cart[item] = 0;
+            itemCart[item] = 0;
+        }
+
+        foreach (TheBrain.IncenseTypes item in Enum.GetValues(typeof(TheBrain.IncenseTypes)))
+        {
+            incenseCart[item] = 0;
         }
     }
     
@@ -23,11 +31,20 @@ public class ShoppingCart : MonoBehaviour {
     /// <param name="type"></param>
     public void addItemToCart (TheBrain.ItemTypes type)
     {
-        cart[type]++;
+        itemCart[type]++;
     }
 
     /// <summary>
-    /// 
+    /// Adds a single instance of the incense typoe given to the shopping cart. 
+    /// </summary>
+    /// <param name="type"></param>
+    public void addIncenseToCart (TheBrain.IncenseTypes type)
+    {
+        incenseCart[type]++;
+    }
+
+    /// <summary>
+    /// Enumerates over list of items
     /// </summary>
     /// <returns></returns>
     public IEnumerable GetNumOfItems ()
@@ -35,7 +52,21 @@ public class ShoppingCart : MonoBehaviour {
         
         foreach (TheBrain.ItemTypes item in Enum.GetValues(typeof(TheBrain.ItemTypes)))
         {
-            yield return new ItemContainer(item, cart[item]);
+            yield return new ItemContainer(item, itemCart[item]);
+        }
+    }
+
+
+    /// <summary>
+    /// Enumerates over list of incense
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable GetNumOfIncense()
+    {
+
+        foreach (TheBrain.IncenseTypes item in Enum.GetValues(typeof(TheBrain.IncenseTypes)))
+        {
+            yield return new IncenseContainer(item, incenseCart[item]);
         }
     }
 
@@ -46,12 +77,22 @@ public class ShoppingCart : MonoBehaviour {
     {
         foreach (TheBrain.ItemTypes item in Enum.GetValues(typeof(TheBrain.ItemTypes)))
         {
-            cart[item] = 0;
+            itemCart[item] = 0;
+        }
+
+        foreach (TheBrain.IncenseTypes item in Enum.GetValues(typeof(TheBrain.IncenseTypes)))
+        {
+            incenseCart[item] = 0;
         }
     }
 
     public long GetNumOfSpecificItem (TheBrain.ItemTypes type)
     {
-        return cart[type];
+        return itemCart[type];
+    }
+
+    public long GetNumOfSpecificIncense(TheBrain.IncenseTypes type)
+    {
+        return incenseCart[type];
     }
 }

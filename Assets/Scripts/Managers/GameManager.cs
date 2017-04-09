@@ -58,6 +58,8 @@ public class GameManager : MonoBehaviour {
         {
             pauseControl(!paused);
         }
+
+       
     }
 
     /// <summary>

@@ -19,6 +19,7 @@ public class TheBrain : MonoBehaviour
         Time = float.PositiveInfinity;
         PlayersMoney = 100;
         InitalizePlayerItemCount();
+        InitalizePlayerIncenseCount();
         currIncense = IncenseTypes.Base;
     }
 
@@ -37,6 +38,7 @@ public class TheBrain : MonoBehaviour
         DontDestroyOnLoad(transform.gameObject);
 
         InitalizePlayerItemCount();
+        InitalizePlayerIncenseCount();
     }
 
     public void InitalizePlayerItemCount ()
@@ -44,6 +46,14 @@ public class TheBrain : MonoBehaviour
         foreach (ItemTypes item in Enum.GetValues(typeof(ItemTypes)))
         {
             playerItemCounts[item] = 0;
+        }
+    }
+
+    public void InitalizePlayerIncenseCount()
+    {
+        foreach (IncenseTypes item in Enum.GetValues(typeof(IncenseTypes)))
+        {
+            playerIncenseCounts[item] = 0;
         }
     }
 
@@ -75,16 +85,39 @@ public class TheBrain : MonoBehaviour
     public enum ItemTypes { Dash, Bomb, None }
 
     /// <summary>
-    /// 
+    /// Represents the incense types the player can have. 
     /// </summary>
-    public enum IncenseTypes { Base, SlowByHalf, SlowByThird, SlowByFourth };
+    public enum IncenseTypes { Base, Black, Purple, Red, None };
 
     public IncenseTypes currIncense;
+
+    /// <summary>
+    /// Will change the incense type if the count is greater than 0
+    /// </summary>
+    /// <returns></returns>
+    public void SetNextAvailableIncense()
+    {
+        for (IncenseTypes i = currIncense + 1; i < IncenseTypes.None; i++)
+        {
+            if (playerIncenseCounts[i] > 0)
+            {
+                currIncense = i;
+                return;
+            }
+        }
+
+        currIncense = IncenseTypes.Base;
+    }
 
     /// <summary>
     /// Keeps track of players item cache
     /// </summary>
     public Dictionary<ItemTypes, int> playerItemCounts = new Dictionary<ItemTypes, int>();
+
+    /// <summary>
+    /// Keeps track of players item cache
+    /// </summary>
+    public Dictionary<IncenseTypes, int> playerIncenseCounts = new Dictionary<IncenseTypes, int>();
 
     /// <summary>
     /// Contains all the incense images to use in UI.

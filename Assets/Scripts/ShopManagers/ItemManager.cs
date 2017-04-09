@@ -48,9 +48,28 @@ public class ItemManager : MonoBehaviour {
     /// </summary>
     public TheBrain.ItemTypes ItemTag;
 
+    /// <summary>
+    /// IncenseType as determined by the The Brain's listings. 
+    /// </summary>
+    public TheBrain.IncenseTypes IncenseTag;
+
     // Use this for initialization
     void Start () {
-        CurrInventory = StartingInventory;
+        TheBrain tempBrain;
+
+        if (ItemTag != TheBrain.ItemTypes.None)
+        {
+             CurrInventory = StartingInventory;
+        }
+        else if ((tempBrain = GameObject.Find("TheBrain").GetComponent<TheBrain>()) != null )
+        {
+            CurrInventory = tempBrain.playerIncenseCounts[IncenseTag] == 0 ? 1 : 0;
+        }
+        else
+        {
+            CurrInventory = 1;
+        }
+
         CurrCost = TotalCost;
 	}
 

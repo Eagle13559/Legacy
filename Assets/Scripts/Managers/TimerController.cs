@@ -49,6 +49,11 @@ public class TimerController : MonoBehaviour
         TimeLimit = TotalTime * 60;
         CurrTime = TimeLimit;
 
+        if (incense != null)
+        {
+            TimerBar.sprite = incense;
+        }
+
         TimerFill = new FillControl(TimerBar);
     }
 
@@ -89,6 +94,15 @@ public class TimerController : MonoBehaviour
             TimerFill.ChangeBarFill(1);
 
         TimerText.text = ToString();
+    }
+
+    /// <summary>
+    /// Changes the current sprite being used for the timer to the sprite given. 
+    /// </summary>
+    /// <param name="newSprite"></param>
+    public void ChangeTimerBarSprite (Sprite newSprite)
+    {
+        TimerBar.sprite = newSprite;
     }
 
     /// <summary>

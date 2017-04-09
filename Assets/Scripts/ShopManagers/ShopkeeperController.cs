@@ -126,7 +126,15 @@ public class ShopkeeperController : MonoBehaviour
         if (player.BankAccount.TryToRemoveFromBank(item.CurrCost, false, out cashAmount) 
                 && item.TryToPurchase(cashAmount))
         {
-            cart.addItemToCart(item.ItemTag);
+            if (item.ItemTag != TheBrain.ItemTypes.None)
+            {
+                cart.addItemToCart(item.ItemTag);
+            }
+            else
+            {
+                cart.addIncenseToCart(item.IncenseTag);
+            }
+                
         }
     }
 
@@ -148,6 +156,15 @@ public class ShopkeeperController : MonoBehaviour
             if (item.numOfItems > 0)
             {
                 brain.playerItemCounts[item.itemType] += item.numOfItems;
+            }
+        }
+
+        // Add items to permanent inventory of brain to be used in next level
+        foreach (IncenseContainer item in cart.GetNumOfIncense())
+        {
+            if (item.numOfItems > 0)
+            {
+                brain.playerIncenseCounts[item.itemType]++;
             }
         }
 
