@@ -107,12 +107,13 @@ public class EnemyController : MonoBehaviour {
         // Handle all variations of movement
         if (!waiting)
         {
+            _animator.setAnimation(anim_walk);
             if (outgoing)
             {
                 _animator.setFacing("Right");
                 if (!chasePlayer)
                 {
-                    _animator.setAnimation(anim_walk);
+                    
                     velocity.x = walkSpeed;
                 }
                 else
@@ -126,7 +127,7 @@ public class EnemyController : MonoBehaviour {
                 _animator.setFacing("Left");
                 if (!chasePlayer)
                 {
-                    _animator.setAnimation(anim_walk);
+                    //_animator.setAnimation(anim_walk);
                     velocity.x = walkSpeed * -1;
                 }
                 else

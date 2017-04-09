@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour {
     private float _damageTimer = 0.2f;
     private float _damageTime = 0f;
     private BoxCollider2D _playerCollider;
+    Vector3 _damageFallbackDirection;
     // State variables
     // NOTE: enum?
     private enum playerState
@@ -161,8 +162,31 @@ public class PlayerController : MonoBehaviour {
                     _canPlaceBomb = true;
                 }
             }
+            //private float _damageTimer = 0.2f;
+            //private float _damageTime = 0f;
+            // If the player is currently taking damage...
+            if (_currentState == playerState.TAKINGDAMAGE)
+            {
+                _animator.setAnimation(_damageAnimation);
+                _damageTime += Time.deltaTime;
+                _playerCollider.enabled = false;
+                if (_damageTime >= _damageTimer)
+                {
+                    _currentState = playerState.FREE;
+                    _damageTime = 0;
+                    _playerCollider.enabled = true;
+                    _animator.setAnimation("ShibaIdle");
+                }
+                else
+                {
+                    velocity.y = 0;
+                    velocity -= _damageFallbackDirection * 500 * Time.deltaTime;
+                    // Fall!
+                    //velocity.y += gravity * Time.deltaTime;
+                }
+            }
             // If the player has left the ground...
-            if (!_controller.isGrounded)
+            else if (!_controller.isGrounded)
             {
                 _wasLanded = false;
                 // ...or is falling.
@@ -173,7 +197,7 @@ public class PlayerController : MonoBehaviour {
                     _animator.setAnimation(_fallAnimation);
             }
             // ...and just landed.
-            if (!_wasLanded && _controller.isGrounded)
+            if (!_wasLanded && _controller.isGrounded && _currentState != playerState.TAKINGDAMAGE)
             {
                 _wasLanded = true;
                 _currentState = playerState.LANDING;
@@ -218,24 +242,9 @@ public class PlayerController : MonoBehaviour {
                     _animator.setAnimation(_idleAnimation);
                 }
             }
-            //private float _damageTimer = 0.2f;
-            //private float _damageTime = 0f;
-            // If the player is currently taking damage...
-            else if (_currentState == playerState.TAKINGDAMAGE)
-            {
-                _animator.setAnimation(_damageAnimation);
-                _damageTime += Time.deltaTime;
-                _playerCollider.enabled = false;
-                if (_damageTime >= _damageTimer)
-                {
-                    _currentState = playerState.FREE;
-                    _damageTime = 0;
-                    _playerCollider.enabled = true;
-                }
-            }
 
             // Only perform other checks if not dashing or attacking
-            else
+            else if (_currentState != playerState.TAKINGDAMAGE)
             {
                 if (_currentState == playerState.ATTACKING || _currentState == playerState.AIRATTACKING)
                 {
@@ -354,8 +363,21 @@ public class PlayerController : MonoBehaviour {
     {
         if (other.tag == "Enemy")
         {
-            _timer.ReduceTimer(timerDamage);
-            _currentState = playerState.TAKINGDAMAGE;
+            if (_currentState != playerState.ATTACKING && _currentState != playerState.AIRATTACKING && _currentState != playerState.DASHING) {
+                _timer.ReduceTimer(timerDamage);
+                _currentState = playerState.TAKINGDAMAGE;
+                BoxCollider2D otherCollider = other.gameObject.GetComponent<BoxCollider2D>();
+                Vector3 otherPos = other.gameObject.transform.position;
+                // We want to base it off of foot level difference
+                otherPos.y += (otherCollider.size.y / 2f) - otherCollider.offset.y;
+                Vector3 myPos = gameObject.transform.position;
+                myPos.y += (_playerCollider.size.y / 2f) - _playerCollider.offset.y;
+                Debug.Log("My position y: " + myPos.y + ", other pos.y: " + otherPos.y);
+                _damageFallbackDirection = otherPos - myPos;
+                _damageFallbackDirection.z = 0;
+                _damageFallbackDirection.Normalize();
+                //Debug.Log("Player damaged, moving: " + _damageFallbackDirection.x + ", " + _damageFallbackDirection.y);
+            }
         }
         else if (other.tag == "KillZ")
         {
