@@ -20,10 +20,14 @@ public class PlayerController : MonoBehaviour {
     private float _attackTimer = 0f;
     private float _landingTimer = 0f;
     private float _landTime = 0.2f;
+    private float _damageTimer = 0.2f;
+    private float _damageTime = 0f;
+    private BoxCollider2D _playerCollider;
     // State variables
     // NOTE: enum?
     private enum playerState
     {
+        TAKINGDAMAGE,
         DASHING,
         ATTACKING,
         AIRATTACKING,
@@ -81,6 +85,7 @@ public class PlayerController : MonoBehaviour {
     private string _victoryAnimation;
     private string _fallAnimation = "ShibaFall";
     private string _attackAirAnimation = "ShibaAttackA";
+    private string _damageAnimation = "ShibaDam";
 
     public GameObject _Bomb;
     public int _bombsPlaced = 0;
@@ -124,7 +129,7 @@ public class PlayerController : MonoBehaviour {
         BankAccount.AddToBank( brain.PlayersMoney );
         _prevY = gameObject.transform.position.y;
 
-        
+        _playerCollider = gameObject.GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -185,8 +190,8 @@ public class PlayerController : MonoBehaviour {
                 else
                     _dashTimer += Time.deltaTime;
             }
-            // Dashing overrides all other movements
-            if ((Input.GetKeyDown("k") && _canDash) || (_currentState == playerState.DASHING))
+            // Dashing overrides all other movements (except for the player taking damage)
+            if (((Input.GetKeyDown("k") && _canDash) || (_currentState == playerState.DASHING)) && _currentState != playerState.TAKINGDAMAGE)
             {
                 // Player doesn't fall
                 velocity.y = 0;
@@ -211,6 +216,21 @@ public class PlayerController : MonoBehaviour {
                     _currentState = playerState.FREE;
                     _canDash = false;
                     _animator.setAnimation(_idleAnimation);
+                }
+            }
+            //private float _damageTimer = 0.2f;
+            //private float _damageTime = 0f;
+            // If the player is currently taking damage...
+            else if (_currentState == playerState.TAKINGDAMAGE)
+            {
+                _animator.setAnimation(_damageAnimation);
+                _damageTime += Time.deltaTime;
+                _playerCollider.enabled = false;
+                if (_damageTime >= _damageTimer)
+                {
+                    _currentState = playerState.FREE;
+                    _damageTime = 0;
+                    _playerCollider.enabled = true;
                 }
             }
 
@@ -335,6 +355,7 @@ public class PlayerController : MonoBehaviour {
         if (other.tag == "Enemy")
         {
             _timer.ReduceTimer(timerDamage);
+            _currentState = playerState.TAKINGDAMAGE;
         }
         else if (other.tag == "KillZ")
         {
