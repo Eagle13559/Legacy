@@ -44,7 +44,7 @@ public class ShopkeeperController : MonoBehaviour
     /// The info shown to player for this object. 
     /// </summary>
     [SerializeField]
-    private TextBoxManager infoBox;
+    private TextBubbleController infoBox;
 
     // Use this for initialization
     void Start()
@@ -100,7 +100,7 @@ public class ShopkeeperController : MonoBehaviour
     {
         if (collision.tag == "Player")
         {
-            infoBox.EnableTextBox();
+            infoBox.EnableStartTextBoxes();
         }
     }
 
@@ -109,7 +109,7 @@ public class ShopkeeperController : MonoBehaviour
     {
         if (collision.tag == "Player")
         {
-            infoBox.DisableTextBox();
+            infoBox.DisableAllTextBoxes();
             playerPurchasing = false;
             _animator.setAnimation(_idle);
         }
