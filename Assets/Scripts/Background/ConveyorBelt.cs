@@ -1,15 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Prime31;
 
 public class ConveyorBelt : MonoBehaviour {
     [SerializeField]
-    float directionX;
+    private float directionX = 1;
 
 	// Use this for initialization
 	void Start () {
-		
-	}
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -18,8 +19,23 @@ public class ConveyorBelt : MonoBehaviour {
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        Vector3 direction = new Vector3(1f, 0f, 0f);
-        direction *= directionX;
-        collision.transform.position += direction;
+        Vector2 thrust;
+        thrust = new Vector3(50f, 0f);
+        thrust.x *= directionX;
+        collision.gameObject.GetComponent<Rigidbody2D>().AddRelativeForce(thrust);
+    }
+
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        Vector3 thrust;
+        thrust = new Vector3(10f, 0f, 0f);
+        thrust.x *= directionX * Time.deltaTime;
+        if (collision.tag == "Player")
+        {
+            collision.gameObject.GetComponent<CharacterController2D>().move(thrust);
+            //collision.transform.position += thrust;
+        }
+
     }
 }
