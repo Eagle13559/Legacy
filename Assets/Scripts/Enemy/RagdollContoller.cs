@@ -30,6 +30,10 @@ public class RagdollContoller : MonoBehaviour {
             // Enforce the bomb goes in the direction the player is facing
             parent.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction.x, direction.y) * 1000);
         }
+        if(other.tag == "Player")
+        {
+            Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), other, true);
+        }
 
     }
 
