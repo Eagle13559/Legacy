@@ -382,17 +382,10 @@ public class PlayerController : MonoBehaviour {
                 _currentState = playerState.TAKINGDAMAGE;
                 BoxCollider2D otherCollider = other.gameObject.GetComponent<BoxCollider2D>();
                 Vector3 otherPos = other.gameObject.transform.position;
-                // We want to base it off of foot level difference
-                //otherPos.y += otherCollider.offset.y;
-                //otherPos.y -= (otherCollider.size.y / 2f);
                 Vector3 myPos = gameObject.transform.position;
-                //myPos.y += _playerCollider.offset.y;
-                //myPos.y -= (_playerCollider.size.y / 2f);
-                Debug.Log("My position y: " + myPos.y + ", other pos.y: " + otherPos.y);
                 _damageFallbackDirection = otherPos - myPos;
                 _damageFallbackDirection.z = 0;
                 _damageFallbackDirection.Normalize();
-                //Debug.Log("Player damaged, moving: " + _damageFallbackDirection.x + ", " + _damageFallbackDirection.y);
             }
         }
         else if (other.tag == "KillZ")
@@ -477,5 +470,23 @@ public class PlayerController : MonoBehaviour {
         //}
     }
 
+    void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.tag == "Enemy")
+        {
+            if (_currentState != playerState.ATTACKING && _currentState != playerState.AIRATTACKING && _currentState != playerState.DASHING)
+            {
+                _timer.ReduceTimer(timerDamage);
+                _currentState = playerState.TAKINGDAMAGE;
+                BoxCollider2D otherCollider = other.gameObject.GetComponent<BoxCollider2D>();
+                Vector3 otherPos = other.gameObject.transform.position;
+                Vector3 myPos = gameObject.transform.position;
+                _damageFallbackDirection = otherPos - myPos;
+                _damageFallbackDirection.z = 0;
+                _damageFallbackDirection.Normalize();
+            }
+        }
+    }
 
-}
+
+    }

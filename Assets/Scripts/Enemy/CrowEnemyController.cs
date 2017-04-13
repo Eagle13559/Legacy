@@ -25,6 +25,10 @@ public class CrowEnemyController : MonoBehaviour {
     private float _idleTime = 0.0f;
     private bool isIdle = true;
 
+    private float _deathTime = 0.5f;
+    private float _deathTimer = 0f;
+    private bool _isDying = false;
+
     /// <summary>
     /// Times the current animation cycle
     /// </summary>
@@ -41,24 +45,38 @@ public class CrowEnemyController : MonoBehaviour {
         _levelManager.AddKeyEnemy();
         _animator = GetComponent<AnimationController2D>();
         _collider = GetComponent<Collider2D>();
-	}
+        gameObject.tag = "Crow";
+    }
 
     // runs every frame
     void Update()
     {
-        if (isIdle && _invisibleTime < _timer - Time.deltaTime)
+        if (_isDying)
+        {
+            _deathTimer += Time.deltaTime;
+            if (_deathTimer > _deathTime)
+            {
+                
+                _levelManager.RemoveKeyEnemy();
+        
+                Destroy(this.gameObject);
+            }
+        }
+        else if (isIdle && _invisibleTime < _timer - Time.deltaTime)
         {
             _timer = 0;
             _animator.setAnimation(_idleAnimation);
             isIdle = false;
-            _collider.enabled = true;
+            gameObject.tag = "Crow";
+            //_collider.enabled = true;
         }
         else if (!isIdle && _idleTime < _timer - Time.deltaTime)
         {
             _timer = 0;
             _animator.setAnimation(_invinsibleAnimation);
             isIdle = true;
-            _collider.enabled = false;
+            gameObject.tag = "Enemy";
+            //_collider.enabled = false;
         }
 
         _timer += Time.deltaTime;
@@ -68,9 +86,12 @@ public class CrowEnemyController : MonoBehaviour {
     {
         if (other.tag == "PlayerWeapon")
         {
-            _levelManager.RemoveKeyEnemy();
-            Instantiate(_crowHead, transform.position, Quaternion.identity);
-            Destroy(this.gameObject);
+            if (!isIdle && !_isDying)
+            {
+                Instantiate(_crowHead, transform.position, Quaternion.identity);
+                _isDying = true;
+                _animator.setAnimation(_deathAnimation);
+            }
         }
     }
 }

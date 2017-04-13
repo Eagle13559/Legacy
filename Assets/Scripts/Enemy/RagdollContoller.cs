@@ -13,13 +13,22 @@ public class RagdollContoller : MonoBehaviour {
 
     private bool hit = false;
 
-    void OnTriggerEnter2D(Collider2D coll)
+    // The bomb "shell"
+    private GameObject parent;
+
+    private void Start()
     {
-        if (coll.gameObject.tag == "Player")
+        parent = transform.parent.gameObject;
+    } 
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "PlayerWeapon")
         {
-            Vector3 forceVelocity = coll.GetComponent<CharacterController2D>().velocity;
-            forceVelocity.Normalize();
-            GetComponent<Rigidbody2D>().AddForce(new Vector2(forceVelocity.x, forceVelocity.y) * 200);
+            Vector3 direction = gameObject.transform.position - other.transform.position;
+            direction.Normalize();
+            // Enforce the bomb goes in the direction the player is facing
+            parent.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction.x, direction.y) * 1000);
         }
 
     }
