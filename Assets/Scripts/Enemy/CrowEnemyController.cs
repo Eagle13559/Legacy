@@ -58,7 +58,9 @@ public class CrowEnemyController : MonoBehaviour {
             {
                 
                 _levelManager.RemoveKeyEnemy();
-        
+
+                Instantiate(_crowHead, transform.position, Quaternion.identity);
+
                 Destroy(this.gameObject);
             }
         }
@@ -88,7 +90,7 @@ public class CrowEnemyController : MonoBehaviour {
         {
             if (!isIdle && !_isDying)
             {
-                Instantiate(_crowHead, transform.position, Quaternion.identity);
+                isIdle = false;
                 _isDying = true;
                 _animator.setAnimation(_deathAnimation);
             }

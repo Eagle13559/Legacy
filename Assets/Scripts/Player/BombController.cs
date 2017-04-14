@@ -70,9 +70,9 @@ public class BombController : MonoBehaviour {
 	}
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Enemy" || other.tag == "Crow")
+        if (other.tag == "Enemy" )
         {
-            Destroy(other.gameObject);
+            //Destroy(other.gameObject);
             _boomTimer = _bombTime;
         }
         if (other.tag == "PlayerWeapon")

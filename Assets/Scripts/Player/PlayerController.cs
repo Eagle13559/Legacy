@@ -94,6 +94,8 @@ public class PlayerController : MonoBehaviour {
     private float _bombCooldownWaitTime = 0.5f;
     private bool _canPlaceBomb = true;
 
+    private bool shopping = false;
+
     // Boolean to control if the player has infinite bomb placement
     private bool infiniteBombs = false;
 
@@ -138,6 +140,7 @@ public class PlayerController : MonoBehaviour {
         else
         {
             infiniteBombs = true;
+            shopping = true;
         }
 
         BankAccount.AddToBank( brain.PlayersMoney );
@@ -161,7 +164,7 @@ public class PlayerController : MonoBehaviour {
         }
 
         // Check to see if player has eliminated all key enemies.
-        if (!infiniteBombs && _gameManager.GetNumOfKeyEnemiesAlive() <= 0)
+        if (!shopping && _gameManager.GetNumOfKeyEnemiesAlive() <= 0)
         {
             _animator.setAnimation(_victoryAnimation);
             _gameManager.LevelFinished();
