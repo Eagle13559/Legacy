@@ -94,7 +94,11 @@ public class PlayerController : MonoBehaviour {
     private float _bombCooldownWaitTime = 0.5f;
     private bool _canPlaceBomb = true;
 
-    private bool shopping;
+    // Boolean to control if the player has infinite bomb placement
+    private bool infiniteBombs = false;
+
+    // Boolean to determine if we are debugging or not. 
+    public bool debugMode = false;
 
     // Use this for initialization
     void Start () {
@@ -110,6 +114,7 @@ public class PlayerController : MonoBehaviour {
         {
             Debug.Log("The Brain was not found for this object");
             brain = new TheBrain();
+            debugMode = true;
         }
 
         _controller = gameObject.GetComponent<CharacterController2D>();
@@ -132,7 +137,7 @@ public class PlayerController : MonoBehaviour {
         }
         else
         {
-            shopping = true;
+            infiniteBombs = true;
         }
 
         BankAccount.AddToBank( brain.PlayersMoney );
@@ -150,8 +155,13 @@ public class PlayerController : MonoBehaviour {
             _timer.ChangeTimerBarSprite(brain.IncenseSprites[(int)brain.currIncense]);
         }
 
+        if (Input.GetKeyDown(KeyCode.B) && debugMode)
+        {
+            infiniteBombs = !infiniteBombs;
+        }
+
         // Check to see if player has eliminated all key enemies.
-        if (!shopping && _gameManager.GetNumOfKeyEnemiesAlive() <= 0)
+        if (!infiniteBombs && _gameManager.GetNumOfKeyEnemiesAlive() <= 0)
         {
             _animator.setAnimation(_victoryAnimation);
             _gameManager.LevelFinished();
@@ -334,7 +344,7 @@ public class PlayerController : MonoBehaviour {
                     _attackColliderController.setEnabled(true);
                     
                 }
-                if (Input.GetKeyDown("l") && _bombsPlaced < 2 && (BombTotal > 0 || shopping))
+                if (Input.GetKeyDown("l") && _bombsPlaced < 2 && (BombTotal > 0 || infiniteBombs))
                 {
                     if (_canPlaceBomb)
                     {
@@ -342,7 +352,7 @@ public class PlayerController : MonoBehaviour {
                         GameObject bomb = Instantiate(_Bomb, transform.position, Quaternion.identity) as GameObject;
                         _bombsPlaced++;
                         bomb.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(transform.forward);//.AddForce(transform.forward * _bombThrust);
-                        if (!shopping)
+                        if (!infiniteBombs)
                         {
                             brain.playerItemCounts[TheBrain.ItemTypes.Bomb] = BombTotal > 1 ? BombTotal - 1 : 0;
                         }
