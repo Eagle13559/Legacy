@@ -33,7 +33,8 @@ public class PlayerController : MonoBehaviour {
         ATTACKING,
         AIRATTACKING,
         LANDING,
-        FREE
+        FREE,
+        DEAD
     }
     playerState _currentState;
     private bool _canDash = true;
@@ -87,6 +88,7 @@ public class PlayerController : MonoBehaviour {
     private string _fallAnimation = "ShibaFall";
     private string _attackAirAnimation = "ShibaAttackA";
     private string _damageAnimation = "ShibaDam";
+    private string _deadAnimation = "ShibaDown";
 
     public GameObject _Bomb;
     public int _bombsPlaced = 0;
@@ -168,6 +170,10 @@ public class PlayerController : MonoBehaviour {
         {
             _animator.setAnimation(_victoryAnimation);
             _gameManager.LevelFinished();
+        }
+        else if (_currentState == playerState.DEAD)
+        {
+            _animator.setAnimation(_deadAnimation);
         }
         else
         {
@@ -379,6 +385,7 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     public void Die()
     {
+        _currentState = playerState.DEAD;
         _gameManager.GameOver();
     }
 
