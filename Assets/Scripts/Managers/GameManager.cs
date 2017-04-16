@@ -32,6 +32,11 @@ public class GameManager : MonoBehaviour {
     private bool paused = false;
 
     private int numOfKeyEnemies;
+    private GameObject _closeDoors;
+    float _closeDoorTime = 1.2f;
+    float _closeDoorTimer = 0f;
+    bool _transitioning = false;
+    bool _restarting = false;
 
     // Use this for initialization
     void Start()
@@ -50,6 +55,8 @@ public class GameManager : MonoBehaviour {
         if (pauseMenu != null)
             pauseMenu.SetActive(false);
         //brain.nextSceneIndex = SceneManager.GetSceneByName(resetLevel).buildIndex;
+        _closeDoors = GameObject.Find("CloseDoors");
+        _closeDoors.SetActive(false);
     }
 
     void Update()
@@ -57,6 +64,18 @@ public class GameManager : MonoBehaviour {
         if (pauseMenu != null && (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Joystick1Button9)))
         {
             pauseControl(!paused);
+        }
+        if (_transitioning)
+        {
+            _closeDoorTimer += Time.deltaTime;
+            if (_closeDoorTimer >= _closeDoorTime)
+            {
+                
+                if (!_restarting)
+                    SceneManager.LoadScene(nextLevel);
+                else
+                    SceneManager.LoadScene(resetLevel);
+            }
         }
 
     }
@@ -88,7 +107,9 @@ public class GameManager : MonoBehaviour {
 
     public void NextLevel()
     {
-        SceneManager.LoadScene(nextLevel);
+        //SceneManager.LoadScene(nextLevel);
+        _transitioning = true;
+        _closeDoors.SetActive(true);
     }
 
     /// <summary>
@@ -106,7 +127,10 @@ public class GameManager : MonoBehaviour {
     {
         if (!DebugMode)
         {
-            SceneManager.LoadScene(resetLevel);
+            _transitioning = true;
+            _restarting = true;
+            _closeDoors.SetActive(true);
+            //SceneManager.LoadScene(resetLevel);
         }
         brain.resetTime();
     }
