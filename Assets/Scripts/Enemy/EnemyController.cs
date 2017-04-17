@@ -191,6 +191,7 @@ public class EnemyController : MonoBehaviour {
         {
             _dying = true;
             _animator.setAnimation("KappaDead");
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;
             //Rigidbody2D myBod = gameObject.GetComponent<Rigidbody2D>();
             //myBod.bodyType = RigidbodyType2D.Dynamic;
             //myBod.AddForce(new Vector2(0, 20));

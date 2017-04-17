@@ -171,13 +171,15 @@ public class PlayerController : MonoBehaviour {
         }
 
         // Check to see if player has eliminated all key enemies.
-        if (!shopping && _gameManager.GetNumOfKeyEnemiesAlive() <= 0)
+        if (shopping && _gameManager.GetNumOfKeyEnemiesAlive() <= 0)
         {
+            if (_currentState != playerState.WINNING)
+                _animator.setAnimation(_victoryAnimation);
             _currentState = playerState.WINNING;
             // Wait until the player is on the ground, all controls are blocked
             if (_controller.isGrounded)
             {
-                _animator.setAnimation(_victoryAnimation);
+                
                 if (_winTimer < _winTime)
                     _winTimer += Time.deltaTime;
                 if (_winTimer >= _winTime)
