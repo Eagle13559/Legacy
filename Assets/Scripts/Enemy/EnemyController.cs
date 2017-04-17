@@ -60,6 +60,10 @@ public class EnemyController : MonoBehaviour {
     private AnimationController2D _animator;
     private CharacterController2D _controller;
 
+    private bool _dying = false;
+    private float _deathTimer = 0f;
+    private float _deathTime = 1f;
+
     // Use this for initialization
     void Start () {
         _animator = gameObject.GetComponent<AnimationController2D>();
@@ -77,6 +81,15 @@ public class EnemyController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (_dying)
+        {
+            _deathTimer += Time.deltaTime;
+            if (_deathTimer >= _deathTime)
+            {
+                Destroy(gameObject);
+            }
+            return;
+        }
 
         Vector3 velocity = _controller.velocity;
         velocity.x = 0;
@@ -176,8 +189,14 @@ public class EnemyController : MonoBehaviour {
     {
         if (other.tag == "PlayerWeapon")
         {
-            Destroy(gameObject);
+            _dying = true;
+            _animator.setAnimation("KappaDead");
+            //Rigidbody2D myBod = gameObject.GetComponent<Rigidbody2D>();
+            //myBod.bodyType = RigidbodyType2D.Dynamic;
+            //myBod.AddForce(new Vector2(0, 20));
+            //myBod.AddTorque(10);
         }
+        
     }
 
     ////void OnCollisionEnter2D(Collision2D coll)
