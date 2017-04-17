@@ -34,7 +34,8 @@ public class PlayerController : MonoBehaviour {
         AIRATTACKING,
         LANDING,
         FREE,
-        DEAD
+        DEAD,
+        WINNING
     }
     playerState _currentState;
     private bool _canDash = true;
@@ -83,8 +84,7 @@ public class PlayerController : MonoBehaviour {
     private string _dashAnimation = "ShibaDash";
     private string _attackAnimation = "ShibaAttackG";
     private string _landAnimation = "ShibaLand";
-    [SerializeField]
-    private string _victoryAnimation;
+    private string _victoryAnimation = "ShibaWinning";
     private string _fallAnimation = "ShibaFall";
     private string _attackAirAnimation = "ShibaAttackA";
     private string _damageAnimation = "ShibaDam";
@@ -106,6 +106,8 @@ public class PlayerController : MonoBehaviour {
 
     private float _deathTimer = 0f;
     private float _deathTime = 0.5f;
+    private float _winTimer = 0f;
+    private float _winTime = 5f;
 
     // Use this for initialization
     void Start () {
@@ -171,10 +173,19 @@ public class PlayerController : MonoBehaviour {
         // Check to see if player has eliminated all key enemies.
         if (!shopping && _gameManager.GetNumOfKeyEnemiesAlive() <= 0)
         {
-            _animator.setAnimation(_victoryAnimation);
-            _gameManager.LevelFinished();
+            _currentState = playerState.WINNING;
+            // Wait until the player is on the ground, all controls are blocked
+            if (_controller.isGrounded)
+            {
+                _animator.setAnimation(_victoryAnimation);
+                if (_winTimer < _winTime)
+                    _winTimer += Time.deltaTime;
+                if (_winTimer >= _winTime)
+                    _gameManager.LevelFinished();
+                //_gameManager.LevelFinished();
+            }
         }
-        else if (_currentState == playerState.DEAD)
+        if (_currentState == playerState.DEAD)
         {
             _animator.setAnimation(_deadAnimation);
             if (_deathTimer < _deathTime)
@@ -255,7 +266,7 @@ public class PlayerController : MonoBehaviour {
                     _dashTimer += Time.deltaTime;
             }
             // Dashing overrides all other movements (except for the player taking damage)
-            if (((Input.GetKeyDown("k") && _canDash) || (_currentState == playerState.DASHING)) && _currentState != playerState.TAKINGDAMAGE)
+            if (((Input.GetKeyDown("k") && _canDash) || (_currentState == playerState.DASHING)) && _currentState != playerState.TAKINGDAMAGE && _currentState != playerState.WINNING)
             {
                 // Player doesn't fall
                 velocity.y = 0;
@@ -299,7 +310,7 @@ public class PlayerController : MonoBehaviour {
                     if (_currentState == playerState.ATTACKING) return;
                 }
                 // If walking left
-                if (Input.GetAxis("Horizontal") < 0)
+                if (Input.GetAxis("Horizontal") < 0 && _currentState != playerState.WINNING)
                 {
                     velocity.x = walkSpeed * -1;
                     _animator.setFacing("Left");
@@ -307,7 +318,7 @@ public class PlayerController : MonoBehaviour {
                     _isFacingRight = false;
                 }
                 // If walking right
-                else if (Input.GetAxis("Horizontal") > 0)
+                else if (Input.GetAxis("Horizontal") > 0 && _currentState != playerState.WINNING)
                 {
                     velocity.x = walkSpeed;
                     _animator.setFacing("Right");
@@ -337,13 +348,13 @@ public class PlayerController : MonoBehaviour {
                     }
                 }
                 // If the player tries to jump, only allow it if they are grounded.
-                if (Input.GetAxis("Jump") > 0 && _controller.isGrounded)
+                if (Input.GetAxis("Jump") > 0 && _controller.isGrounded && _currentState != playerState.WINNING)
                 {
                     velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
                     _animator.setAnimation(_jumpAnimation);
                 }
                 // The player has initiated an attack...
-                if (Input.GetKeyDown("j"))
+                if (Input.GetKeyDown("j") && _currentState != playerState.WINNING)
                 {
                     // ...perform a ground attack.
                     if (_controller.isGrounded)
@@ -360,7 +371,7 @@ public class PlayerController : MonoBehaviour {
                     _attackColliderController.setEnabled(true);
                     
                 }
-                if (Input.GetKeyDown("l") && _bombsPlaced < 2 && (BombTotal > 0 || infiniteBombs))
+                if (Input.GetKeyDown("l") && _bombsPlaced < 2 && (BombTotal > 0 || infiniteBombs) && _currentState != playerState.WINNING)
                 {
                     if (_canPlaceBomb)
                     {
