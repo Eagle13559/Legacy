@@ -104,6 +104,9 @@ public class PlayerController : MonoBehaviour {
     // Boolean to determine if we are debugging or not. 
     public bool debugMode = false;
 
+    private float _deathTimer = 0f;
+    private float _deathTime = 0.5f;
+
     // Use this for initialization
     void Start () {
         _currentState = playerState.FREE;
@@ -174,6 +177,10 @@ public class PlayerController : MonoBehaviour {
         else if (_currentState == playerState.DEAD)
         {
             _animator.setAnimation(_deadAnimation);
+            if (_deathTimer < _deathTime)
+                _deathTimer += Time.deltaTime;
+            if (_deathTimer >= _deathTime)
+                _gameManager.GameOver();
         }
         else
         {
@@ -386,7 +393,7 @@ public class PlayerController : MonoBehaviour {
     public void Die()
     {
         _currentState = playerState.DEAD;
-        _gameManager.GameOver();
+        
     }
 
     /// <summary>
