@@ -64,6 +64,8 @@ public class EnemyController : MonoBehaviour {
     private float _deathTimer = 0f;
     private float _deathTime = 1f;
 
+
+
     // Use this for initialization
     void Start () {
         _animator = gameObject.GetComponent<AnimationController2D>();

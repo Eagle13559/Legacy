@@ -435,12 +435,12 @@ public class PlayerController : MonoBehaviour {
         else if (other.tag == "Coin")
         {
             BankAccount.AddToBank(CurrencyController.CurrencyTypes.Coin);
-            Destroy(other.gameObject);
+            //Destroy(other.gameObject);
         }
         else if (other.tag == "Jewel")
         {
             BankAccount.AddToBank(CurrencyController.CurrencyTypes.Jewel);
-            Destroy(other.gameObject);
+            //Destroy(other.gameObject);
         }
         else if (other.tag == "Gate")
         {

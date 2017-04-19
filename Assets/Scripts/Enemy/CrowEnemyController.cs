@@ -29,6 +29,9 @@ public class CrowEnemyController : MonoBehaviour {
     private float _deathTimer = 0f;
     private bool _isDying = false;
 
+    [SerializeField]
+    private MoneySpawner moneySpawn;
+
     /// <summary>
     /// Times the current animation cycle
     /// </summary>
@@ -60,6 +63,7 @@ public class CrowEnemyController : MonoBehaviour {
                 _levelManager.RemoveKeyEnemy();
 
                 Instantiate(_crowHead, transform.position, Quaternion.identity);
+                moneySpawn.DropMoney(this.transform.position);
 
                 Destroy(this.gameObject);
             }
@@ -93,6 +97,7 @@ public class CrowEnemyController : MonoBehaviour {
                 isIdle = false;
                 _isDying = true;
                 _animator.setAnimation(_deathAnimation);
+                
             }
         }
     }
