@@ -171,7 +171,7 @@ public class PlayerController : MonoBehaviour {
         }
 
         // Check to see if player has eliminated all key enemies.
-        if (!shopping && _gameManager.GetNumOfKeyEnemiesAlive() <= 0)
+        if (shopping && _gameManager.GetNumOfKeyEnemiesAlive() <= 0)
         {
             if (_currentState != playerState.WINNING)
                 _animator.setAnimation(_victoryAnimation);
