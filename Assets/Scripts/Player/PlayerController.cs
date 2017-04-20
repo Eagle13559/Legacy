@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour {
     private float _deathTimer = 0f;
     private float _deathTime = 0.5f;
     private float _winTimer = 0f;
-    private float _winTime = 5f;
+    private float _winTime = 1f;
 
     // Use this for initialization
     void Start () {
@@ -171,7 +171,7 @@ public class PlayerController : MonoBehaviour {
         }
 
         // Check to see if player has eliminated all key enemies.
-        if (shopping && _gameManager.GetNumOfKeyEnemiesAlive() <= 0)
+        if (!shopping && _gameManager.GetNumOfKeyEnemiesAlive() <= 0)
         {
             if (_currentState != playerState.WINNING)
                 _animator.setAnimation(_victoryAnimation);
@@ -183,7 +183,10 @@ public class PlayerController : MonoBehaviour {
                 if (_winTimer < _winTime)
                     _winTimer += Time.deltaTime;
                 if (_winTimer >= _winTime)
+                {
                     _gameManager.LevelFinished();
+                    _animator.setAnimation("ShibaFreezeFrame");
+                }
                 //_gameManager.LevelFinished();
             }
         }
