@@ -22,7 +22,7 @@ public class ConveyorBelt : MonoBehaviour {
         Vector2 thrust;
         thrust = new Vector3(50f, 0f);
         thrust.x *= directionX;
-        collision.gameObject.GetComponent<Rigidbody2D>().AddRelativeForce(thrust);
+        collision.gameObject.GetComponent<Rigidbody2D>().AddForce(thrust);
     }
 
 
