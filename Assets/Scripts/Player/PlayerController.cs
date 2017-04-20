@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour {
     private float _deathTimer = 0f;
     private float _deathTime = 0.5f;
     private float _winTimer = 0f;
-    private float _winTime = 1f;
+    private float _winTime = 1.25f;
 
     // Use this for initialization
     void Start () {
@@ -185,7 +185,7 @@ public class PlayerController : MonoBehaviour {
                 if (_winTimer >= _winTime)
                 {
                     _gameManager.LevelFinished();
-                    _animator.setAnimation("ShibaFreezeFrame");
+                    //_animator.setAnimation("ShibaFreezeFrame");
                 }
                 //_gameManager.LevelFinished();
             }
