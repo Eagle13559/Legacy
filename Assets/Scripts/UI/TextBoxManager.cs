@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class TextBoxManager : MonoBehaviour {
 
+
     public GameObject textBox;
 
     public Text theText;

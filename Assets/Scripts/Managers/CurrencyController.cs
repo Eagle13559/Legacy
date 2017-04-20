@@ -35,7 +35,7 @@ public class CurrencyController : MonoBehaviour {
     /// <summary>
     /// Keeps Track of the total withdrawal amount when removal from bank is called. 
     /// </summary>
-    private long TotalWithdrawalAmount;
+    public long TotalWithdrawalAmount { get; private set; }
 
     /// <summary>
     /// Gets the current total amount of money in this account. 
@@ -61,7 +61,7 @@ public class CurrencyController : MonoBehaviour {
     /// </summary>
     private void DisplayCurrency ()
     {
-        Display.text = ""  + CurrEarnings;
+        Display.text = CurrEarnings.ToString();
     }
 
     public long ValueOfCurrency (CurrencyTypes currency)

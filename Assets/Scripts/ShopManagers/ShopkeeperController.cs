@@ -32,8 +32,21 @@ public class ShopkeeperController : MonoBehaviour
     [SerializeField]
     private Text BombCount;
 
-    // The text that is already in BombCount. 
-    private string BombCountPretext;
+    /// <summary>
+    /// Text field to show how much the current amount of bombs would cost the player. 
+    /// </summary>
+    [SerializeField]
+    private Text BombPricing;
+
+    /// <summary>
+    /// References the incense purchasable by player to show in checkout window
+    /// </summary>
+    [SerializeField]
+    private Image purpleIncense;
+    [SerializeField]
+    private Image redIncense;
+    [SerializeField]
+    private Image blackIncense;
 
     /// <summary>
     /// Keeps track of the items that the player wishes to purchase. 
@@ -45,6 +58,9 @@ public class ShopkeeperController : MonoBehaviour
     /// </summary>
     [SerializeField]
     private TextBoxManager infoBox;
+
+    [SerializeField]
+    private GameObject[] subtextBoxes;
 
     // Use this for initialization
     void Start()
@@ -63,7 +79,9 @@ public class ShopkeeperController : MonoBehaviour
 
         _animator = GetComponent<AnimationController2D>();
         cart = new ShoppingCart();
-        BombCountPretext = BombCount.text;
+
+        BombCount.text = cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb).ToString();
+        BombPricing.text = player.BankAccount.TotalWithdrawalAmount.ToString();
     }
 
     // Update is called once per frame
@@ -92,7 +110,6 @@ public class ShopkeeperController : MonoBehaviour
             timer += Time.deltaTime;
         }
 
-        BombCount.text = BombCountPretext + cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb);
         player.ShowTimer();
     }
 
@@ -110,6 +127,10 @@ public class ShopkeeperController : MonoBehaviour
         if (collision.tag == "Player")
         {
             infoBox.DisableTextBox();
+            foreach (GameObject textBox in subtextBoxes)
+            {
+                textBox.SetActive(false);
+            }
             playerPurchasing = false;
             _animator.setAnimation(_idle);
         }
@@ -121,6 +142,7 @@ public class ShopkeeperController : MonoBehaviour
     /// <param name="item"></param>
     public void AddToCart(ItemManager item)
     {
+        
         long cashAmount;
         // Checks if player can remove the required amount to purchase item, and if the item is in stock.
         // and then will add the item to the cart if both conditions are satisfied. 
@@ -130,13 +152,31 @@ public class ShopkeeperController : MonoBehaviour
             if (item.ItemTag != TheBrain.ItemTypes.None)
             {
                 cart.addItemToCart(item.ItemTag);
+
+                BombCount.text = cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb).ToString();
+                BombPricing.text = player.BankAccount.TotalWithdrawalAmount.ToString();
             }
             else
             {
                 cart.addIncenseToCart(item.IncenseTag);
+
+                if (item.IncenseTag.Equals(TheBrain.IncenseTypes.Purple))
+                {
+                    purpleIncense.color = new Color(purpleIncense.color.r, purpleIncense.color.g, purpleIncense.color.b, 255);
+                }
+                else if (item.IncenseTag.Equals(TheBrain.IncenseTypes.Red))
+                {
+                    redIncense.color = new Color(redIncense.color.r, redIncense.color.g, redIncense.color.b, 255);
+                }
+                else if (item.IncenseTag.Equals(TheBrain.IncenseTypes.Black))
+                {
+                    blackIncense.color = new Color(blackIncense.color.r, blackIncense.color.g, blackIncense.color.b, 255);
+                }
             }
                 
         }
+
+       
     }
 
     /// <summary>
