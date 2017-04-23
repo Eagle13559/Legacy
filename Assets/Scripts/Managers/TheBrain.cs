@@ -72,7 +72,7 @@ public class TheBrain : MonoBehaviour
     /// <summary>
     /// Keeps track of the index that will be loaded on the next load level call
     /// </summary>
-    public int nextSceneIndex;
+    public string nextSceneIndex;
 
     public void resetTime()
     {
