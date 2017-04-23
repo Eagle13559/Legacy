@@ -90,8 +90,7 @@ public class CrowEnemyController : MonoBehaviour {
             isIdle = false;
             gameObject.tag = "Crow";
             //_collider.enabled = true;
-            _source.Stop();
-            _source.PlayOneShot(_crowInvincible, _crowInvincibleVolume);
+            _source.Play();
         }
         else if (!isIdle && _idleTime < _timer - Time.deltaTime)
         {
@@ -99,7 +98,8 @@ public class CrowEnemyController : MonoBehaviour {
             _animator.setAnimation(_invinsibleAnimation);
             isIdle = true;
             gameObject.tag = "Enemy";
-            _source.Play();
+            _source.Stop();
+            _source.PlayOneShot(_crowInvincible, _crowInvincibleVolume);
             //_collider.enabled = false;
         }
 
