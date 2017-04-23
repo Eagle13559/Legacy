@@ -41,14 +41,29 @@ public class CrowEnemyController : MonoBehaviour {
 
     private Collider2D _collider;
 
-	// Use this for initialization
-	void Start () {
+    private AudioSource _source;
+
+    [SerializeField]
+    private AudioClip _crowInvincible;
+    [SerializeField]
+    private float _crowInvincibleVolume = 1.0f;
+
+    [SerializeField]
+    private AudioClip _crowDead;
+    [SerializeField]
+    private float _crowDeadVolume = 1.0f;
+
+    // Use this for initialization
+    void Start () {
         _levelManager = GameObject.Find("GameManagers").GetComponent<GameManager>();
 
         _levelManager.AddKeyEnemy();
         _animator = GetComponent<AnimationController2D>();
         _collider = GetComponent<Collider2D>();
         gameObject.tag = "Crow";
+
+        _source = GetComponent<AudioSource>();
+        _source.Play();
     }
 
     // runs every frame
@@ -75,6 +90,8 @@ public class CrowEnemyController : MonoBehaviour {
             isIdle = false;
             gameObject.tag = "Crow";
             //_collider.enabled = true;
+            _source.Stop();
+            _source.PlayOneShot(_crowInvincible, _crowInvincibleVolume);
         }
         else if (!isIdle && _idleTime < _timer - Time.deltaTime)
         {
@@ -82,6 +99,7 @@ public class CrowEnemyController : MonoBehaviour {
             _animator.setAnimation(_invinsibleAnimation);
             isIdle = true;
             gameObject.tag = "Enemy";
+            _source.Play();
             //_collider.enabled = false;
         }
 
@@ -94,6 +112,8 @@ public class CrowEnemyController : MonoBehaviour {
         {
             if (!isIdle && !_isDying)
             {
+                _source.Stop();
+                _source.PlayOneShot(_crowDead, _crowDeadVolume);
                 isIdle = false;
                 _isDying = true;
                 _animator.setAnimation(_deathAnimation);
