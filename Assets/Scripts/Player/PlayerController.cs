@@ -496,20 +496,26 @@ public class PlayerController : MonoBehaviour {
             
             if (_currentState != playerState.ATTACKING && _currentState != playerState.AIRATTACKING && _currentState != playerState.DASHING)
             {
-                if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
-                _timer.ReduceTimer(timerDamage);
-                _currentState = playerState.TAKINGDAMAGE;
-                _damageFallbackDirection = new Vector3(0, -1, 0);
+                if (!_isInvincible)
+                {
+                    if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
+                    _timer.ReduceTimer(timerDamage);
+                    _currentState = playerState.TAKINGDAMAGE;
+                    _damageFallbackDirection = new Vector3(0, -1, 0);
+                }
             }
         }
         else if (other.tag == "SpikeySlantRight")
         {
             if (_currentState != playerState.ATTACKING && _currentState != playerState.AIRATTACKING && _currentState != playerState.DASHING)
             {
-                if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
-                _timer.ReduceTimer(timerDamage);
-                _currentState = playerState.TAKINGDAMAGE;
-                _damageFallbackDirection = new Vector3(-0.73f, -0.73f, 0);
+                if (!_isInvincible)
+                {
+                    if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
+                    _timer.ReduceTimer(timerDamage);
+                    _currentState = playerState.TAKINGDAMAGE;
+                    _damageFallbackDirection = new Vector3(-0.73f, -0.73f, 0);
+                }
             }
         }
         else if (other.tag == "KillZ")
