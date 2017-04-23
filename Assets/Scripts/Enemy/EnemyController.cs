@@ -94,7 +94,7 @@ public class EnemyController : MonoBehaviour {
         if (_dying)
         {
             _source.Stop();
-            _source.PlayOneShot(_kappaDeath);
+            _source.PlayOneShot(_kappaDeath, _kappaDeathVolume);
             _deathTimer += Time.deltaTime;
             if (_deathTimer >= _deathTime)
             {
