@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
 using UnityEngine.Audio;
+using System.Text.RegularExpressions;
 
 public class GameManager : MonoBehaviour {
 
@@ -31,6 +32,8 @@ public class GameManager : MonoBehaviour {
 
     private bool paused = false;
 
+    private bool _inShop;
+
     private int numOfKeyEnemies;
     private GameObject _closeDoors;
     float _closeDoorTime = 1.2f;
@@ -57,6 +60,17 @@ public class GameManager : MonoBehaviour {
         //brain.nextSceneIndex = SceneManager.GetSceneByName(resetLevel).buildIndex;
         _closeDoors = GameObject.Find("CloseDoors");
         _closeDoors.SetActive(false);
+
+        if (!Regex.IsMatch(SceneManager.GetActiveScene().name, "Shop"))
+        {
+            _inShop = false;
+        }
+        else
+        {
+            _inShop = true;
+        }
+
+        //nextLevel = SceneManager.GetSceneByBuildIndex(brain.nextSceneIndex).name;
     }
 
     void Update()
@@ -70,9 +84,10 @@ public class GameManager : MonoBehaviour {
             _closeDoorTimer += Time.deltaTime;
             if (_closeDoorTimer >= _closeDoorTime)
             {
-                
-                if (!_restarting)
-                    SceneManager.LoadScene(nextLevel);
+                if (!_inShop)
+                    SceneManager.LoadScene("Shop");
+                else if (!_restarting)
+                    SceneManager.LoadScene(brain.nextSceneIndex);
                 else
                     SceneManager.LoadScene(resetLevel);
             }
@@ -108,6 +123,8 @@ public class GameManager : MonoBehaviour {
     public void NextLevel()
     {
         //SceneManager.LoadScene(nextLevel);
+        if (!_inShop)
+            brain.nextSceneIndex = nextLevel;
         _transitioning = true;
         _closeDoors.SetActive(true);
     }
