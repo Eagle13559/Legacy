@@ -65,7 +65,9 @@ public class EnemyController : MonoBehaviour {
     private float _deathTime = 1f;
 
     [SerializeField]
-    AudioClip _kappaDeath;
+    private AudioClip _kappaDeath;
+    [SerializeField]
+    private float _kappaDeathVolume = 1.0f;
 
     private AudioSource _source;
 
