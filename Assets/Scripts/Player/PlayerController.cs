@@ -109,6 +109,28 @@ public class PlayerController : MonoBehaviour {
     private float _winTimer = 0f;
     private float _winTime = 1.25f;
 
+    private AudioSource _source;
+    [SerializeField]
+    private AudioClip _playerJump;
+    [SerializeField]
+    private float _playerJumpVolume = 1.0f;
+    [SerializeField]
+    private AudioClip _playerAttack;
+    [SerializeField]
+    private float _playerAttackVolume = 1.0f;
+    [SerializeField]
+    private AudioClip _playerCoinGrab;
+    [SerializeField]
+    private float _playerCoinGrabVolume = 1.0f;
+    [SerializeField]
+    private AudioClip _playerDash;
+    [SerializeField]
+    private float _playerDashVolume = 1.0f;
+    [SerializeField]
+    private AudioClip _playerHurt;
+    [SerializeField]
+    private float _playerHurtVolume = 1.0f;
+
     // Use this for initialization
     void Start () {
         _currentState = playerState.FREE;
@@ -155,6 +177,9 @@ public class PlayerController : MonoBehaviour {
         _prevY = gameObject.transform.position.y;
 
         _playerCollider = gameObject.GetComponent<BoxCollider2D>();
+
+        _source = GetComponent<AudioSource>();
+        _source.Play();
     }
 
     // Update is called once per frame
@@ -283,6 +308,7 @@ public class PlayerController : MonoBehaviour {
                 {
                     _currentState = playerState.DASHING;
                     _attackColliderController.setEnabled(true);
+                    _source.PlayOneShot(_playerDash, _playerDashVolume);
                 }
                 // Move in the direction they are facing
                 if (_isFacingRight)
@@ -356,12 +382,15 @@ public class PlayerController : MonoBehaviour {
                 // If the player tries to jump, only allow it if they are grounded.
                 if (Input.GetAxis("Jump") > 0 && _controller.isGrounded && _currentState != playerState.WINNING)
                 {
+                    if (_controller.isGrounded)
+                        _source.PlayOneShot(_playerJump, _playerJumpVolume);
                     velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
                     _animator.setAnimation(_jumpAnimation);
                 }
                 // The player has initiated an attack...
                 if (Input.GetKeyDown("j") && _currentState != playerState.WINNING)
                 {
+                    _source.PlayOneShot(_playerAttack, _playerAttackVolume);
                     // ...perform a ground attack.
                     if (_controller.isGrounded)
                     {
@@ -423,6 +452,7 @@ public class PlayerController : MonoBehaviour {
         {
             if (_currentState != playerState.ATTACKING && _currentState != playerState.AIRATTACKING && _currentState != playerState.DASHING) {
                 _timer.ReduceTimer(timerDamage);
+                if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
                 _currentState = playerState.TAKINGDAMAGE;
                 BoxCollider2D otherCollider = other.gameObject.GetComponent<BoxCollider2D>();
                 Vector3 otherPos = other.gameObject.transform.position;
@@ -434,8 +464,10 @@ public class PlayerController : MonoBehaviour {
         }
         else if (other.tag == "Spikey")
         {
+            
             if (_currentState != playerState.ATTACKING && _currentState != playerState.AIRATTACKING && _currentState != playerState.DASHING)
             {
+                if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
                 _timer.ReduceTimer(timerDamage);
                 _currentState = playerState.TAKINGDAMAGE;
                 _damageFallbackDirection = new Vector3(0, -1, 0);
@@ -445,6 +477,7 @@ public class PlayerController : MonoBehaviour {
         {
             if (_currentState != playerState.ATTACKING && _currentState != playerState.AIRATTACKING && _currentState != playerState.DASHING)
             {
+                if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
                 _timer.ReduceTimer(timerDamage);
                 _currentState = playerState.TAKINGDAMAGE;
                 _damageFallbackDirection = new Vector3(-0.73f, -0.73f, 0);
@@ -457,6 +490,7 @@ public class PlayerController : MonoBehaviour {
         else if (other.tag == "Coin")
         {
             BankAccount.AddToBank(CurrencyController.CurrencyTypes.Coin);
+            _source.PlayOneShot(_playerCoinGrab, _playerCoinGrabVolume);
             //Destroy(other.gameObject);
         }
         else if (other.tag == "Jewel")
@@ -539,6 +573,7 @@ public class PlayerController : MonoBehaviour {
             if (_currentState != playerState.ATTACKING && _currentState != playerState.AIRATTACKING && _currentState != playerState.DASHING)
             {
                 _timer.ReduceTimer(timerDamage);
+                if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
                 _currentState = playerState.TAKINGDAMAGE;
                 BoxCollider2D otherCollider = other.gameObject.GetComponent<BoxCollider2D>();
                 Vector3 otherPos = other.gameObject.transform.position;

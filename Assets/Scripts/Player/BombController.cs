@@ -25,6 +25,17 @@ public class BombController : MonoBehaviour {
     private PlayerController _player;
     private bool _finishedExploding = false;
 
+    private AudioSource _source;
+
+    [SerializeField]
+    private AudioClip _bombExplode;
+    [SerializeField]
+    private float _bombExplodeVolume = 1.0f;
+    [SerializeField]
+    private AudioClip _bombKick;
+    [SerializeField]
+    private float _bombKickVolume = 1.0f;
+
     // Use this for initialization
     void Start () {
         _blastingZone = gameObject.GetComponent(typeof(CircleCollider2D)) as CircleCollider2D;
@@ -32,6 +43,7 @@ public class BombController : MonoBehaviour {
         _animator = parent.GetComponent<AnimationController2D>();
         _animationTimer = _bombTime + 1.5f;
         _player = GameObject.Find("Player").GetComponent(typeof(PlayerController)) as PlayerController;
+        _source = GetComponent<AudioSource>();
     }
 	
 	// Update is called once per frame
@@ -65,6 +77,7 @@ public class BombController : MonoBehaviour {
                 parentCollider.enabled = false;
                 parentPhysics.bodyType = RigidbodyType2D.Static;
                 explosionTriggered = true;
+                _source.PlayOneShot(_bombExplode, _bombExplodeVolume);
             }
         }
 	}
@@ -77,6 +90,7 @@ public class BombController : MonoBehaviour {
         }
         if (other.tag == "PlayerWeapon")
         {
+            _source.PlayOneShot(_bombKick, _bombKickVolume);
             Vector3 direction = gameObject.transform.position - other.transform.position;
             direction.Normalize();
             // Enforce the bomb goes in the direction the player is facing
