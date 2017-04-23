@@ -82,7 +82,7 @@ public class TheBrain : MonoBehaviour
     /// <summary>
     /// Type of Items available to the player
     /// </summary>
-    public enum ItemTypes { Dash, Bomb, None }
+    public enum ItemTypes { Dash, Bomb, Invincible, None }
 
     /// <summary>
     /// Represents the incense types the player can have. 

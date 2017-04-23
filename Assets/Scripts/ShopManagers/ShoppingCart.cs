@@ -7,7 +7,9 @@ public class ShoppingCart : MonoBehaviour {
 
     public Dictionary<TheBrain.ItemTypes, int> itemCart { get; private set;  }
 
-   public Dictionary<TheBrain.IncenseTypes, int> incenseCart { get; private set; }
+    public Dictionary<TheBrain.IncenseTypes, int> incenseCart { get; private set; }
+
+    private long size;
 
     public ShoppingCart ()
     {
@@ -23,6 +25,8 @@ public class ShoppingCart : MonoBehaviour {
         {
             incenseCart[item] = 0;
         }
+
+        size = 0;
     }
     
     /// <summary>
@@ -32,6 +36,7 @@ public class ShoppingCart : MonoBehaviour {
     public void addItemToCart (TheBrain.ItemTypes type)
     {
         itemCart[type]++;
+        size++;
     }
 
     /// <summary>
@@ -41,6 +46,7 @@ public class ShoppingCart : MonoBehaviour {
     public void addIncenseToCart (TheBrain.IncenseTypes type)
     {
         incenseCart[type]++;
+        size++;
     }
 
     /// <summary>
@@ -94,5 +100,10 @@ public class ShoppingCart : MonoBehaviour {
     public long GetNumOfSpecificIncense(TheBrain.IncenseTypes type)
     {
         return incenseCart[type];
+    }
+
+    public long GetTotalSizeOfCart()
+    {
+        return size;
     }
 }

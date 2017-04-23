@@ -40,6 +40,30 @@ public class ShopkeeperController : MonoBehaviour
     private Text BombPricing;
 
     /// <summary>
+    /// Reference to the text field to show bomb count
+    /// </summary>
+    [SerializeField]
+    private Text InvincibilityCount;
+
+    /// <summary>
+    /// Text field to show how much the current amount of bombs would cost the player. 
+    /// </summary>
+    [SerializeField]
+    private Text InvincibilityPricing;
+
+    /// <summary>
+    /// Reference to the text field to show bomb count
+    /// </summary>
+    [SerializeField]
+    private Text TotalCount;
+
+    /// <summary>
+    /// Text field to show how much the current amount of bombs would cost the player. 
+    /// </summary>
+    [SerializeField]
+    private Text TotalPricing;
+
+    /// <summary>
     /// References the incense purchasable by player to show in checkout window
     /// </summary>
     [SerializeField]
@@ -69,6 +93,7 @@ public class ShopkeeperController : MonoBehaviour
 
     private float maxSliderValue;
     private float minSliderValue = 0.05f;
+    private bool conversionBarChanged = false;
 
     /// <summary>
     /// Keeps track of the items that the player wishes to purchase. 
@@ -103,7 +128,13 @@ public class ShopkeeperController : MonoBehaviour
         cart = new ShoppingCart();
 
         BombCount.text = cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb).ToString();
-        BombPricing.text = player.BankAccount.TotalWithdrawalAmount.ToString();
+        InvincibilityCount.text = cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Invincible).ToString();
+       
+        BombPricing.text = (10 * cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb)).ToString();
+        InvincibilityPricing.text = (10 * cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Invincible)).ToString();
+
+        TotalCount.text = cart.GetTotalSizeOfCart().ToString();
+        TotalPricing.text = player.BankAccount.TotalWithdrawalAmount.ToString();
 
         Sprite currIncense;
         if(brain.currIncense != TheBrain.IncenseTypes.None)
@@ -205,7 +236,13 @@ public class ShopkeeperController : MonoBehaviour
                 cart.addItemToCart(item.ItemTag);
 
                 BombCount.text = cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb).ToString();
-                BombPricing.text = player.BankAccount.TotalWithdrawalAmount.ToString();
+                InvincibilityCount.text = cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Invincible).ToString();
+
+                BombPricing.text = (10 * cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb)).ToString();
+                InvincibilityPricing.text = (10 * cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Invincible)).ToString();
+
+                TotalCount.text = cart.GetTotalSizeOfCart().ToString();
+                TotalPricing.text = player.BankAccount.TotalWithdrawalAmount.ToString();
             }
             else
             {
@@ -269,23 +306,32 @@ public class ShopkeeperController : MonoBehaviour
     /// </summary>
     public void AddTimeToPlayersBank()
     {
-        float CurrTime = brain.Time * 60;
+        // Make sure the player has actually changed the amount to change into money
+        if (currentTimeConversionBar.value != maxSliderValue)
+        {
+            conversionBarChanged = false;
 
-        float valueDiff = (prevValue - currentTimeConversionBar.value) * 60;
+            float CurrTime = brain.Time * 60;
 
-        CurrTime -= valueDiff * brain.Time;
+            float valueDiff = (prevValue - currentTimeConversionBar.value) * 60;
 
-        brain.Time = CurrTime / 60;
+            CurrTime -= valueDiff * brain.Time;
 
-        player.ConvertTimeToCurrency(valueDiff/60);
+            brain.Time = CurrTime / 60;
 
-        prevValue = maxSliderValue = currentTimeConversionBar.value;
+            player.ConvertTimeToCurrency(valueDiff / 60);
 
-        float conversionCalc = 5 + (7 * (9 - (10 * (brain.Time / (brain.TotalTime ) ) ) ) );
+            prevValue = maxSliderValue = currentTimeConversionBar.value;
 
-        float barX = (conversionCalc > 0) ? conversionCalc : 0;
+            float conversionCalc = 5 + (7 * (9 - (10 * (brain.Time / (brain.TotalTime)))));
 
-        subtractedConversionBar.rectTransform.offsetMax = new Vector2(-barX, subtractedConversionBar.rectTransform.offsetMax.y);
+            float barX = (conversionCalc > 0) ? conversionCalc : 0;
+
+            subtractedConversionBar.rectTransform.offsetMax = new Vector2(-barX, subtractedConversionBar.rectTransform.offsetMax.y);
+
+            
+        }
+       
     }
 
     /// <summary>
@@ -305,6 +351,8 @@ public class ShopkeeperController : MonoBehaviour
         double seconds = (CurrTime) % 60;//Use the euclidean division for the seconds
 
         conversionTimerText.text = string.Format("{0:00} : {1:00}", Math.Floor(minutes), Math.Floor(seconds));
+
+        conversionBarChanged = true;
 
     }
 
