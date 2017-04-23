@@ -26,7 +26,6 @@ public class MoneySpawner : MonoBehaviour
     {
         for (int i = 0; i < enemyWorth; i++)
         {
-            
             GameObject tempObj = Instantiate(moneyObj, locationToInstantiate, Quaternion.identity) as GameObject;
 
             // set animation to random animation of jelly money

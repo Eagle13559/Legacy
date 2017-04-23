@@ -67,6 +67,9 @@ public class ShopkeeperController : MonoBehaviour
 
     private float prevValue;
 
+    private float maxSliderValue;
+    private float minSliderValue = 0.05f;
+
     /// <summary>
     /// Keeps track of the items that the player wishes to purchase. 
     /// </summary>
@@ -118,7 +121,7 @@ public class ShopkeeperController : MonoBehaviour
 
         //conversionTimer.ReduceTimer((brain.TotalTime - brain.Time) * 60);
 
-        prevValue = currentTimeConversionBar.value = 1 - brain.Time / (brain.TotalTime * 60);
+        prevValue = currentTimeConversionBar.value = maxSliderValue = (brain.Time / (brain.TotalTime));
 
         float conversionCalc = 5 + (7 * (9 - (10 * (brain.Time / (brain.TotalTime ) ) ) ) );
 
@@ -262,12 +265,25 @@ public class ShopkeeperController : MonoBehaviour
     }
 
     /// <summary>
+    /// Takes the current state of the time in the time conversion bar and adds it to the players bank account.
+    /// </summary>
+    public void AddTimeToPlayersBank()
+    {
+        float amountToCharge = maxSliderValue - currentTimeConversionBar.value;
+        player.ConvertTimeToCurrency(amountToCharge);
+
+        prevValue = currentTimeConversionBar.value = maxSliderValue = (brain.Time / (brain.TotalTime));
+    }
+
+    /// <summary>
     /// Display the current time
     /// </summary>
     public void UpdateConvTimeText()
     {
         double CurrTime = brain.Time * 60;
 
+        float valueOfTimeBar =  ConstrictSlider();
+        
         float valueDiff = (prevValue - currentTimeConversionBar.value) * 60;
 
         CurrTime -= valueDiff*brain.Time;
@@ -276,6 +292,20 @@ public class ShopkeeperController : MonoBehaviour
         double seconds = (CurrTime) % 60;//Use the euclidean division for the seconds
 
         conversionTimerText.text = string.Format("{0:00} : {1:00}", Math.Floor(minutes), Math.Floor(seconds));
+
+    }
+
+    /// <summary>
+    /// Constricts the slider to not go above max value. 
+    /// </summary>
+    public float ConstrictSlider()
+    {
+        if (currentTimeConversionBar.value > maxSliderValue)
+        {
+            currentTimeConversionBar.value = maxSliderValue;
+        }
+
+        return currentTimeConversionBar.value;
     }
 
 }

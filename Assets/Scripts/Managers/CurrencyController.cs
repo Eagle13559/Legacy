@@ -83,16 +83,16 @@ public class CurrencyController : MonoBehaviour {
     /// Adds the given amount to the total amount of earnings. Has a max value of a long type. 
     /// </summary>
     /// <param name="amount"></param>
-    public bool AddToBank (CurrencyTypes currency)
+    public bool AddToBank (CurrencyTypes currency, long amount = 1)
     {
         switch (currency)
         {
             case (CurrencyTypes.Coin):
-                return TryToAddToBank(ValueOfCoin);
+                return TryToAddToBank(ValueOfCoin * amount);
             case (CurrencyTypes.Jewel):
-                return TryToAddToBank(ValueOfJewel);
+                return TryToAddToBank(ValueOfJewel * amount);
             case (CurrencyTypes.Time):
-                return TryToAddToBank(ValueOfTime);
+                return TryToAddToBank(ValueOfTime * amount);
             default:
                 return false;
         }

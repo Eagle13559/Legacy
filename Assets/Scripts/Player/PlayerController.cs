@@ -538,14 +538,20 @@ public class PlayerController : MonoBehaviour {
     /// Converts the given time to currency for the player
     /// </summary>
     /// <param name="amount"></param>
-    public void ConvertTimeToCurrency()
+    public bool ConvertTimeToCurrency(float amount)
     {
-        long amount = BankAccount.ValueOfCurrency(CurrencyController.CurrencyTypes.Time);
         if (_timer.CurrTime - amount > 0)
         {
-            _timer.ReduceTimer(amount);
-            BankAccount.AddToBank(CurrencyController.CurrencyTypes.Time);
+            long value = (long) (_timer.CurrTime - amount);
+
+            _timer.ReduceTimer(amount*60);
+            _timer.TimerDisplay();
+           
+            BankAccount.AddToBank(CurrencyController.CurrencyTypes.Time, value);
+            return true;
         }
+
+        return false;
     }
 
     /// <summary>
