@@ -160,26 +160,7 @@ public class PlayerController : MonoBehaviour {
         _invincibilitySprite = GameObject.Find("Invincible");
         _invincibilitySprite.SetActive(false);
 
-        if (brain.currIncense != TheBrain.IncenseTypes.None)
-        {
-            _timer.Intialize(brain.TotalTime, brain.IncenseSprites[(int)brain.currIncense]);
-        }
-        else
-        {
-            _timer.Intialize(brain.TotalTime, brain.IncenseSprites[0]);
-        }
-
-        _timer.ReduceTimer((brain.TotalTime - brain.Time)*60);
-
-        if (! Regex.IsMatch(   SceneManager.GetActiveScene().name, "Shop") )
-        {
-            _timer.StartTimer();
-        }
-        else
-        {
-            infiniteBombs = true;
-            shopping = true;
-        }
+        TimeInitialization();
 
         BankAccount.AddToBank( brain.PlayersMoney );
         _prevY = gameObject.transform.position.y;
@@ -571,11 +552,10 @@ public class PlayerController : MonoBehaviour {
     {
         if (_timer.CurrTime - amount > 0)
         {
-            long value = (long) (_timer.CurrTime - amount);
+            long value = (long)(amount * 100 >= 1 ? amount * 100 : 1);
 
-            _timer.ReduceTimer(amount*60);
-            _timer.TimerDisplay();
-           
+            TimeInitialization();
+
             BankAccount.AddToBank(CurrencyController.CurrencyTypes.Time, value);
             return true;
         }
@@ -583,6 +563,30 @@ public class PlayerController : MonoBehaviour {
         return false;
     }
 
+
+    public void TimeInitialization()
+    {
+        if (brain.currIncense != TheBrain.IncenseTypes.None)
+        {
+            _timer.Intialize(brain.TotalTime, brain.IncenseSprites[(int)brain.currIncense]);
+        }
+        else
+        {
+            _timer.Intialize(brain.TotalTime, brain.IncenseSprites[0]);
+        }
+
+        _timer.ReduceTimer((brain.TotalTime - brain.Time) * 60);
+
+        if (!Regex.IsMatch(SceneManager.GetActiveScene().name, "Shop"))
+        {
+            _timer.StartTimer();
+        }
+        else
+        {
+            infiniteBombs = true;
+            shopping = true;
+        }
+    }
     /// <summary>
     /// When this game object is destroyed, we need to record the players time and total money
     /// </summary>
