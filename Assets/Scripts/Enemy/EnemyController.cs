@@ -109,12 +109,16 @@ public class EnemyController : MonoBehaviour {
         // If the enemy has reached the end of the patrol point
         if (((!waiting) && (!chasePlayer) && (((this.transform.position.x > endingPatrolPoint.x) && outgoing) || ((this.transform.position.x < startingPatrolPoint.x) && !outgoing)))
             || ((!waiting) && chasePlayer && (((this.transform.position.x > maxChasePoint.x) && outgoing) || ((this.transform.position.x < minChasePoint.x) && !outgoing))))
+        {
             waiting = true;
+            _source.Stop();
+        }
 
         if (timer > turnTime)
         {
             outgoing = !outgoing;
             waiting = false;
+            _source.Play();
             timer = 0;
         }
         // This code fires when the character is about to begin moving
@@ -128,6 +132,7 @@ public class EnemyController : MonoBehaviour {
         {
             _animator.setAnimation(anim_idle);
             timer += Time.deltaTime;
+            
         }
         // Handle all variations of movement
         if (!waiting)
