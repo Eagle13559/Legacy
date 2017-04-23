@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -49,6 +50,24 @@ public class ShopkeeperController : MonoBehaviour
     private Image blackIncense;
 
     /// <summary>
+    /// References the conversion bars to convert time to money.
+    /// </summary>
+    [SerializeField]
+    private Slider currentTimeConversionBar;
+    [SerializeField]
+    private Image subtractedConversionBar;
+    [SerializeField]
+    private Text conversionTimerText;
+    private FillControl conversionSubtractionFill;
+
+    /// <summary>
+    /// A temporary timer controller to take care of all the calculations
+    /// </summary>
+    private TimerController conversionTimer;
+
+    private float prevValue;
+
+    /// <summary>
     /// Keeps track of the items that the player wishes to purchase. 
     /// </summary>
     public ShoppingCart cart { get; private set; }
@@ -82,6 +101,35 @@ public class ShopkeeperController : MonoBehaviour
 
         BombCount.text = cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb).ToString();
         BombPricing.text = player.BankAccount.TotalWithdrawalAmount.ToString();
+
+        Sprite currIncense;
+        if(brain.currIncense != TheBrain.IncenseTypes.None)
+        {
+            currIncense = brain.IncenseSprites[(int)brain.currIncense];
+        }
+        else
+        {
+            currIncense = brain.IncenseSprites[0];
+        }
+
+
+        //conversionTimer = new TimerController(brain.TotalTime, currIncense,  
+        //                                    currentTimeConversionBar, conversionTimerText);
+
+        //conversionTimer.ReduceTimer((brain.TotalTime - brain.Time) * 60);
+
+        prevValue = currentTimeConversionBar.value = 1 - brain.Time / (brain.TotalTime * 60);
+
+        float conversionCalc = 5 + (7 * (9 - (10 * (brain.Time / (brain.TotalTime ) ) ) ) );
+
+        float barX = (conversionCalc > 0) ? conversionCalc : 0;
+
+        subtractedConversionBar.rectTransform.offsetMax = new Vector2(-barX, subtractedConversionBar.rectTransform.offsetMax.y);
+
+        double minutes = brain.Time; //Divide the guiTime by sixty to get the minutes.
+        double seconds = (brain.Time*60) % 60;//Use the euclidean division for the seconds
+
+        conversionTimerText.text = string.Format("{0:00} : {1:00}", Math.Floor(minutes), Math.Floor(seconds));
     }
 
     // Update is called once per frame
@@ -213,6 +261,21 @@ public class ShopkeeperController : MonoBehaviour
         cart.ClearCart();
     }
 
-    
+    /// <summary>
+    /// Display the current time
+    /// </summary>
+    public void UpdateConvTimeText()
+    {
+        double CurrTime = brain.Time * 60;
+
+        float valueDiff = (prevValue - currentTimeConversionBar.value) * 60;
+
+        CurrTime -= valueDiff*brain.Time;
+
+        double minutes = CurrTime/60; //Divide the guiTime by sixty to get the minutes.
+        double seconds = (CurrTime) % 60;//Use the euclidean division for the seconds
+
+        conversionTimerText.text = string.Format("{0:00} : {1:00}", Math.Floor(minutes), Math.Floor(seconds));
+    }
 
 }

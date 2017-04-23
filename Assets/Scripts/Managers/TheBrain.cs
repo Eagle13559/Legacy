@@ -67,7 +67,7 @@ public class TheBrain : MonoBehaviour
     /// </summary>
     public float Time;
 
-    private float TotalTime;
+    public float TotalTime { get; private set; }
 
     /// <summary>
     /// Keeps track of the index that will be loaded on the next load level call

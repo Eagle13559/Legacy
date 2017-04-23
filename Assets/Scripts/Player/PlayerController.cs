@@ -132,13 +132,14 @@ public class PlayerController : MonoBehaviour {
 
         if (brain.currIncense != TheBrain.IncenseTypes.None)
         {
-            _timer.Intialize(brain.Time, brain.IncenseSprites[(int)brain.currIncense]);
+            _timer.Intialize(brain.TotalTime, brain.IncenseSprites[(int)brain.currIncense]);
         }
         else
         {
-            _timer.Intialize(brain.Time, brain.IncenseSprites[0]);
+            _timer.Intialize(brain.TotalTime, brain.IncenseSprites[0]);
         }
-       
+
+        _timer.ReduceTimer((brain.TotalTime - brain.Time)*60);
 
         if (! Regex.IsMatch(   SceneManager.GetActiveScene().name, "Shop") )
         {

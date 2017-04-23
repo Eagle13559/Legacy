@@ -9,7 +9,7 @@ public class TimerController : MonoBehaviour
     /// <summary>
     /// Controls the total limit of time
     /// </summary>
-    private float TimeLimit;
+    public float TimeLimit { get; private set; }
 
     /// <summary>
     /// 
@@ -40,6 +40,22 @@ public class TimerController : MonoBehaviour
     private FillControl TimerFill;
 
     private bool paused;
+
+    public TimerController(float TotalTime, Sprite incense, Image refToTimerBar, Text refToTimerText)
+    {
+        this.TimerBar = refToTimerBar;
+        this.TimerText = refToTimerText;
+
+        TimeLimit = TotalTime * 60;
+        CurrTime = TimeLimit;
+
+        if (incense != null)
+        {
+            TimerBar.sprite = incense;
+        }
+
+        TimerFill = new FillControl(TimerBar);
+    }
 
     /// <summary>
     /// 
@@ -119,6 +135,23 @@ public class TimerController : MonoBehaviour
         else
         {
             CurrTime = 0;
+        }
+    }
+
+    /// <summary>
+    /// Reduces the current timer appropriately based off the damage argument.
+    /// </summary>
+    /// <param name="damage"> Damage recieved </param>
+    /// <returns></returns> 
+    public void IncreaseTimer(float heals)
+    {
+        if (CurrTime + heals < TimeLimit)
+        {
+            CurrTime += (heals);
+        }
+        else
+        {
+            CurrTime = TimeLimit;
         }
     }
 
