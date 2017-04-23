@@ -249,7 +249,8 @@ public class PlayerController : MonoBehaviour {
             // If the player is currently taking damage...
             if (_currentState == playerState.TAKINGDAMAGE)
             {
-                _animator.setAnimation(_damageAnimation);
+                if (!_isInvincible)
+                    _animator.setAnimation(_damageAnimation);
                 _damageTime += Time.deltaTime;
                 _playerCollider.enabled = false;
                 if (_damageTime >= _damageTimer)
@@ -462,28 +463,27 @@ public class PlayerController : MonoBehaviour {
                 {
                     _timer.ReduceTimer(timerDamage);
                     if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
-                    _currentState = playerState.TAKINGDAMAGE;
-                    BoxCollider2D otherCollider = other.gameObject.GetComponent<BoxCollider2D>();
-                    Vector3 otherPos = other.gameObject.transform.position;
-                    Vector3 myPos = gameObject.transform.position;
-                    _damageFallbackDirection = otherPos - myPos;
-                    _damageFallbackDirection.z = 0;
-                    _damageFallbackDirection.Normalize();
                 }
+                _currentState = playerState.TAKINGDAMAGE;
+                BoxCollider2D otherCollider = other.gameObject.GetComponent<BoxCollider2D>();
+                Vector3 otherPos = other.gameObject.transform.position;
+                Vector3 myPos = gameObject.transform.position;
+                _damageFallbackDirection = otherPos - myPos;
+                _damageFallbackDirection.z = 0;
+                _damageFallbackDirection.Normalize();
             }
         }
         else if (other.tag == "Spikey")
         {
-            
             if (_currentState != playerState.ATTACKING && _currentState != playerState.AIRATTACKING && _currentState != playerState.DASHING)
             {
                 if (!_isInvincible)
                 {
                     if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
                     _timer.ReduceTimer(timerDamage);
-                    _currentState = playerState.TAKINGDAMAGE;
-                    _damageFallbackDirection = new Vector3(0, -1, 0);
                 }
+                _currentState = playerState.TAKINGDAMAGE;
+                _damageFallbackDirection = new Vector3(0, -1, 0);
             }
         }
         else if (other.tag == "SpikeySlantRight")
@@ -494,9 +494,9 @@ public class PlayerController : MonoBehaviour {
                 {
                     if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
                     _timer.ReduceTimer(timerDamage);
-                    _currentState = playerState.TAKINGDAMAGE;
-                    _damageFallbackDirection = new Vector3(-0.73f, -0.73f, 0);
                 }
+                _currentState = playerState.TAKINGDAMAGE;
+                _damageFallbackDirection = new Vector3(-0.73f, -0.73f, 0);
             }
         }
         else if (other.tag == "KillZ")
@@ -617,8 +617,11 @@ public class PlayerController : MonoBehaviour {
         {
             if (_currentState != playerState.ATTACKING && _currentState != playerState.AIRATTACKING && _currentState != playerState.DASHING)
             {
-                _timer.ReduceTimer(timerDamage);
-                if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
+                if (!_isInvincible)
+                {
+                    _timer.ReduceTimer(timerDamage);
+                    if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
+                }
                 _currentState = playerState.TAKINGDAMAGE;
                 BoxCollider2D otherCollider = other.gameObject.GetComponent<BoxCollider2D>();
                 Vector3 otherPos = other.gameObject.transform.position;
@@ -626,6 +629,32 @@ public class PlayerController : MonoBehaviour {
                 _damageFallbackDirection = otherPos - myPos;
                 _damageFallbackDirection.z = 0;
                 _damageFallbackDirection.Normalize();
+            }
+        }
+        else if (other.tag == "Spikey")
+        {
+            if (_currentState != playerState.ATTACKING && _currentState != playerState.AIRATTACKING && _currentState != playerState.DASHING)
+            {
+                if (!_isInvincible)
+                {
+                    if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
+                    _timer.ReduceTimer(timerDamage);
+                }
+                _currentState = playerState.TAKINGDAMAGE;
+                _damageFallbackDirection = new Vector3(0, -1, 0);
+            }
+        }
+        else if (other.tag == "SpikeySlantRight")
+        {
+            if (_currentState != playerState.ATTACKING && _currentState != playerState.AIRATTACKING && _currentState != playerState.DASHING)
+            {
+                if (!_isInvincible)
+                {
+                    if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
+                    _timer.ReduceTimer(timerDamage);
+                }
+                _currentState = playerState.TAKINGDAMAGE;
+                _damageFallbackDirection = new Vector3(-0.73f, -0.73f, 0);
             }
         }
     }
