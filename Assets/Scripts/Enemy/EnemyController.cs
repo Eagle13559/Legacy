@@ -64,6 +64,10 @@ public class EnemyController : MonoBehaviour {
     private float _deathTimer = 0f;
     private float _deathTime = 1f;
 
+    [SerializeField]
+    AudioClip _kappaDeath;
+
+    private AudioSource _source;
 
 
     // Use this for initialization
@@ -79,12 +83,16 @@ public class EnemyController : MonoBehaviour {
 
         turnTime += rovingPauseTime;
 
+        _source = GetComponent<AudioSource>();
+        _source.Play();
     }
 	
 	// Update is called once per frame
 	void Update () {
         if (_dying)
         {
+            _source.Stop();
+            _source.PlayOneShot(_kappaDeath);
             _deathTimer += Time.deltaTime;
             if (_deathTimer >= _deathTime)
             {
