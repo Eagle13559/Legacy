@@ -269,10 +269,23 @@ public class ShopkeeperController : MonoBehaviour
     /// </summary>
     public void AddTimeToPlayersBank()
     {
-        float amountToCharge = maxSliderValue - currentTimeConversionBar.value;
-        player.ConvertTimeToCurrency(amountToCharge);
+        float CurrTime = brain.Time * 60;
 
-        prevValue = currentTimeConversionBar.value = maxSliderValue = (brain.Time / (brain.TotalTime));
+        float valueDiff = (prevValue - currentTimeConversionBar.value) * 60;
+
+        CurrTime -= valueDiff * brain.Time;
+
+        brain.Time = CurrTime / 60;
+
+        player.ConvertTimeToCurrency(valueDiff/60);
+
+        prevValue = maxSliderValue = currentTimeConversionBar.value;
+
+        float conversionCalc = 5 + (7 * (9 - (10 * (brain.Time / (brain.TotalTime ) ) ) ) );
+
+        float barX = (conversionCalc > 0) ? conversionCalc : 0;
+
+        subtractedConversionBar.rectTransform.offsetMax = new Vector2(-barX, subtractedConversionBar.rectTransform.offsetMax.y);
     }
 
     /// <summary>
