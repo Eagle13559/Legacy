@@ -234,8 +234,10 @@ public class PlayerController : MonoBehaviour {
             //  Falling is checked first, then dashing, then attacking, then other
             Vector3 velocity = _controller.velocity;
             velocity.x = 0;
-            // Keeps track of the amount of bombs the player has at this frame
+            // Keeps track of the amount of items the player has at this frame
             int BombTotal = brain.playerItemCounts[TheBrain.ItemTypes.Bomb];
+            int invicTotal = brain.playerItemCounts[TheBrain.ItemTypes.Invincible];
+
             if (!_canPlaceBomb)
             {
                 _bombCooldownTimer += Time.deltaTime;
@@ -244,6 +246,7 @@ public class PlayerController : MonoBehaviour {
                     _canPlaceBomb = true;
                 }
             }
+
             //private float _damageTimer = 0.2f;
             //private float _damageTime = 0f;
             // If the player is currently taking damage...
@@ -417,18 +420,20 @@ public class PlayerController : MonoBehaviour {
                         bomb.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(transform.forward);//.AddForce(transform.forward * _bombThrust);
                         if (!infiniteBombs)
                         {
-                            brain.playerItemCounts[TheBrain.ItemTypes.Bomb] = BombTotal > 1 ? BombTotal - 1 : 0;
+                            brain.playerItemCounts[TheBrain.ItemTypes.Bomb] = CalcNewItemCount(BombTotal);
                         }
 
                         //Debug.Log("Removed Bomb Ability : " + brain.playerItemCounts[TheBrain.ItemTypes.Bomb]);
                     }
 
                 }
-                if (Input.GetKeyDown(";") && _currentState != playerState.WINNING) {
+                if (Input.GetKeyDown(";") && _currentState != playerState.WINNING && invicTotal > 0) {
                     if (!_isInvincible)
                     {
                         _isInvincible = true;
                         _invincibilitySprite.SetActive(true);
+
+                        brain.playerItemCounts[TheBrain.ItemTypes.Invincible] = CalcNewItemCount(invicTotal);
                     }
                 }
                 // Fall!
@@ -523,26 +528,6 @@ public class PlayerController : MonoBehaviour {
 
 
     /// <summary>
-    /// Will add the correct number of items to players ability inventory. 
-    /// </summary>
-    /// <param name="item"></param>
-    private void AddToPlayerInventory(ItemManager item)
-    {
-        int BombTotal = brain.playerItemCounts[TheBrain.ItemTypes.Bomb];
-        switch (item.ItemTag)
-        {
-            case (TheBrain.ItemTypes.Dash):
-                Debug.Log("Added Dash Ability");
-                break;
-            case (TheBrain.ItemTypes.Bomb):
-                Debug.Log("Added Bomb Ability : " + ++brain.playerItemCounts[TheBrain.ItemTypes.Bomb]);
-                break;
-            default:
-                break;
-        }
-    }
-
-    /// <summary>
     /// Shows the current time
     /// </summary>
     public void ShowTimer()
@@ -556,7 +541,7 @@ public class PlayerController : MonoBehaviour {
     /// <param name="amount"></param>
     public bool ConvertTimeToCurrency(float amount)
     {
-        if (_timer.CurrTime - amount > 0)
+        if (_timer.CurrTime - amount > 0 && _timer.CurrTime != brain.Time)
         {
             long value = (long)(amount * 100 >= 1 ? amount * 100 : 1);
 
@@ -569,7 +554,9 @@ public class PlayerController : MonoBehaviour {
         return false;
     }
 
-
+    /// <summary>
+    /// Does all the necessary initializations for the time controlling objects. 
+    /// </summary>
     public void TimeInitialization()
     {
         if (brain.currIncense != TheBrain.IncenseTypes.None)
@@ -593,6 +580,12 @@ public class PlayerController : MonoBehaviour {
             shopping = true;
         }
     }
+
+    private int CalcNewItemCount(int itemTotal)
+    {
+        return itemTotal > 1 ? itemTotal - 1 : 0;
+    }
+
     /// <summary>
     /// When this game object is destroyed, we need to record the players time and total money
     /// </summary>

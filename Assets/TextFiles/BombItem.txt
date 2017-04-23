@@ -1,2 +1,4 @@
 Bomb
-Goes Boom!
+Explodes after a few seconds, damaging all enemies in radius.
+Press l to activate one of two bombs.
+You may only have two bombs at a time.
