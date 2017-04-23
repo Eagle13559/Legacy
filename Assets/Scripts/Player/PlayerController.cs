@@ -116,23 +116,23 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private AudioClip _playerJump;
     [SerializeField]
-    private float _playerJumpVolume = 1.0f;
+    private float _playerJumpVolume;
     [SerializeField]
     private AudioClip _playerAttack;
     [SerializeField]
-    private float _playerAttackVolume = 1.0f;
+    private float _playerAttackVolume;
     [SerializeField]
     private AudioClip _playerCoinGrab;
     [SerializeField]
-    private float _playerCoinGrabVolume = 1.0f;
+    private float _playerCoinGrabVolume;
     [SerializeField]
     private AudioClip _playerDash;
     [SerializeField]
-    private float _playerDashVolume = 1.0f;
+    private float _playerDashVolume;
     [SerializeField]
     private AudioClip _playerHurt;
     [SerializeField]
-    private float _playerHurtVolume = 1.0f;
+    private float _playerHurtVolumef;
 
     private GameObject _invincibilitySprite;
 
