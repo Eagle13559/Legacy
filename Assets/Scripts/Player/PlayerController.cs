@@ -41,6 +41,9 @@ public class PlayerController : MonoBehaviour {
     private bool _canDash = true;
     private bool _wasLanded = true;
     private float _prevY;
+    private bool _isInvincible;
+    private float _invincibleTimer = 0f;
+    private float _invincibleTime = 5f;
 
     private CharacterController2D _controller;
     private AnimationController2D _animator;
@@ -131,6 +134,8 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private float _playerHurtVolume = 1.0f;
 
+    private GameObject _invincibilitySprite;
+
     // Use this for initialization
     void Start () {
         _currentState = playerState.FREE;
@@ -152,7 +157,29 @@ public class PlayerController : MonoBehaviour {
         _animator = gameObject.GetComponent<AnimationController2D>();
         gameCamera.GetComponent<CameraFollow2D>().startCameraFollow(this.gameObject);
 
-        TimeInitialization();
+        _invincibilitySprite = GameObject.Find("Invincible");
+        _invincibilitySprite.SetActive(false);
+
+        if (brain.currIncense != TheBrain.IncenseTypes.None)
+        {
+            _timer.Intialize(brain.TotalTime, brain.IncenseSprites[(int)brain.currIncense]);
+        }
+        else
+        {
+            _timer.Intialize(brain.TotalTime, brain.IncenseSprites[0]);
+        }
+
+        _timer.ReduceTimer((brain.TotalTime - brain.Time)*60);
+
+        if (! Regex.IsMatch(   SceneManager.GetActiveScene().name, "Shop") )
+        {
+            _timer.StartTimer();
+        }
+        else
+        {
+            infiniteBombs = true;
+            shopping = true;
+        }
 
         BankAccount.AddToBank( brain.PlayersMoney );
         _prevY = gameObject.transform.position.y;
@@ -175,6 +202,17 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.B) && debugMode)
         {
             infiniteBombs = !infiniteBombs;
+        }
+
+        if (_isInvincible)
+        {
+            _invincibleTimer += Time.deltaTime;
+            if (_invincibleTimer > _invincibleTime)
+            {
+                _invincibleTimer = 0;
+                _isInvincible = false;
+                _invincibilitySprite.SetActive(false);
+            }
         }
 
         // Check to see if player has eliminated all key enemies.
@@ -404,6 +442,13 @@ public class PlayerController : MonoBehaviour {
                     }
 
                 }
+                if (Input.GetKeyDown(";") && _currentState != playerState.WINNING) {
+                    if (!_isInvincible)
+                    {
+                        _isInvincible = true;
+                        _invincibilitySprite.SetActive(true);
+                    }
+                }
                 // Fall!
                 velocity.y += gravity * Time.deltaTime;
             }
@@ -432,15 +477,18 @@ public class PlayerController : MonoBehaviour {
         if (other.tag == "Enemy")
         {
             if (_currentState != playerState.ATTACKING && _currentState != playerState.AIRATTACKING && _currentState != playerState.DASHING) {
-                _timer.ReduceTimer(timerDamage);
-                if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
-                _currentState = playerState.TAKINGDAMAGE;
-                BoxCollider2D otherCollider = other.gameObject.GetComponent<BoxCollider2D>();
-                Vector3 otherPos = other.gameObject.transform.position;
-                Vector3 myPos = gameObject.transform.position;
-                _damageFallbackDirection = otherPos - myPos;
-                _damageFallbackDirection.z = 0;
-                _damageFallbackDirection.Normalize();
+                if (!_isInvincible)
+                {
+                    _timer.ReduceTimer(timerDamage);
+                    if (_currentState != playerState.TAKINGDAMAGE) { _source.PlayOneShot(_playerHurt, _playerHurtVolume); }
+                    _currentState = playerState.TAKINGDAMAGE;
+                    BoxCollider2D otherCollider = other.gameObject.GetComponent<BoxCollider2D>();
+                    Vector3 otherPos = other.gameObject.transform.position;
+                    Vector3 myPos = gameObject.transform.position;
+                    _damageFallbackDirection = otherPos - myPos;
+                    _damageFallbackDirection.z = 0;
+                    _damageFallbackDirection.Normalize();
+                }
             }
         }
         else if (other.tag == "Spikey")
@@ -523,40 +571,16 @@ public class PlayerController : MonoBehaviour {
     {
         if (_timer.CurrTime - amount > 0)
         {
-            long value = (long) (amount*100 >= 1 ? amount*100 : 1);
+            long value = (long) (_timer.CurrTime - amount);
 
-            TimeInitialization();
+            _timer.ReduceTimer(amount*60);
+            _timer.TimerDisplay();
            
             BankAccount.AddToBank(CurrencyController.CurrencyTypes.Time, value);
             return true;
         }
 
         return false;
-    }
-
-
-    public void TimeInitialization()
-    {
-        if (brain.currIncense != TheBrain.IncenseTypes.None)
-        {
-            _timer.Intialize(brain.TotalTime, brain.IncenseSprites[(int)brain.currIncense]);
-        }
-        else
-        {
-            _timer.Intialize(brain.TotalTime, brain.IncenseSprites[0]);
-        }
-
-        _timer.ReduceTimer((brain.TotalTime - brain.Time) * 60);
-
-        if (!Regex.IsMatch(SceneManager.GetActiveScene().name, "Shop"))
-        {
-            _timer.StartTimer();
-        }
-        else
-        {
-            infiniteBombs = true;
-            shopping = true;
-        }
     }
 
     /// <summary>
