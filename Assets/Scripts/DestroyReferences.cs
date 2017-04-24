@@ -8,9 +8,10 @@ public class DestroyReferences : MonoBehaviour {
 
     private GameObject parent;
 
-    void Start()
+    void Awake()
     {
         parent = transform.parent.gameObject;
+        parent.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
     }
 
     void Update()
@@ -28,7 +29,8 @@ public class DestroyReferences : MonoBehaviour {
         {
             destroyObj = true;
         }
-
     }
+
+    
 
 }

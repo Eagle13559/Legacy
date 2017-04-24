@@ -18,10 +18,16 @@ public class TimerController : MonoBehaviour
     private Text TimerText;
 
     /// <summary>
-    /// 
+    /// Represents the image that will show the players curent time
     /// </summary>
     [SerializeField]
     private Image TimerBar;
+
+    /// <summary>
+    /// Represents the tip that will go on the timer;
+    /// </summary>
+  //  [SerializeField]
+// private Image TimerTip;
 
     /// <summary>
     /// 
@@ -79,8 +85,12 @@ public class TimerController : MonoBehaviour
         while (true)
         {
            ReduceTimer(Time.deltaTime);
+           
+            //TimerTip.rectTransform.offsetMax = new Vector2(TimerTip.rectTransform.offsetMax.x - Time.deltaTime, TimerTip.rectTransform.offsetMax.y);
+           // Vector3 tipMoveVector = new Vector3(TimerTip.rectTransform.position.x - (Time.deltaTime), TimerTip.rectTransform.position.y, 0);
+           // TimerTip.rectTransform.transform.position = tipMoveVector;
 
-           if (CurrTime <= 0)
+            if (CurrTime <= 0)
            {
               player.Die();
            }
@@ -105,7 +115,9 @@ public class TimerController : MonoBehaviour
     public void TimerDisplay()
     {
         if (!float.IsPositiveInfinity(TimeLimit))
+        {
             TimerFill.ChangeBarFill(CurrTime / TimeLimit);
+        }     
         else
             TimerFill.ChangeBarFill(1);
 

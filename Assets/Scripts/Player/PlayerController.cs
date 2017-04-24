@@ -597,11 +597,10 @@ public class PlayerController : MonoBehaviour {
             brain.PlayersMoney = BankAccount.BankAccount;
             print("players money saved");
         }
-        //else
-        //{
-        //    Destroy(brain.gameObject);
-        //    print("brain destroyed");
-        //}
+        else
+        {
+            print("money and time not saved");
+        }
     }
 
     void OnTriggerStay2D(Collider2D other)

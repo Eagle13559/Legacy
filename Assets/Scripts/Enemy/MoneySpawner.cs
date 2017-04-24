@@ -12,11 +12,36 @@ public class MoneySpawner : MonoBehaviour
     [SerializeField]
     private GameObject moneyObj;
 
+    private Rigidbody2D[] instantiatedObj;
+
     [SerializeField]
     private string[] animationNames;
 
+    private float _physicsTimer = 0;
+    private float _physicsMaxTime = 1.5f;
+
+    private bool instantiated = false;
+
     void Start()
     {
+        
+    }
+
+    void Update()
+    { 
+        if (instantiated)
+        {
+            if (_physicsTimer > _physicsMaxTime)
+            {
+                //StartCoroutine(FreezeAllObj());
+                instantiated = false;
+            }
+            else
+            {
+                _physicsTimer += Time.deltaTime;
+            }
+        }
+        
     }
 
     /// <summary>
@@ -24,6 +49,7 @@ public class MoneySpawner : MonoBehaviour
     /// </summary>
     public void DropMoney(Vector3 locationToInstantiate)
     {
+        instantiatedObj = new Rigidbody2D[enemyWorth];
         for (int i = 0; i < enemyWorth; i++)
         {
             GameObject tempObj = Instantiate(moneyObj, locationToInstantiate, Quaternion.identity) as GameObject;
@@ -43,6 +69,20 @@ public class MoneySpawner : MonoBehaviour
 
             // apply a force to move the money
             tempObj.GetComponent<Rigidbody2D>().AddForce(forceVect * force);
+
+            instantiatedObj[i] = physics;
+        }
+
+        instantiated = true;
+    }
+
+    public IEnumerator FreezeAllObj ()
+    {
+        foreach(Rigidbody2D objPhysics in instantiatedObj)
+        {
+            if (objPhysics != null)
+                objPhysics.bodyType = RigidbodyType2D.Static;
+            yield return new WaitForEndOfFrame();
         }
     }
 }
