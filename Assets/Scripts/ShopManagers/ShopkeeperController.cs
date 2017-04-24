@@ -193,6 +193,15 @@ public class ShopkeeperController : MonoBehaviour
         }
 
         player.ShowTimer();
+
+        BombCount.text = cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb).ToString();
+        InvincibilityCount.text = cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Invincible).ToString();
+
+        BombPricing.text = (10 * cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb)).ToString();
+        InvincibilityPricing.text = (10 * cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Invincible)).ToString();
+
+        TotalCount.text = cart.GetTotalSizeOfCart().ToString();
+        TotalPricing.text = player.BankAccount.TotalWithdrawalAmount.ToString();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -235,14 +244,7 @@ public class ShopkeeperController : MonoBehaviour
             {
                 cart.addItemToCart(item.ItemTag);
 
-                BombCount.text = cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb).ToString();
-                InvincibilityCount.text = cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Invincible).ToString();
-
-                BombPricing.text = (10 * cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Bomb)).ToString();
-                InvincibilityPricing.text = (10 * cart.GetNumOfSpecificItem(TheBrain.ItemTypes.Invincible)).ToString();
-
-                TotalCount.text = cart.GetTotalSizeOfCart().ToString();
-                TotalPricing.text = player.BankAccount.TotalWithdrawalAmount.ToString();
+                
             }
             else
             {

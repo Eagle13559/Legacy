@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour {
     public bool debugMode = false;
 
     private float _deathTimer = 0f;
-    private float _deathTime = 0.5f;
+    private float _deathTime = 0.6f;
     private float _winTimer = 0f;
     private float _winTime = 1.25f;
 
@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private AudioClip _playerHurt;
     [SerializeField]
-    private float _playerHurtVolumef;
+    private float _playerHurtVolume;
 
     private GameObject _invincibilitySprite;
 
@@ -591,7 +591,7 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     void OnDestroy ()
     {
-        if (brain.SingletonCreated)
+        if (brain.SingletonCreated && _currentState != playerState.DEAD)
         {
             brain.Time = _timer.CurrTime / 60;
             brain.PlayersMoney = BankAccount.BankAccount;

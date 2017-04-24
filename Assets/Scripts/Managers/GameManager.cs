@@ -84,10 +84,13 @@ public class GameManager : MonoBehaviour {
             _closeDoorTimer += Time.deltaTime;
             if (_closeDoorTimer >= _closeDoorTime)
             {
-                if (!_inShop)
-                    SceneManager.LoadScene("Shop");
-                else if (!_restarting)
-                    SceneManager.LoadScene(brain.nextSceneIndex);
+                if (!_restarting)
+                {
+                    if (!_inShop)
+                        SceneManager.LoadScene("Shop");
+                    else
+                        SceneManager.LoadScene(brain.nextSceneIndex);
+                }   
                 else
                     SceneManager.LoadScene(resetLevel);
             }
@@ -142,13 +145,11 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     public void GameOver ()
     {
-        if (!DebugMode)
-        {
-            _transitioning = true;
-            _restarting = true;
-            _closeDoors.SetActive(true);
-            //SceneManager.LoadScene(resetLevel);
-        }
+
+       _transitioning = true;
+       _restarting = true;
+        _closeDoors.SetActive(true);
+        //SceneManager.LoadScene(resetLevel);
         brain.resetTime();
     }
 
