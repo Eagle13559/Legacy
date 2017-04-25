@@ -127,7 +127,18 @@ public class GameManager : MonoBehaviour {
     {
         //SceneManager.LoadScene(nextLevel);
         if (!_inShop)
-            brain.nextSceneIndex = nextLevel;
+        {
+            if (nextLevel.Equals("MainMenu"))
+            {
+                GameOver();
+                return;
+            }
+            else
+            {
+                brain.nextSceneIndex = nextLevel;
+            }
+           
+        }
         _transitioning = true;
         _closeDoors.SetActive(true);
     }
