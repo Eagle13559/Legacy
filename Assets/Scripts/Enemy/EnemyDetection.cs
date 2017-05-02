@@ -26,6 +26,9 @@ public class EnemyDetection : MonoBehaviour {
         {
             enemy.PlayerFound();
         }
+        else if (collision.gameObject.tag == "PlayerWeapon")
+        {
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
