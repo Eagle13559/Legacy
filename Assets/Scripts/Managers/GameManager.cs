@@ -30,6 +30,9 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     private GameObject pauseMenu;
 
+    [SerializeField]
+    private AudioSource backgroundMusic;
+
     private bool paused = false;
 
     private bool _inShop;
@@ -69,6 +72,8 @@ public class GameManager : MonoBehaviour {
         {
             _inShop = true;
         }
+
+        backgroundMusic.enabled = true;
 
         //nextLevel = SceneManager.GetSceneByBuildIndex(brain.nextSceneIndex).name;
     }

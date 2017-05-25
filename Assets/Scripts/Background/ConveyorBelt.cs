@@ -7,9 +7,15 @@ public class ConveyorBelt : MonoBehaviour {
     [SerializeField]
     private float directionX = 1;
 
+    [SerializeField]
+    private AudioSource soundFX;
+
 	// Use this for initialization
 	void Start () {
-
+        if (soundFX != null)
+        {
+            soundFX.enabled = true;
+        }
     }
 	
 	// Update is called once per frame
