@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine.UI;
 using System;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class TimerController : MonoBehaviour
 {
@@ -24,10 +26,10 @@ public class TimerController : MonoBehaviour
     private Image TimerBar;
 
     /// <summary>
-    /// Represents the tip that will go on the timer;
+    /// Represents the image that will be the tip of the timer bar
     /// </summary>
-  //  [SerializeField]
-// private Image TimerTip;
+    [SerializeField]
+    private Image TipBar;
 
     /// <summary>
     /// 
@@ -77,6 +79,7 @@ public class TimerController : MonoBehaviour
         }
 
         TimerFill = new FillControl(TimerBar);
+
     }
 
     // Update is called once per frame
@@ -117,7 +120,19 @@ public class TimerController : MonoBehaviour
         if (!float.IsPositiveInfinity(TimeLimit))
         {
             TimerFill.ChangeBarFill(CurrTime / TimeLimit);
-        }     
+            RaycastHit hit;
+            Vector3 dirVect = TipBar.transform.position;
+            dirVect.x *= -1;
+            Ray UIRay = new Ray(TipBar.transform.position, dirVect);
+
+           if (Physics.Raycast(UIRay, out hit, 800))
+            {
+                if (hit.collider.tag.Equals(""))
+                {
+                    Debug.Log("Worked");
+                }
+            }
+        }
         else
             TimerFill.ChangeBarFill(1);
 

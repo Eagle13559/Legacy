@@ -9,7 +9,7 @@ public class FillControl : MonoBehaviour {
     /// Will change the fill amount of component
     /// </summary>
     [SerializeField]
-    private float FillAmount;
+    public float FillAmount { get; private set; }
 
     /// <summary>
     /// UI image to control
@@ -32,6 +32,7 @@ public class FillControl : MonoBehaviour {
     private void DisplayBar()
     {
          UIImage.fillAmount = FillAmount;
+        
     }
 
     /// <summary>
