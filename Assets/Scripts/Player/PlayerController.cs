@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour {
     public float gravity = -35f;
     public float jumpHeight = 2f;
     public float walkSpeed = 3f;
+    private float projectileSpeed = 100f;
     private float dashSpeed = 12.5f;
     private float dashTime = 0.35f;
     public float dashCooldownTime = 5f;
@@ -80,6 +81,9 @@ public class PlayerController : MonoBehaviour {
 
     [SerializeField]
     private AttackColliderController _attackColliderController;
+
+    [SerializeField]
+    private ProjectileFactory _projectile;
 
     private string _walkAnimation = "ShibaWalk";
     private string _jumpAnimation = "ShibaJump";
@@ -394,11 +398,13 @@ public class PlayerController : MonoBehaviour {
                 // The player has initiated an attack...
                 if (Input.GetKeyDown("j") && _currentState != playerState.WINNING)
                 {
+                    Vector2 forceVect = _isFacingRight ? new Vector2(projectileSpeed, 0) : new Vector2(-1*projectileSpeed, 0);
                     _source.PlayOneShot(_playerAttack, _playerAttackVolume);
                     // ...perform a ground attack.
                     if (_controller.isGrounded)
                     {
                         _animator.setAnimation(_attackAnimation);
+                        _projectile.ShootProjectile(forceVect, _isFacingRight);
                         _currentState = playerState.ATTACKING;
                     }
                     // ...perform an aerial attack

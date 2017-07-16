@@ -8,6 +8,7 @@ public class AttackColliderController : MonoBehaviour {
     private float timeActive = 0.4f;
     private CapsuleCollider2D _collider;
 
+
     // Use this for initialization
     void Start () {
         _collider = GetComponent<CapsuleCollider2D>();
