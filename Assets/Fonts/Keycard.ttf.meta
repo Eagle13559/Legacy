@@ -4,17 +4,18 @@ timeCreated: 1487143400
 licenseType: Free
 TrueTypeFontImporter:
   serializedVersion: 4
-  fontSize: 16
-  forceTextureCase: -2
+  fontSize: 100
+  forceTextureCase: -1
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
   fontName: Keycard
   fontNames:
   - Keycard
-  fallbackFontReferences: []
-  customCharacters: 
-  fontRenderingMode: 0
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 5a600ba76e4ef0f40bdb30e3c39e50f5, type: 3}
+  customCharacters: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
+  fontRenderingMode: 2
   ascentCalculationMode: 1
   userData: 
   assetBundleName: 
