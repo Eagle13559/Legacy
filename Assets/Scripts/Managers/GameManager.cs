@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour {
     private GameObject pauseMenu;
 
     [SerializeField]
-    private AudioSource backgroundMusic;
+    private AudioSource[] soundSystem;
 
     private bool paused = false;
 
@@ -73,7 +73,9 @@ public class GameManager : MonoBehaviour {
             _inShop = true;
         }
 
-        backgroundMusic.enabled = true;
+        foreach (AudioSource sound in soundSystem) {
+            sound.Play();
+        }
 
         //nextLevel = SceneManager.GetSceneByBuildIndex(brain.nextSceneIndex).name;
     }
