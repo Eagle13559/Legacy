@@ -6,24 +6,118 @@ using UnityEngine.UI;
 
 public class MixLevels : MonoBehaviour {
 
-// audio mixer
+// gameobjects for inspector
+
     public AudioMixer masterMixer;
 
 
-// sliders
     public Slider masterSlider;
     public Slider musicSlider;
     public Slider sfxSlider;
 
-// toggles
+
     public Toggle masterTog;
     public Toggle musicTog;
     public Toggle sfxTog;
-    
-// changes master/main audio with slider
+
+ // called by sliders for value changes
+    public float getsoundLvl(float soundLvl)
+    {
+        if (soundLvl == 0)
+        {
+            return -80;
+        }
+
+        else
+        {
+            if (soundLvl == 1)
+            {
+                return -70;
+            }
+
+            else
+            {
+                if (soundLvl == 2)
+                {
+                    return -60;
+                }
+
+                else
+                {
+                    if (soundLvl == 3)
+                    {
+                        return -50;
+                    }
+                    
+                    else
+                    {
+                        if (soundLvl == 4)
+                        {
+                            return -40;
+                        }
+
+                        else
+                        {
+                            if (soundLvl == 5)
+                            {
+                                return -30;
+                            }
+
+                            else
+                            {
+                                if (soundLvl == 6)
+                                {
+                                    return -20;
+                                }
+
+                                else
+                                {
+                                    if (soundLvl == 7)
+                                    {
+                                        return -10;
+                                    }
+
+                                    else
+                                    {
+                                        if (soundLvl == 8)
+                                        {
+                                            return 0;
+                                        }
+
+                                        else
+                                        {
+                                            if (soundLvl == 9)
+                                            {
+                                                return 10;
+                                            }
+
+                                            else
+                                            {
+                                                return 20;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    //  slider audio changers for 3 categories. 
+    #region setting audio
     public void SetMasterLvL (float masterLvl)
     {
-        masterMixer.SetFloat("masterVol", masterLvl);
+        // calls soundLvl to convert slider #s to correspdoning db #s
+        float soundLvl = getsoundLvl(masterLvl);
+
+        masterMixer.SetFloat("masterVol", soundLvl);
 
 //checks if low enough to be mute and turns toggle on/off if so
         if (masterSlider.value == -80 && masterTog.isOn == false)
@@ -37,10 +131,12 @@ public class MixLevels : MonoBehaviour {
         }
     }
 
-    // same as above but music
+
     public void SetMusicLvl(float musicLvl)
     {
-        masterMixer.SetFloat("musicVol", musicLvl);
+        float soundLvl = getsoundLvl(musicLvl);
+
+        masterMixer.SetFloat("musicVol", soundLvl);
 
         if (musicSlider.value == -80 && musicTog.isOn == false)
         {
@@ -53,11 +149,11 @@ public class MixLevels : MonoBehaviour {
         }
     }
 
-    // same as above but for sound effects. menusfx seperate from sfx due to digetic sound being muffled in menu
     public void SetSfxLvl (float sfxLvl)
     {
-        masterMixer.SetFloat("sfxVol", sfxLvl);
-        masterMixer.SetFloat("menuSfxVol", sfxLvl);
+        float soundLvl = getsoundLvl(sfxLvl); 
+        masterMixer.SetFloat("sfxVol", soundLvl);
+        masterMixer.SetFloat("menuSfxVol", soundLvl);
 
         if (sfxSlider.value == 0 && sfxTog.isOn == false)
         {
@@ -69,10 +165,13 @@ public class MixLevels : MonoBehaviour {
             sfxTog.isOn = false;
         }
     }
+    #endregion
 
 
-// individual muting for the three sliders
-    public void MuteMaster ()
+
+    //   individual muting for the three sliders
+    #region muting
+    public void MuteMaster()
     {
         if (masterTog.isOn == true)
         {
@@ -81,15 +180,16 @@ public class MixLevels : MonoBehaviour {
 
         else
         {
-            masterMixer.SetFloat("masterVol", masterSlider.value);
+            float soundLvl = getsoundLvl(masterSlider.value);
+            masterMixer.SetFloat("masterVol", soundLvl);
 
-            if (masterSlider.value == -80)
+            if (masterSlider.value == 0)
             {
-                masterSlider.value = -50;
-            } 
+                masterSlider.value = 1;
+            }
         }
-        
-       }
+
+    }
 
     public void MuteMusic()
     {
@@ -100,11 +200,12 @@ public class MixLevels : MonoBehaviour {
 
         else
         {
-            masterMixer.SetFloat("musicVol", musicSlider.value);
+            float soundLvl = getsoundLvl(musicSlider.value);
+            masterMixer.SetFloat("musicVol", soundLvl);
 
-            if (musicSlider.value == -80)
+            if (musicSlider.value == 0)
             {
-                musicSlider.value = -50;
+                musicSlider.value = 1;
             }
         }
 
@@ -121,21 +222,24 @@ public class MixLevels : MonoBehaviour {
 
             else
             {
-                masterMixer.SetFloat("sfxVol", sfxSlider.value);
-                masterMixer.SetFloat("menuSfxVol", sfxSlider.value);
+                float soundLvl = getsoundLvl(sfxSlider.value);
+                masterMixer.SetFloat("sfxVol", soundLvl);
+                masterMixer.SetFloat("menuSfxVol", soundLvl);
 
 
-                if (sfxSlider.value == -80)
+                if (sfxSlider.value == 0)
                 {
-                    sfxSlider.value = -50;
+                    sfxSlider.value = 1;
                 }
             }
 
 
         }
 
+    #endregion
 
-    }
+
+}
 
 
 

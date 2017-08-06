@@ -22,7 +22,6 @@ public class PlaySoundAfter : MonoBehaviour {
     public void PlayVolumeCheck()
     {
         Vector3 temp = new Vector3(9f, 5f);
-        Debug.Log("ping");
         audio.PlayOneShot(ClickSource, _slider.value);
     }
 
