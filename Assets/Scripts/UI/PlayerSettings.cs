@@ -14,14 +14,18 @@ public class PlayerSettings : MonoBehaviour
 
     public AudioMixer masterMixer;
 
-  //  MixLevels mixLevels = new MixLevels();
+    MixLevels mixLevels = new MixLevels();
 
 
     void Start()
     {
         // load saved volumes
         masterVol.value = PlayerPrefs.GetFloat("masterVol");
+
+
         musicVol.value = PlayerPrefs.GetFloat("musicVol");
+
+
         sfxVol.value = PlayerPrefs.GetFloat("sfxVol");
 
         
@@ -33,16 +37,33 @@ public class PlayerSettings : MonoBehaviour
 
 
     // saves volumes. called by slider on change. 
-    public void SaveSets()
+    public void SaveMaster()
     {
-
+        Debug.Log("Save Master");
         PlayerPrefs.SetFloat("masterVol", masterVol.value);
+
+        PlayerPrefs.Save();
+    }
+
+    public void SaveMusic() {
+
+        Debug.Log("SaveMusic");
+
         PlayerPrefs.SetFloat("musicVol", musicVol.value);
-        PlayerPrefs.SetFloat("sfxVol", sfxVol.value);
+
+        PlayerPrefs.Save();
+    }
+
+    public void SaveSFX() {
+
+        Debug.Log("Save SFX");
+
+       PlayerPrefs.SetFloat("sfxVol", sfxVol.value);
+
 
         PlayerPrefs.Save();
 
     }
-
+    
 }
 

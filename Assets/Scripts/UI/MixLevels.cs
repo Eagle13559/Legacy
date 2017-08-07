@@ -216,8 +216,8 @@ public class MixLevels : MonoBehaviour {
         {
             if (sfxTog.isOn == true)
             {
-                masterMixer.SetFloat("sfxVol", 0f);
-                masterMixer.SetFloat("menuSfxVol", 0f);
+                masterMixer.SetFloat("sfxVol", -80f);
+                masterMixer.SetFloat("menuSfxVol", -80f);
             }
 
             else
