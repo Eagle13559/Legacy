@@ -31,6 +31,12 @@ public class GameManager : MonoBehaviour {
     private GameObject pauseMenu;
 
     [SerializeField]
+    private GameObject pauseHolder;
+
+    [SerializeField]
+    private GameObject helpHolder;
+
+    [SerializeField]
     private AudioSource[] soundSystem;
 
     private bool paused = false;
@@ -112,6 +118,7 @@ public class GameManager : MonoBehaviour {
     private void pauseControl(bool state)
     {
         pauseMenu.SetActive(state);
+
         if (state)
             PauseGame();
         else
@@ -205,10 +212,16 @@ public class GameManager : MonoBehaviour {
     public void UnPauseGame()
     {
         paused = false;
+
+        //makes sure that the help holder is closed and pause menu is open when closing the overall menu
+        //so that when reopening pause it opens to the pause menu and not the help menu
+        pauseHolder.SetActive(true);
+        helpHolder.SetActive(false);
         Time.timeScale = 1;
         Lowpass();
     }
 
+    // alters sound while game is paused
     void Lowpass()
     {
         if (Time.timeScale == 0)
