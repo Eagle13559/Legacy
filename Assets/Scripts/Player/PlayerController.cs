@@ -411,6 +411,7 @@ public class PlayerController : MonoBehaviour {
                     else
                     {
                         _animator.setAnimation(_attackAirAnimation);
+                        _projectile.ShootProjectile(forceVect, _isFacingRight);
                         _currentState = playerState.AIRATTACKING;
                     }
                     _attackColliderController.setEnabled(true);
