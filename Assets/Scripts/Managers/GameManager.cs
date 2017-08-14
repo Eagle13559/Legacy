@@ -43,6 +43,8 @@ public class GameManager : MonoBehaviour {
 
     private bool _inShop;
 
+    [SerializeField]
+    private Text CrowCount;
     private int numOfKeyEnemies;
     private GameObject _closeDoors;
     float _closeDoorTime = 1.2f;
@@ -186,11 +188,13 @@ public class GameManager : MonoBehaviour {
     public void AddKeyEnemy ()
     {
         numOfKeyEnemies++;
+        CrowCount.text = GetNumOfKeyEnemiesAlive().ToString();
     }
 
     public void RemoveKeyEnemy ()
     {
         numOfKeyEnemies--;
+        CrowCount.text = GetNumOfKeyEnemiesAlive().ToString();
     }
 
     /// <summary>
