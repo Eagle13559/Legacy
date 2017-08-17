@@ -32,6 +32,6 @@ public class BombTotalDisplay : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        bombDisplay.text = pretext + brain.playerItemCounts[TheBrain.ItemTypes.Bomb];
+        bombDisplay.text = brain.playerItemCounts[TheBrain.ItemTypes.Bomb].ToString();
 	}
 }
