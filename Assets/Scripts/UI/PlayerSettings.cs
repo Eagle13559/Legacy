@@ -22,16 +22,9 @@ public class PlayerSettings : MonoBehaviour
         // load saved volumes
         masterVol.value = PlayerPrefs.GetFloat("masterVol");
 
-
         musicVol.value = PlayerPrefs.GetFloat("musicVol");
 
-
         sfxVol.value = PlayerPrefs.GetFloat("sfxVol");
-
-        
-
-
-
     }
 
 

@@ -154,6 +154,13 @@ public class PlayerController : MonoBehaviour {
         {
             Debug.Log("The Brain was not found for this object");
             brain = new TheBrain();
+
+            brain.Time = float.PositiveInfinity;
+            brain.PlayersMoney = 100;
+            brain.InitalizePlayerItemCount();
+            brain.InitalizePlayerIncenseCount();
+            brain.currIncense = TheBrain.IncenseTypes.Base;
+
             debugMode = true;
         }
 

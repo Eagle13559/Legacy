@@ -14,19 +14,19 @@ public class TheBrain : MonoBehaviour
         }
     }
 
-    public TheBrain()
-    {
-        Time = float.PositiveInfinity;
-        PlayersMoney = 100;
-        InitalizePlayerItemCount();
-        InitalizePlayerIncenseCount();
-        currIncense = IncenseTypes.Base;
-    }
-
     void Start ()
     {
         if (_brainSingleton == null)
-            _brainSingleton = this.gameObject;
+        {
+            if (GameObject.Find("TheBrain").GetComponent<TheBrain>().SingletonCreated )
+            {
+                Destroy(this.gameObject);
+            }
+            else
+            {
+                _brainSingleton = this.gameObject;
+            }
+        }
         else
         {
             if (_brainSingleton != this.gameObject)
@@ -74,9 +74,11 @@ public class TheBrain : MonoBehaviour
     /// </summary>
     public string nextSceneIndex;
 
-    public void resetTime()
+    public void resetBrain()
     {
         Time = TotalTime;
+        InitalizePlayerIncenseCount();
+        InitalizePlayerItemCount();
     }
 
     /// <summary>

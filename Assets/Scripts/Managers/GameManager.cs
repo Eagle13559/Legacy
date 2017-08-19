@@ -63,6 +63,12 @@ public class GameManager : MonoBehaviour {
         {
             Debug.Log("The Brain was not found for this object");
             brain = new TheBrain();
+
+            brain.Time = float.PositiveInfinity;
+            brain.PlayersMoney = 100;
+            brain.InitalizePlayerItemCount();
+            brain.InitalizePlayerIncenseCount();
+            brain.currIncense = TheBrain.IncenseTypes.Base;
         }
 
         currLevelID = SceneManager.GetActiveScene().buildIndex;
@@ -175,9 +181,8 @@ public class GameManager : MonoBehaviour {
 
        _transitioning = true;
        _restarting = true;
-        _closeDoors.SetActive(true);
+       _closeDoors.SetActive(true);
         //SceneManager.LoadScene(resetLevel);
-        brain.resetTime();
     }
 
     public int GetNumOfKeyEnemiesAlive()
@@ -249,5 +254,10 @@ public class GameManager : MonoBehaviour {
     {
         // TODO: Do we need to wait for any threads, coroutines or processes to finish. 
         Application.Quit();
+    }
+
+    public void ResetGame()
+    {
+        brain.resetBrain();
     }
 }
